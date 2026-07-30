@@ -890,7 +890,7 @@
                     <div onclick="toggleHamburger(); toggleTheme()" id="theme-menu-item" style="padding:10px 14px; cursor:pointer; display:flex; justify-content:space-between; align-items:center;">Tema claro <span>☀️</span></div>
                 </div>
             </div>
-            <span id="config-summary" style="font-size:0.8rem; color:#aaa; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"></span>
+            <span id="config-summary" onclick="showQuickPanel()" style="font-size:0.8rem; color:#aaa; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; cursor:pointer; text-decoration:underline; text-decoration-style:dotted; text-underline-offset:3px;"></span>
             <span id="match-timer" style="font-size:0.8rem; color:#ffc107; font-weight:600; margin-left:auto; flex-shrink:0;">00:00</span>
         </div>
 
@@ -1460,6 +1460,22 @@
             <div style="display:flex; gap:8px; justify-content:center; margin-top:12px;">
                 <button class="btn btn-outline-light btn-sm" onclick="closeRetasHistoryModal()">Cerrar</button>
                 <button class="btn btn-outline-danger btn-sm" onclick="confirmClearRetas()">Borrar todo</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Panel rapido del partido (se abre desde el resumen del encabezado) -->
+    <div class="winner-overlay d-none" id="quick-modal" onclick="if(event.target===this)closeQuickPanel()">
+        <div class="winner-card" style="background: linear-gradient(135deg, #2c3e50, #1a1a2e); max-width:380px; text-align:left;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                <h5 style="margin:0; font-weight:700;">Partido</h5>
+                <button class="btn btn-sm" onclick="closeQuickPanel()" style="padding:0 8px; background:#e94560; color:#fff; font-weight:700; border-radius:4px;">✕</button>
+            </div>
+            <div id="quick-details" style="font-size:0.85rem; line-height:1.7;"></div>
+            <div id="quick-teams" style="margin-top:12px;"></div>
+            <div style="display:flex; gap:8px; justify-content:space-between; margin-top:16px;">
+                <button class="btn btn-warning" style="font-weight:700; flex:1;" onclick="swapTeams()">🔄 Cambiar de lado</button>
+                <button class="btn btn-outline-light" style="flex:1;" onclick="closeQuickPanel(); toggleAllConfig();">⚙️ Configuración</button>
             </div>
         </div>
     </div>
@@ -2529,6 +2545,100 @@
 
         function toggleServe() { serve = serve === 1 ? 2 : 1; updateServeUI(); }
 
+        // Los equipos cambian de lado de la cancha: se llevan consigo su marcador,
+        // sus estadisticas y el saque. Solo cambia el color, no el resultado.
+        function swapTeams() {
+            if (matchOver) {
+                closeQuickPanel();
+                return;
+            }
+            const swapInputs = (a, b) => {
+                const ea = document.getElementById(a), eb = document.getElementById(b);
+                if (!ea || !eb) return;
+                const t = ea.value; ea.value = eb.value; eb.value = t;
+            };
+            swapInputs('cfg-name-p1a', 'cfg-name-p2a');
+            swapInputs('cfg-name-p1b', 'cfg-name-p2b');
+            swapInputs('cfg-name-team1', 'cfg-name-team2');
+            // Los desplegables de la reta siguen a los nombres
+            const sa = document.getElementById('sel-p1a'), sb = document.getElementById('sel-p1b');
+            const sc = document.getElementById('sel-p2a'), sd = document.getElementById('sel-p2b');
+            if (sa && sc) {
+                const t1 = sa.value, t2 = sb.value;
+                sa.value = sc.value; sb.value = sd.value;
+                sc.value = t1; sd.value = t2;
+                [sa, sb, sc, sd].forEach(s => s.dataset.prev = s.value);
+            }
+            // Marcador
+            points = [points[1], points[0]];
+            games = [games[1], games[0]];
+            setsWon = [setsWon[1], setsWon[0]];
+            freePoints = [freePoints[1], freePoints[0]];
+            sets = [sets[1], sets[0]];
+            if (advantage) advantage = advantage === 1 ? 2 : 1;
+            serve = serve === 1 ? 2 : 1;
+            // Estadisticas individuales
+            const st = playerStats;
+            [st.p1a, st.p2a] = [st.p2a, st.p1a];
+            [st.p1b, st.p2b] = [st.p2b, st.p1b];
+            // El historial guarda nombres, no lados: no se toca
+            history = [];
+            syncNamesToCards();
+            updateServeUI();
+            render();
+            renderMatchupHint();
+            saveRetaState();
+            addHistory('Los equipos cambiaron de lado');
+            refreshQuickPanel();
+        }
+
+        function showQuickPanel() {
+            refreshQuickPanel();
+            document.getElementById('quick-modal').classList.remove('d-none');
+        }
+
+        function closeQuickPanel() {
+            document.getElementById('quick-modal').classList.add('d-none');
+        }
+
+        function refreshQuickPanel() {
+            const det = document.getElementById('quick-details');
+            const teams = document.getElementById('quick-teams');
+            if (!det) return;
+            const deuceLabel = deuceMode === 'golden' ? 'Punto de oro' : deuceMode === '1adv' ? '1 Ventaja' : '2 Ventajas';
+            let filas = [];
+            if (mode === 'free') {
+                filas.push(['Modo', 'Libre']);
+                filas.push(['Puntos para ganar', freeMaxPoints]);
+            } else if (padelFormat === 'retas') {
+                filas.push(['Formato', 'Retas']);
+                filas.push(['Juegos por partido', retasGames === 0 ? 'Sin límite (∞)' : retasGames]);
+                filas.push(['Tiempo por partido', retaTimeLimit > 0 ? retaTimeLimit + ' min' : 'Sin tiempo']);
+                filas.push(['Fin', retasEarlyWin ? 'Anticipado' : 'Todos los juegos']);
+                filas.push(['40-40', deuceLabel]);
+                if (retaActive && retaSession) {
+                    filas.push(['Reta', `${retaSession.matches.length} ${retaSession.matches.length === 1 ? 'partido jugado' : 'partidos jugados'}`]);
+                }
+            } else {
+                filas.push(['Formato', 'Normal']);
+                filas.push(['Sets para ganar', setsToWin]);
+                filas.push(['Juegos por set', gamesPerSet]);
+                filas.push(['40-40', deuceLabel]);
+            }
+            det.innerHTML = filas.map(([k, v]) =>
+                `<div style="display:flex; justify-content:space-between; gap:10px; border-bottom:1px solid rgba(255,255,255,0.07); padding:3px 0;">
+                    <span style="opacity:0.7;">${esc(k)}</span><strong>${esc(v)}</strong>
+                </div>`).join('');
+            const marcador = mode === 'free' ? `${freePoints[0]} - ${freePoints[1]}`
+                : padelFormat === 'retas' ? `${games[0]} - ${games[1]}` : `${setsWon[0]} - ${setsWon[1]}`;
+            teams.innerHTML = `<div style="display:flex; align-items:center; gap:8px; justify-content:center; font-size:0.85rem;">
+                    <span style="background:rgba(233,69,96,0.25); border-left:4px solid #e94560; border-radius:6px; padding:6px 8px; flex:1;">${esc(getName(1))}</span>
+                    <strong style="opacity:0.7;">${esc(marcador)}</strong>
+                    <span style="background:rgba(74,144,217,0.25); border-left:4px solid #4a90d9; border-radius:6px; padding:6px 8px; flex:1; text-align:right;">${esc(getName(2))}</span>
+                </div>
+                ${matchOver ? '<div style="opacity:0.6; font-size:0.75rem; margin-top:6px; text-align:center;">El partido ya terminó: no se puede cambiar de lado.</div>' : ''}`;
+        }
+
         function updateServeUI() {
             document.getElementById('card-p1').classList.toggle('serving', serve === 1);
             document.getElementById('card-p2').classList.toggle('serving', serve === 2);
@@ -3456,9 +3566,12 @@
                     const nombres = { p1a: 'equipo 1', p1b: 'equipo 1', p2a: 'equipo 2', p2b: 'equipo 2' };
                     const detalle = Object.entries(p).map(([k, v]) => `<b>${esc(v)}</b> al ${nombres[k]}`).join(' y ');
                     box.innerHTML = `<div style="color:#7ec8e3;">${Object.keys(p).length === 1 ? 'Falta un jugador' : 'Faltan dos jugadores'}. Por turnos y cruces pendientes entra ${detalle}.</div>` +
-                        '<button class="btn btn-warning btn-sm" style="margin-top:8px; font-weight:700;" onclick="applySuggestedEntrants()">Poner a los sugeridos</button>';
+                        '<div style="display:flex; gap:8px; margin-top:8px; flex-wrap:wrap;">' +
+                        '<button class="btn btn-warning btn-sm" style="font-weight:700;" onclick="applySuggestedEntrants()">Poner a los sugeridos</button>' +
+                        swapButtonHTML() + '</div>';
                 } else {
-                    box.innerHTML = '<span style="opacity:0.55;">Elige los cuatro jugadores para revisar los cruces.</span>';
+                    box.innerHTML = '<span style="opacity:0.55;">Elige los cuatro jugadores para revisar los cruces.</span>' +
+                        '<div style="margin-top:8px;">' + swapButtonHTML() + '</div>';
                 }
                 return;
             }
@@ -3490,14 +3603,21 @@
                     html += '<div style="opacity:0.75; margin-top:3px;">Ya se enfrentaron todos contra todos: a partir de aquí toca repetir.</div>';
                 }
             }
+            let acciones = '';
             if (rot || (a.repetidos.length && a.pendientes.length)) {
                 const s = suggestMatchup();
                 if (s) {
                     html += `<div style="opacity:0.8; margin-top:6px;">Sugerido: <b>${esc(s.t1.join(' / '))}</b> vs <b>${esc(s.t2.join(' / '))}</b></div>`;
                 }
-                html += '<button class="btn btn-warning btn-sm" style="margin-top:8px; font-weight:700;" onclick="applySuggestedMatchup()">🔀 Armar el mejor partido</button>';
+                acciones += '<button class="btn btn-warning btn-sm" style="font-weight:700;" onclick="applySuggestedMatchup()">🔀 Armar el mejor partido</button>';
             }
-            box.innerHTML = html;
+            acciones += swapButtonHTML();
+            box.innerHTML = html + `<div style="display:flex; gap:8px; margin-top:8px; flex-wrap:wrap;">${acciones}</div>`;
+        }
+
+        // Boton para que los equipos cambien de color/lado
+        function swapButtonHTML() {
+            return '<button class="btn btn-outline-light btn-sm" style="font-weight:700;" onclick="swapTeams()" title="Los del rojo pasan al azul y viceversa">🔄 Cambiar de lado</button>';
         }
 
         // Tabla ordenada: puntos, luego partidos ganados, luego menos jugados
