@@ -615,13 +615,14 @@
             max-width: 130px;
         }
 
-        /* En retas son 5 botones: se aprieta el padding para que quepan sin cortar texto */
+        /* En retas la barra llega a 6 botones: se aprieta para que quepan sin partir el texto */
         @media (max-width: 480px) {
-            .controls-bar { gap: 5px; }
+            .controls-bar { gap: 4px; }
             .controls-bar .btn {
-                font-size: 0.72rem;
-                padding-left: 2px;
-                padding-right: 2px;
+                font-size: 0.7rem;
+                padding-left: 1px;
+                padding-right: 1px;
+                white-space: nowrap;
             }
         }
 
@@ -1255,12 +1256,14 @@
         </div>
 
         <!-- Controls -->
+        <!-- Orden segun el flujo del partido: se arranca, se juega, se corrige, se cierra -->
         <div class="controls-bar">
-            <button class="btn btn-outline-warning btn-sm" onclick="confirmUndo()">Deshacer</button>
+            <button class="btn btn-success btn-sm d-none" id="btn-start-match" onclick="startMatchNow()" title="Iniciar el partido y el cronometro">Iniciar</button>
             <button class="btn btn-outline-info btn-sm" onclick="toggleServe()">Saque</button>
-            <button class="btn btn-outline-success btn-sm d-none" id="btn-finish-match" onclick="finishRetaMatchManual()" title="Finalizar el partido">Fin</button>
+            <button class="btn btn-outline-warning btn-sm" onclick="confirmUndo()">Deshacer</button>
             <button class="btn btn-outline-danger btn-sm" onclick="confirmReset()">Reiniciar</button>
             <button class="btn btn-outline-secondary btn-sm" id="btn-clear-all" onclick="confirmClear()">Limpiar</button>
+            <button class="btn btn-outline-success btn-sm d-none" id="btn-finish-match" onclick="finishRetaMatchManual()" title="Finalizar el partido">Fin</button>
         </div>
 
         <!-- Footer cards -->
@@ -1863,6 +1866,26 @@
             return fmtClock(getElapsedSeconds());
         }
 
+        // Arranca el partido sin esperar al primer punto: el reloj empieza a correr ya
+        function startMatchNow() {
+            if (matchOver || timerInterval) return;
+            startTimer();
+            addHistory(isRetaTimed() ? `Partido iniciado - ${retaTimeLimit} min` : 'Partido iniciado');
+            updateStartButton();
+        }
+
+        // En retas siempre esta a la vista; se deshabilita cuando el partido ya corre
+        function updateStartButton() {
+            const b = document.getElementById('btn-start-match');
+            if (!b) return;
+            const isRetas = mode === 'padel' && padelFormat === 'retas';
+            b.classList.toggle('d-none', !isRetas);
+            const yaCorre = !!timerInterval || matchOver;
+            b.disabled = yaCorre;
+            b.classList.toggle('disabled', yaCorre);
+            b.textContent = yaCorre ? 'En juego' : 'Iniciar';
+        }
+
         // El partido de retas tiene tiempo definido
         function isRetaTimed() {
             return mode === 'padel' && padelFormat === 'retas' && retaTimeLimit > 0;
@@ -2381,6 +2404,7 @@
                 badge.classList.add('d-none');
             }
 
+            updateStartButton();
             saveToStorage();
         }
 
@@ -3284,6 +3308,7 @@
             document.getElementById('reta-config-shortcut').classList.toggle('d-none', !isRetas);
             document.getElementById('names-config').classList.toggle('d-none', isRetas);
             document.getElementById('btn-finish-match').classList.toggle('d-none', !isRetas);
+            updateStartButton();
             if (isRetas && nameMode !== 'players') setNameMode('players');
             if (isRetas) {
                 if (!document.getElementById('reta-date').value) document.getElementById('reta-date').value = retaSession ? retaSession.date : todayISO();
@@ -3535,6 +3560,14 @@
             document.getElementById('cfg-name-team2').value = 'Equipo 2';
             playerStats = emptyPlayerStats();
             matchLog = [];
+            // En retas los nombres vienen del roster: hay que soltar tambien las parejas
+            if (mode === 'padel' && padelFormat === 'retas') {
+                RETA_SLOTS.forEach(k => {
+                    const sel = document.getElementById('sel-' + k);
+                    if (sel) { sel.value = ''; sel.dataset.prev = ''; }
+                });
+                assignFromRoster(null);
+            }
             syncNamesToCards();
             saveToStorage();
             render();
