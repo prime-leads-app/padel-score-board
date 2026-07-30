@@ -1186,14 +1186,21 @@
             </div>
 
             <div style="margin:8px 0;">
-                <b style="color:#FFD54F;">7. Que todos jueguen contra todos</b><br>
+                <b style="color:#FFD54F;">7. Rotacion: el que gana se queda, pero separado</b><br>
+                La pareja que gana se mantiene en la cancha y se <b>divide</b>: cada uno pasa a un lado. Los que pierden salen y entran dos de los que esperan, uno con cada ganador.<br>
+                <span style="opacity:0.7;">Ej: ganan Ana y Beto → siguiente partido Ana + Elena contra Beto + Fer.</span><br>
+                Entran primero los que menos partidos llevan. Si solo son cuatro y no hay banca, se cruzan las parejas entre ellos.
+            </div>
+
+            <div style="margin:8px 0;">
+                <b style="color:#FFD54F;">8. Que todos jueguen contra todos</b><br>
                 La app lleva la cuenta de quien ya se enfrento con quien. Al elegir las parejas avisa si ese cruce ya se jugo y te dice quienes faltan por enfrentarse.<br>
                 Con <b>Armar el mejor partido</b> propone la combinacion que estrena mas cruces y reparte los partidos entre quienes menos han jugado.<br>
                 <span style="opacity:0.7;">Es un aviso, no un candado: si quieren repetir, se juega igual.</span>
             </div>
 
             <div style="margin:8px 0;">
-                <b style="color:#FFD54F;">8. Cerrar la reta</b><br>
+                <b style="color:#FFD54F;">9. Cerrar la reta</b><br>
                 Desde <b>Clasificación</b> → <b>Cerrar reta</b>: se guarda la tabla final, los participantes, la fecha y todos los partidos en <b>Retas anteriores</b>, y queda lista una reta nueva.
             </div>
 
@@ -1465,7 +1472,7 @@
     <!-- Aviso de partido repetido -->
     <div class="winner-overlay d-none" id="reta-dup-overlay">
         <div class="winner-card" style="background: linear-gradient(135deg, #b8860b, #2c3e50); max-width:380px;">
-            <h4 class="mb-3">Partido repetido</h4>
+            <h4 class="mb-3">Revisa las parejas</h4>
             <div class="mb-3" style="opacity:0.9; font-size:0.9rem; text-align:left;" id="reta-dup-text"></div>
             <div class="d-flex gap-2 justify-content-center flex-wrap">
                 <button class="btn btn-warning" style="font-weight:700;" onclick="dupUseSuggestion()">Cambiar parejas</button>
@@ -1978,13 +1985,22 @@
             if (mode !== 'padel' || padelFormat !== 'retas' || !retaActive || !retaSession) return false;
             if (retaSession.matches.length === 0) return false;
             const n = currentSlotNames();
-            const a = analyzeMatchup([n.p1a, n.p1b, n.p2a, n.p2b]);
-            if (a.repetidos.length === 0 || a.pendientes.length === 0) return false;
+            const four = [n.p1a, n.p1b, n.p2a, n.p2b];
+            const a = analyzeMatchup(four);
+            const rot = checkRotation(four);
+            const repiteConSalida = a.repetidos.length > 0 && a.pendientes.length > 0;
+            if (!rot && !repiteConSalida) return false;
             const s = suggestMatchup();
-            let txt = a.mismoPartido
-                ? `<b>${esc(n.p1a)} / ${esc(n.p1b)}</b> contra <b>${esc(n.p2a)} / ${esc(n.p2b)}</b> ya se jugó en esta reta, con las mismas parejas.`
-                : `Estos cruces ya se jugaron: ${a.repetidos.map(p => '<b>' + esc(p.join(' vs ')) + '</b>').join(', ')}.`;
-            txt += `<div style="margin-top:8px;">Faltan por enfrentarse: ${a.pendientes.slice(0, 4).map(p => esc(p.join(' vs '))).join(', ')}${a.pendientes.length > 4 ? ` y ${a.pendientes.length - 4} más` : ''}.</div>`;
+            let txt = '';
+            if (rot) {
+                txt += `<div style="margin-bottom:8px;">🔁 ${rot.map(esc).join('<br>🔁 ')}</div>`;
+            }
+            if (repiteConSalida) {
+                txt += a.mismoPartido
+                    ? `<b>${esc(n.p1a)} / ${esc(n.p1b)}</b> contra <b>${esc(n.p2a)} / ${esc(n.p2b)}</b> ya se jugó en esta reta, con las mismas parejas.`
+                    : `Estos cruces ya se jugaron: ${a.repetidos.map(p => '<b>' + esc(p.join(' vs ')) + '</b>').join(', ')}.`;
+                txt += `<div style="margin-top:8px;">Faltan por enfrentarse: ${a.pendientes.slice(0, 4).map(p => esc(p.join(' vs '))).join(', ')}${a.pendientes.length > 4 ? ` y ${a.pendientes.length - 4} más` : ''}.</div>`;
+            }
             if (s) {
                 txt += `<div style="margin-top:8px; color:#ffe082;">Sugerido: <b>${esc(s.t1.join(' / '))}</b> vs <b>${esc(s.t2.join(' / '))}</b></div>`;
             }
@@ -3257,36 +3273,58 @@
             };
         }
 
-        // Mejor combinacion posible: prioriza cruces nuevos, luego parejas nuevas,
-        // y reparte los partidos entre quienes menos han jugado.
-        function suggestMatchup() {
+        function retaLastMatch() {
+            if (!retaSession || !retaSession.matches.length) return null;
+            return retaSession.matches[retaSession.matches.length - 1];
+        }
+
+        // Quien gano y quien perdio el ultimo partido (los que estan en cancha)
+        function retaWinnersLosers() {
+            const m = retaLastMatch();
+            if (!m) return null;
+            return {
+                winners: m.winner === 1 ? m.team1.slice() : m.team2.slice(),
+                losers: m.winner === 1 ? m.team2.slice() : m.team1.slice()
+            };
+        }
+
+        function retaPlayedCount(n) {
+            return (retaSession && retaSession.played[n]) || 0;
+        }
+
+        // Puntua un reparto concreto: cruces nuevos primero, parejas nuevas despues,
+        // y castiga meter a quien ya jugo de mas.
+        function scoreSplit(t1, t2, faced, partnered, minJugados) {
+            let score = 0;
+            t1.forEach(a => t2.forEach(b => {
+                const veces = faced.get(pairKey(a, b)) || 0;
+                score += veces === 0 ? 10 : -4 * veces;
+            }));
+            [t1, t2].forEach(t => {
+                const veces = partnered.get(pairKey(t[0], t[1])) || 0;
+                score += veces === 0 ? 3 : -2 * veces;
+            });
+            [...t1, ...t2].forEach(n => { score -= 2 * (retaPlayedCount(n) - minJugados); });
+            return score;
+        }
+
+        // Primer partido: cualquier combinacion del roster
+        function bestFreeMatchup() {
             const R = retaRoster;
-            if (R.length < 4) return null;
             const { faced, partnered } = retaHistoryPairs();
-            const jugados = n => (retaSession && retaSession.played[n]) || 0;
-            const minJugados = Math.min(...R.map(jugados));
+            const minJugados = Math.min(...R.map(retaPlayedCount));
             let best = null;
             for (let i = 0; i < R.length; i++) {
                 for (let j = i + 1; j < R.length; j++) {
                     for (let k = j + 1; k < R.length; k++) {
                         for (let l = k + 1; l < R.length; l++) {
                             const four = [R[i], R[j], R[k], R[l]];
-                            const splits = [
+                            [
                                 [[four[0], four[1]], [four[2], four[3]]],
                                 [[four[0], four[2]], [four[1], four[3]]],
                                 [[four[0], four[3]], [four[1], four[2]]]
-                            ];
-                            splits.forEach(([t1, t2]) => {
-                                let score = 0;
-                                t1.forEach(a => t2.forEach(b => {
-                                    const veces = faced.get(pairKey(a, b)) || 0;
-                                    score += veces === 0 ? 10 : -4 * veces;
-                                }));
-                                [t1, t2].forEach(t => {
-                                    const veces = partnered.get(pairKey(t[0], t[1])) || 0;
-                                    score += veces === 0 ? 3 : -2 * veces;
-                                });
-                                four.forEach(n => { score -= 2 * (jugados(n) - minJugados); });
+                            ].forEach(([t1, t2]) => {
+                                const score = scoreSplit(t1, t2, faced, partnered, minJugados);
                                 if (!best || score > best.score) best = { t1, t2, score };
                             });
                         }
@@ -3294,6 +3332,70 @@
                 }
             }
             return best;
+        }
+
+        // Rotacion de reta: los ganadores se quedan pero SEPARADOS, uno en cada lado;
+        // los perdedores salen y entran los que menos han jugado de la banca.
+        function suggestMatchup() {
+            const R = retaRoster;
+            if (R.length < 4) return null;
+            const wl = retaWinnersLosers();
+            if (!wl) return bestFreeMatchup();
+            const ganadores = wl.winners.filter(n => R.includes(n));
+            if (ganadores.length < 2) return bestFreeMatchup();  // ya no estan en la lista
+            const [g1, g2] = ganadores;
+            const porTurno = (a, b) => retaPlayedCount(a) - retaPlayedCount(b) || R.indexOf(a) - R.indexOf(b);
+            const perdedores = wl.losers.filter(n => R.includes(n));
+            const banca = R.filter(n => !wl.winners.includes(n) && !wl.losers.includes(n));
+            let entrantes;
+            if (banca.length >= 2) {
+                entrantes = banca.slice().sort(porTurno).slice(0, 2);
+            } else {
+                // No alcanza la banca: completan los perdedores que menos han jugado
+                const relleno = perdedores.slice().sort(porTurno);
+                entrantes = banca.slice().sort(porTurno).concat(relleno).slice(0, 2);
+            }
+            if (entrantes.length < 2) return bestFreeMatchup();
+            const { faced, partnered } = retaHistoryPairs();
+            const minJugados = Math.min(...R.map(retaPlayedCount));
+            const opciones = [
+                [[g1, entrantes[0]], [g2, entrantes[1]]],
+                [[g1, entrantes[1]], [g2, entrantes[0]]]
+            ];
+            let best = null;
+            opciones.forEach(([t1, t2]) => {
+                const score = scoreSplit(t1, t2, faced, partnered, minJugados);
+                if (!best || score > best.score) best = { t1, t2, score, rotacion: true };
+            });
+            return best;
+        }
+
+        // Revisa si la seleccion actual respeta la rotacion de la reta
+        function checkRotation(four) {
+            const wl = retaWinnersLosers();
+            if (!wl) return null;
+            const enCancha = four;
+            const ganadoresDentro = wl.winners.filter(n => enCancha.includes(n));
+            const perdedoresDentro = wl.losers.filter(n => enCancha.includes(n));
+            const banca = retaRoster.filter(n => !wl.winners.includes(n) && !wl.losers.includes(n));
+            const problemas = [];
+            const juntos = (four[0] === wl.winners[0] && four[1] === wl.winners[1]) ||
+                           (four[0] === wl.winners[1] && four[1] === wl.winners[0]) ||
+                           (four[2] === wl.winners[0] && four[3] === wl.winners[1]) ||
+                           (four[2] === wl.winners[1] && four[3] === wl.winners[0]);
+            if (juntos) problemas.push(`${wl.winners.join(' y ')} ganaron: deben separarse, uno de cada lado.`);
+            if (ganadoresDentro.length < 2) {
+                const fuera = wl.winners.filter(n => !enCancha.includes(n));
+                problemas.push(fuera.length > 1
+                    ? `${fuera.join(' y ')} ganaron el partido anterior: se quedan en la cancha.`
+                    : `${fuera[0]} ganó el partido anterior: se queda en la cancha.`);
+            }
+            if (perdedoresDentro.length > 0 && banca.length >= perdedoresDentro.length) {
+                problemas.push(perdedoresDentro.length > 1
+                    ? `${perdedoresDentro.join(' y ')} perdieron y hay gente esperando: les toca salir.`
+                    : `${perdedoresDentro[0]} perdió y hay gente esperando: le toca salir.`);
+            }
+            return problemas.length ? problemas : null;
         }
 
         function applySuggestedMatchup() {
@@ -3324,24 +3426,35 @@
                 return;
             }
             const a = analyzeMatchup(vals);
-            if (a.repetidos.length === 0) {
-                let txt = '<span style="color:#8bc34a;">✓ Los cuatro cruces son nuevos.</span>';
-                if (a.parejasRepetidas.length) {
-                    txt += `<div style="opacity:0.6; margin-top:2px;">Ya habían jugado juntos: ${a.parejasRepetidas.map(p => esc(p.join(' y '))).join(', ')}.</div>`;
-                }
-                box.innerHTML = txt;
-                return;
+            const rot = checkRotation(vals);
+            let html = '';
+            if (rot) {
+                html += `<div style="color:#ffc107; font-weight:600;">🔁 Rotación de la reta</div>`;
+                html += `<div style="opacity:0.85; margin-top:2px;">${rot.map(esc).join('<br>')}</div>`;
             }
-            const grave = a.mismoPartido;
-            let html = `<div style="color:${grave ? '#ff6b6b' : '#ffc107'}; font-weight:600;">` +
-                (grave ? '⚠️ Este partido ya se jugó, con las mismas parejas.' : `⚠️ ${a.repetidos.length} de 4 cruces ya se jugaron: ${a.repetidos.map(p => esc(p.join(' vs '))).join(', ')}.`) +
-                '</div>';
-            if (a.pendientes.length) {
-                const muestra = a.pendientes.slice(0, 4).map(p => esc(p.join(' vs '))).join(', ');
-                html += `<div style="opacity:0.75; margin-top:3px;">Aún no se enfrentan: ${muestra}${a.pendientes.length > 4 ? ` y ${a.pendientes.length - 4} más` : ''}.</div>`;
-                html += '<button class="btn btn-warning btn-sm" style="margin-top:8px; font-weight:700;" onclick="applySuggestedMatchup()">🔀 Armar el mejor partido</button>';
+            if (a.repetidos.length === 0) {
+                html += `<div style="color:#8bc34a; margin-top:${rot ? '6px' : '0'};">✓ Los cuatro cruces son nuevos.</div>`;
+                if (a.parejasRepetidas.length) {
+                    html += `<div style="opacity:0.6; margin-top:2px;">Ya habían jugado juntos: ${a.parejasRepetidas.map(p => esc(p.join(' y '))).join(', ')}.</div>`;
+                }
             } else {
-                html += '<div style="opacity:0.75; margin-top:3px;">Ya se enfrentaron todos contra todos: a partir de aquí toca repetir.</div>';
+                const grave = a.mismoPartido;
+                html += `<div style="color:${grave ? '#ff6b6b' : '#ffc107'}; font-weight:600; margin-top:${rot ? '6px' : '0'};">` +
+                    (grave ? '⚠️ Este partido ya se jugó, con las mismas parejas.' : `⚠️ ${a.repetidos.length} de 4 cruces ya se jugaron: ${a.repetidos.map(p => esc(p.join(' vs '))).join(', ')}.`) +
+                    '</div>';
+                if (a.pendientes.length) {
+                    const muestra = a.pendientes.slice(0, 4).map(p => esc(p.join(' vs '))).join(', ');
+                    html += `<div style="opacity:0.75; margin-top:3px;">Aún no se enfrentan: ${muestra}${a.pendientes.length > 4 ? ` y ${a.pendientes.length - 4} más` : ''}.</div>`;
+                } else {
+                    html += '<div style="opacity:0.75; margin-top:3px;">Ya se enfrentaron todos contra todos: a partir de aquí toca repetir.</div>';
+                }
+            }
+            if (rot || (a.repetidos.length && a.pendientes.length)) {
+                const s = suggestMatchup();
+                if (s) {
+                    html += `<div style="opacity:0.8; margin-top:6px;">Sugerido: <b>${esc(s.t1.join(' / '))}</b> vs <b>${esc(s.t2.join(' / '))}</b></div>`;
+                }
+                html += '<button class="btn btn-warning btn-sm" style="margin-top:8px; font-weight:700;" onclick="applySuggestedMatchup()">🔀 Armar el mejor partido</button>';
             }
             box.innerHTML = html;
         }

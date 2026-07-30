@@ -41,6 +41,8 @@ Formato informal popular en México. Una reta es una **jornada con varios partid
 
 **Clasificación individual:** solo suma la pareja que gana, y cada uno de los dos ganadores suma los juegos que ganó su equipo (ganan 6-2 → 6 pts a cada ganador). Si el partido se definió con juegos empatados, cuentan los juegos completos. Los puntos de la tabla se pueden **editar a mano** desde la clasificación.
 
+**Rotación de la reta:** la pareja que gana se queda en la cancha pero **se separa**, uno de cada lado; los que pierden salen y entran dos de los que esperan, uno como compañero de cada ganador. Entran primero los que menos partidos llevan jugados. Con solo cuatro participantes (sin banca) se cruzan las parejas entre ellos. La app propone la rotación correcta y avisa si las parejas elegidas no la respetan.
+
 **Todos contra todos:** la app registra quién se ha enfrentado con quién. Al elegir las parejas avisa si el cruce ya se jugó, muestra quiénes faltan por enfrentarse y con **Armar el mejor partido** propone la combinación que estrena más cruces y reparte los partidos entre quienes menos han jugado. Es un aviso, no un candado.
 
 **Cronómetro a prueba de refrescos:** se guarda la hora exacta de arranque del partido, así que si cierras la app o recargas la página, la cuenta regresiva continúa donde iba. Si el tiempo se agotó mientras estaba cerrada, al volver se aplica la regla de fin de tiempo.
