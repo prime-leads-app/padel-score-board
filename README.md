@@ -18,14 +18,30 @@ Formato oficial de pádel con sets, juegos y puntos.
 
 ### Padel (Retas)
 
-Formato informal popular en México. Se juega un número fijo de juegos sin sets.
+Formato informal popular en México. Una reta es una **jornada con varios partidos** entre 6, 7 o los jugadores que sean, que van rotando de pareja. No hay número definido de partidos: se juegan los que dé el tiempo.
 
-- **Juegos fijos:** 4, 6 u 8 (configurable)
+**Cada partido:**
+
+- **Juegos:** 4, 6, 8 o **∞** (sin tope; define el tiempo o el botón Fin partido)
+- **Tiempo por partido:** 15, 20, 30 min, el valor que escribas, o ∞ para jugar sin reloj. El cronómetro va en cuenta regresiva y suena una alarma al llegar a cero
 - **Puntos:** Igual que pádel oficial (0 → 15 → 30 → 40)
 - **Desempate:** Si empatan (ej: 3-3 en reta de 6), se juega un juego extra
 - **Fin del partido:**
   - **Todos:** Se juegan todos los juegos, gana quien tenga más al final
   - **Anticipado:** Termina cuando un equipo tiene mayoría matemática
+
+**Cuando se acaba el tiempo:**
+
+- Si un equipo va arriba en juegos, gana ahí mismo aunque el juego en curso quede a medias
+- Si van empatados en juegos, el juego en curso se sigue jugando y quien lo gane, gana el partido
+
+**Botón Fin partido:** corta el partido en cualquier momento. Gana quien vaya arriba en juegos; si van iguales, gana quien lleve más puntos en el juego en disputa. Si van iguales en juegos y en puntos, la app avisa y no cierra.
+
+**Participantes y parejas:** capturas la lista de jugadores de la reta (se guarda en el dispositivo para la próxima) y antes de cada partido eliges de listas desplegables quiénes forman cada equipo. Un jugador no puede estar en dos lugares a la vez.
+
+**Clasificación individual:** solo suma la pareja que gana, y cada uno de los dos ganadores suma los juegos que ganó su equipo (ganan 6-2 → 6 pts a cada ganador). Si el partido se definió con juegos empatados, cuentan los juegos completos. Los puntos de la tabla se pueden **editar a mano** desde la clasificación.
+
+**Cerrar la reta:** guarda la tabla final, participantes, fecha, hora de inicio y todos los partidos en **Retas anteriores**.
 
 ### Libre
 
@@ -42,7 +58,8 @@ Modo libre para cualquier actividad. Cada toque suma 1 punto.
 - **Vibración:** Feedback háptico al anotar punto (en dispositivos compatibles)
 - **Temporizador:** Cuenta el tiempo del partido desde el primer punto hasta que termina
 - **Compartir resultado:** Botón para compartir el resultado final (Web Share API o copiar al portapapeles)
-- **Estadísticas individuales:** Al tocar el nombre de un jugador, se le atribuye el punto. Luego se puede registrar el tipo de golpe (Volea, Bandeja, Globo, Smash, Remate, Otro)
+- **Estadísticas individuales:** Al tocar el nombre de un jugador, se le atribuye el punto. Luego se puede registrar el tipo de golpe (Volea, Bandeja, Globo, Smash, Remate, Otro). En retas también se acumulan a lo largo de toda la jornada
+- **Retas:** Roster de participantes, selección de parejas por partido, cronómetro con tiempo definido, tabla de clasificación individual editable e historial de retas anteriores
 - **Historial de puntos:** Registro de todos los puntos con hora, separado por modo
 - **Historial de partidos:** Registro de partidos terminados con fecha, resultado, duración, estadísticas individuales y detalle punto a punto con jugador y tipo de golpe
 - **Tema claro/oscuro:** Toggle desde el menú para uso al aire libre
@@ -60,6 +77,8 @@ Toda la app se controla desde el menú hamburguesa (icono ☰) en la parte super
 - **Configuración** - Muestra/oculta todas las opciones de juego (modo, nombres, formato, etc.)
 - **Ayuda opciones** - Explica qué significa cada opción de configuración
 - **Cómo jugar pádel/retas/libre** - Reglas y ejemplos de cada modo
+- **Clasificación reta** - Tabla de la reta en curso, sus partidos y cierre de la jornada
+- **Retas anteriores** - Historial de retas cerradas con tabla final y participantes
 - **Partidos** - Historial de partidos terminados
 - **Historial** - Registro de puntos anotados
 - **Tema claro/oscuro** - Alterna entre modo oscuro y claro
@@ -75,8 +94,10 @@ Accesible desde el menú hamburguesa > Configuración:
 | Formato | Normal / Retas | Formato de partido (solo Padel) |
 | Sets | 1, 2, 3 | Sets para ganar (solo Normal) |
 | Juegos | 6, 4 | Juegos por set (solo Normal) |
-| Juegos | 4, 6, 8 | Juegos fijos (solo Retas) |
+| Juegos | 4, 6, 8, ∞ | Juegos por partido, ∞ = sin tope (solo Retas) |
+| Tiempo | 15, 20, 30, otro, ∞ | Minutos por partido, ∞ = sin reloj (solo Retas) |
 | Fin | Todos / Anticipado | Jugar todos los juegos o terminar con mayoría (solo Retas) |
+| Participantes | Lista de nombres | Roster de la reta y parejas de cada partido (solo Retas) |
 | Puntos | 5, 10, 15, 20, 25, 30 | Puntos para ganar (solo Libre) |
 | 40-40 | Oro / 1 Ventaja / 2 Ventajas | Qué pasa en empate a 40 |
 
