@@ -1377,28 +1377,23 @@
             <div id="reta-status" style="font-size:0.78rem; color:#aaa; margin-bottom:14px;"></div>
 
             <div style="overflow-y:auto; flex:1;">
-                <!-- 1. Jornada -->
-                <div class="reta-section">
-                    <div class="reta-section-title">Jornada</div>
-                    <div style="display:flex; gap:10px; align-items:center;">
-                        <div style="flex:1; min-width:0; display:flex; align-items:center; gap:6px;">
-                            <small class="cfg-label" style="margin:0; white-space:nowrap;">Fecha</small>
-                            <input type="date" class="reta-compact-input" id="reta-date" onchange="saveRetaMeta()">
-                        </div>
-                        <div style="flex:0 0 auto; display:flex; align-items:center; gap:6px;">
-                            <small class="cfg-label" style="margin:0; white-space:nowrap;">Inicio</small>
-                            <input type="time" class="reta-compact-input" id="reta-time" onchange="saveRetaMeta()" style="width:auto;">
-                        </div>
+                <!-- 1. Jornada: en una linea; la fecha solo se edita si hace falta -->
+                <div class="reta-section" style="padding:10px 12px;">
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <small class="cfg-label" style="margin:0; white-space:nowrap;">Tiempo</small>
+                        <button class="btn btn-outline-light cfg-sq-btn" onclick="setRetaTime(15)" id="rt-15">15</button>
+                        <button class="btn btn-outline-light cfg-sq-btn active" onclick="setRetaTime(20)" id="rt-20">20</button>
+                        <button class="btn btn-outline-light cfg-sq-btn" onclick="setRetaTime(30)" id="rt-30">30</button>
+                        <button class="btn btn-outline-light cfg-sq-btn" onclick="setRetaTime(0)" id="rt-0" title="Sin tiempo">∞</button>
+                        <input type="number" class="reta-num-input" id="rt-custom" min="1" max="180" placeholder="otro" onchange="setRetaTimeCustom(this.value)">
                     </div>
-                    <div style="margin-top:12px;">
-                        <small class="cfg-label">Tiempo por partido (min)</small>
-                        <div style="display:flex; gap:6px; align-items:center;">
-                            <button class="btn btn-outline-light cfg-sq-btn" onclick="setRetaTime(15)" id="rt-15">15</button>
-                            <button class="btn btn-outline-light cfg-sq-btn active" onclick="setRetaTime(20)" id="rt-20">20</button>
-                            <button class="btn btn-outline-light cfg-sq-btn" onclick="setRetaTime(30)" id="rt-30">30</button>
-                            <button class="btn btn-outline-light cfg-sq-btn" onclick="setRetaTime(0)" id="rt-0" title="Sin tiempo">∞</button>
-                            <input type="number" class="reta-num-input" id="rt-custom" min="1" max="180" placeholder="otro" onchange="setRetaTimeCustom(this.value)">
-                        </div>
+                    <div style="margin-top:8px; font-size:0.74rem; color:#9fb3c8; display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+                        <span>📅 <span id="reta-date-label"></span> · inicio <span id="reta-time-label"></span></span>
+                        <button onclick="toggleRetaDateEdit()" style="background:none; border:none; color:#7ec8e3; text-decoration:underline; font-size:0.74rem; padding:0; cursor:pointer;">cambiar</button>
+                    </div>
+                    <div id="reta-date-edit" class="d-none" style="gap:8px; margin-top:8px;">
+                        <input type="date" class="reta-compact-input" id="reta-date" onchange="saveRetaMeta()">
+                        <input type="time" class="reta-compact-input" id="reta-time" onchange="saveRetaMeta()">
                     </div>
                 </div>
 
@@ -3158,6 +3153,7 @@
             if (!document.getElementById('reta-time').value) document.getElementById('reta-time').value = retaSession ? retaSession.time : nowHM();
             renderRoster();
             updateRetaTimeButtons();
+            updateRetaDateLabels();
             renderMatchupHint();
             document.getElementById('reta-modal').classList.remove('d-none');
         }
@@ -3172,7 +3168,22 @@
                 retaSession.time = document.getElementById('reta-time').value || retaSession.time;
                 updateRetaStatus();
             }
+            updateRetaDateLabels();
             saveRetaState();
+        }
+
+        function updateRetaDateLabels() {
+            const d = document.getElementById('reta-date'), t = document.getElementById('reta-time');
+            const dl = document.getElementById('reta-date-label'), tl = document.getElementById('reta-time-label');
+            if (dl) dl.textContent = fmtRetaDate(d && d.value ? d.value : todayISO());
+            if (tl) tl.textContent = (t && t.value) || nowHM();
+        }
+
+        function toggleRetaDateEdit() {
+            const box = document.getElementById('reta-date-edit');
+            const oculto = box.classList.contains('d-none');
+            box.classList.toggle('d-none', !oculto);
+            box.style.display = oculto ? 'flex' : '';
         }
 
         // ── Sesión de reta ──
