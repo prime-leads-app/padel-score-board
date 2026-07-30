@@ -615,15 +615,25 @@
             max-width: 130px;
         }
 
-        /* En retas la barra llega a 6 botones: se aprieta para que quepan sin partir el texto */
+        /* La barra muestra solo los botones utiles en cada momento (max 5) */
         @media (max-width: 480px) {
-            .controls-bar { gap: 4px; }
+            .controls-bar { gap: 6px; }
             .controls-bar .btn {
-                font-size: 0.7rem;
-                padding-left: 1px;
-                padding-right: 1px;
+                font-size: 0.75rem;
+                padding-left: 2px;
+                padding-right: 2px;
                 white-space: nowrap;
             }
+        }
+
+        /* Recordatorio de que el partido no ha arrancado */
+        @keyframes startPulse {
+            0%, 100% { opacity: 1; box-shadow: 0 0 0 rgba(25, 135, 84, 0); }
+            50% { opacity: 0.75; box-shadow: 0 0 14px rgba(25, 135, 84, 0.85); }
+        }
+        #btn-start-match.pulsing { animation: startPulse 1.7s ease-in-out infinite; }
+        @media (prefers-reduced-motion: reduce) {
+            #btn-start-match.pulsing { animation: none; }
         }
 
         /* ── History ── */
@@ -1260,7 +1270,7 @@
         <div class="controls-bar">
             <button class="btn btn-success btn-sm d-none" id="btn-start-match" onclick="startMatchNow()" title="Iniciar el partido y el cronometro">Iniciar</button>
             <button class="btn btn-outline-info btn-sm" onclick="toggleServe()">Saque</button>
-            <button class="btn btn-outline-warning btn-sm" onclick="confirmUndo()">Deshacer</button>
+            <button class="btn btn-outline-warning btn-sm d-none" id="btn-undo" onclick="confirmUndo()">Deshacer</button>
             <button class="btn btn-outline-danger btn-sm" onclick="confirmReset()">Reiniciar</button>
             <button class="btn btn-outline-secondary btn-sm" id="btn-clear-all" onclick="confirmClear()">Limpiar</button>
             <button class="btn btn-outline-success btn-sm d-none" id="btn-finish-match" onclick="finishRetaMatchManual()" title="Finalizar el partido">Fin</button>
@@ -1871,19 +1881,28 @@
             if (matchOver || timerInterval) return;
             startTimer();
             addHistory(isRetaTimed() ? `Partido iniciado - ${retaTimeLimit} min` : 'Partido iniciado');
-            updateStartButton();
+            updateControlsBar();
         }
 
-        // En retas siempre esta a la vista; se deshabilita cuando el partido ya corre
-        function updateStartButton() {
-            const b = document.getElementById('btn-start-match');
-            if (!b) return;
+        function matchStarted() {
+            return !!timerInterval || hasScore();
+        }
+
+        // Cada boton aparece solo cuando sirve, asi los visibles quedan mas anchos:
+        // Iniciar antes de arrancar, Deshacer con puntos anotados, Fin con partido en curso.
+        function updateControlsBar() {
             const isRetas = mode === 'padel' && padelFormat === 'retas';
-            b.classList.toggle('d-none', !isRetas);
-            const yaCorre = !!timerInterval || matchOver;
-            b.disabled = yaCorre;
-            b.classList.toggle('disabled', yaCorre);
-            b.textContent = yaCorre ? 'En juego' : 'Iniciar';
+            const arrancado = matchStarted();
+            const start = document.getElementById('btn-start-match');
+            const undo = document.getElementById('btn-undo');
+            const finish = document.getElementById('btn-finish-match');
+            if (start) {
+                const mostrar = isRetas && !arrancado && !matchOver;
+                start.classList.toggle('d-none', !mostrar);
+                start.classList.toggle('pulsing', mostrar);
+            }
+            if (undo) undo.classList.toggle('d-none', history.length === 0);
+            if (finish) finish.classList.toggle('d-none', !(isRetas && arrancado && !matchOver));
         }
 
         // El partido de retas tiene tiempo definido
@@ -2404,7 +2423,7 @@
                 badge.classList.add('d-none');
             }
 
-            updateStartButton();
+            updateControlsBar();
             saveToStorage();
         }
 
@@ -3307,8 +3326,7 @@
             const isRetas = mode === 'padel' && padelFormat === 'retas';
             document.getElementById('reta-config-shortcut').classList.toggle('d-none', !isRetas);
             document.getElementById('names-config').classList.toggle('d-none', isRetas);
-            document.getElementById('btn-finish-match').classList.toggle('d-none', !isRetas);
-            updateStartButton();
+            updateControlsBar();
             if (isRetas && nameMode !== 'players') setNameMode('players');
             if (isRetas) {
                 if (!document.getElementById('reta-date').value) document.getElementById('reta-date').value = retaSession ? retaSession.date : todayISO();
