@@ -1214,7 +1214,8 @@
                         <button class="btn btn-warning btn-sm d-none" id="winner-next-p1" onclick="event.stopPropagation(); nextRetaMatch();" style="font-weight:700;">Siguiente partido</button>
                         <button class="btn btn-light btn-sm" id="winner-new-p1" onclick="event.stopPropagation(); confirmReset();" style="font-weight:700;">Nuevo Partido</button>
                         <button class="btn btn-outline-light btn-sm" onclick="event.stopPropagation(); shareResult();" style="font-weight:700;">Compartir</button>
-                        <button class="btn btn-outline-light btn-sm" onclick="event.stopPropagation(); showCurrentMatchStats();" style="font-weight:700;">📊 Estadísticas</button>
+                        <button class="btn btn-outline-light btn-sm" id="winner-stats-p1" onclick="event.stopPropagation(); showCurrentMatchStats();" style="font-weight:700;">📊 Estadísticas</button>
+                        <button class="btn btn-outline-light btn-sm d-none" id="winner-standings-p1" onclick="event.stopPropagation(); showRetaStandings();" style="font-weight:700;">🏆 Clasificación</button>
                     </div>
                 </div>
                 <div class="card-header-row" id="players-row-p1" style="gap:4px;">
@@ -1242,7 +1243,8 @@
                         <button class="btn btn-warning btn-sm d-none" id="winner-next-p2" onclick="event.stopPropagation(); nextRetaMatch();" style="font-weight:700;">Siguiente partido</button>
                         <button class="btn btn-light btn-sm" id="winner-new-p2" onclick="event.stopPropagation(); confirmReset();" style="font-weight:700;">Nuevo Partido</button>
                         <button class="btn btn-outline-light btn-sm" onclick="event.stopPropagation(); shareResult();" style="font-weight:700;">Compartir</button>
-                        <button class="btn btn-outline-light btn-sm" onclick="event.stopPropagation(); showCurrentMatchStats();" style="font-weight:700;">📊 Estadísticas</button>
+                        <button class="btn btn-outline-light btn-sm" id="winner-stats-p2" onclick="event.stopPropagation(); showCurrentMatchStats();" style="font-weight:700;">📊 Estadísticas</button>
+                        <button class="btn btn-outline-light btn-sm d-none" id="winner-standings-p2" onclick="event.stopPropagation(); showRetaStandings();" style="font-weight:700;">🏆 Clasificación</button>
                     </div>
                 </div>
                 <div class="card-header-row" id="players-row-p2" style="gap:4px;">
@@ -1892,6 +1894,7 @@
         // Arranca el partido sin esperar al primer punto: el reloj empieza a correr ya
         function startMatchNow() {
             if (matchOver || timerInterval) return;
+            ensureRetaStarted();
             startTimer();
             addHistory(isRetaTimed() ? `Partido iniciado - ${retaTimeLimit} min` : 'Partido iniciado');
             updateControlsBar();
@@ -2176,6 +2179,7 @@
         function addPoint(player) {
             if (matchOver) return;
             if (navigator.vibrate) navigator.vibrate(50);
+            ensureRetaStarted();
             startTimer();
             saveState();
             const prevGames = games[0] + games[1];
@@ -2744,10 +2748,13 @@
             document.getElementById('winner-text-p' + p).textContent = `${getName(p)} gana!`;
             document.getElementById('winner-score-p' + p).textContent = scoreText;
             document.getElementById('winner-badge-p' + p).classList.add('show');
-            // En reta, el botón principal lleva al siguiente partido
+            // En reta, el botón principal lleva al siguiente partido y se ve la clasificación
+            const enReta = retaActive && padelFormat === 'retas' && mode === 'padel';
             [1, 2].forEach(i => {
-                document.getElementById('winner-next-p' + i).classList.toggle('d-none', !retaActive || padelFormat !== 'retas');
-                document.getElementById('winner-new-p' + i).classList.toggle('d-none', retaActive && padelFormat === 'retas');
+                document.getElementById('winner-next-p' + i).classList.toggle('d-none', !enReta);
+                document.getElementById('winner-new-p' + i).classList.toggle('d-none', enReta);
+                document.getElementById('winner-standings-p' + i).classList.toggle('d-none', !enReta);
+                document.getElementById('winner-stats-p' + i).classList.toggle('d-none', enReta);
             });
             // Un partido se guarda una sola vez, aunque showWinner se llame de nuevo
             if (!_matchSaved) {
@@ -3033,6 +3040,33 @@
             retaActive = true;
             saveRetaState();
             updateRetaUI();
+        }
+
+        // Si se empieza a jugar en formato retas sin reta abierta, se abre sola:
+        // asi ningun partido se queda fuera de la clasificacion.
+        function ensureRetaStarted() {
+            if (mode !== 'padel' || padelFormat !== 'retas' || retaActive) return;
+            const names = currentSlotNames();
+            if (retaRoster.length === 0) {
+                RETA_SLOTS.forEach(k => {
+                    if (!retaRoster.includes(names[k])) retaRoster.push(names[k]);
+                });
+                renderRoster();
+                RETA_SLOTS.forEach(k => {
+                    const sel = document.getElementById('sel-' + k);
+                    if (sel) { sel.value = names[k]; sel.dataset.prev = names[k]; }
+                });
+            }
+            retaSession = emptyRetaSession();
+            const dEl = document.getElementById('reta-date'), tEl = document.getElementById('reta-time');
+            retaSession.date = (dEl && dEl.value) || todayISO();
+            retaSession.time = (tEl && tEl.value) || nowHM();
+            retaRoster.forEach(ensureRetaPlayer);
+            RETA_SLOTS.forEach(k => ensureRetaPlayer(names[k]));
+            retaActive = true;
+            saveRetaState();
+            updateRetaUI();
+            addHistory('Reta iniciada');
         }
 
         function confirmCloseReta() {
