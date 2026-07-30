@@ -1986,6 +1986,22 @@
             if (retaSession.matches.length === 0) return false;
             const n = currentSlotNames();
             const four = [n.p1a, n.p1b, n.p2a, n.p2b];
+            // Lugares sin elegir: no se puede arrancar con "Jugador 2" en la tabla
+            const vacios = RETA_SLOTS.filter(k => {
+                const sel = document.getElementById('sel-' + k);
+                return sel && !sel.value;
+            });
+            if (vacios.length) {
+                const p = suggestEntrants();
+                let txt = `<div>Faltan jugadores por elegir en la cancha.</div>`;
+                if (p) {
+                    const lado = { p1a: 'equipo 1', p1b: 'equipo 1', p2a: 'equipo 2', p2b: 'equipo 2' };
+                    txt += `<div style="margin-top:8px; color:#ffe082;">Sugerido: ${Object.entries(p).map(([k, v]) => `<b>${esc(v)}</b> al ${lado[k]}`).join(' y ')}</div>`;
+                }
+                document.getElementById('reta-dup-text').innerHTML = txt;
+                document.getElementById('reta-dup-overlay').classList.remove('d-none');
+                return true;
+            }
             const a = analyzeMatchup(four);
             const rot = checkRotation(four);
             const repiteConSalida = a.repetidos.length > 0 && a.pendientes.length > 0;
@@ -2018,7 +2034,13 @@
         function dupUseSuggestion() {
             _dupWarned = false;
             document.getElementById('reta-dup-overlay').classList.add('d-none');
-            applySuggestedMatchup();
+            const hayHuecos = RETA_SLOTS.some(k => {
+                const sel = document.getElementById('sel-' + k);
+                return sel && !sel.value;
+            });
+            // Con lugares libres solo se rellenan; si estan los cuatro, se rearma el partido
+            if (hayHuecos) applySuggestedEntrants();
+            else applySuggestedMatchup();
             showRetaModal();
         }
 
@@ -3418,7 +3440,15 @@
                 return sel ? sel.value : '';
             });
             if (vals.some(v => !v)) {
-                box.innerHTML = '<span style="opacity:0.55;">Elige los cuatro jugadores para revisar los cruces.</span>';
+                const p = suggestEntrants();
+                if (p) {
+                    const nombres = { p1a: 'equipo 1', p1b: 'equipo 1', p2a: 'equipo 2', p2b: 'equipo 2' };
+                    const detalle = Object.entries(p).map(([k, v]) => `<b>${esc(v)}</b> al ${nombres[k]}`).join(' y ');
+                    box.innerHTML = `<div style="color:#7ec8e3;">${Object.keys(p).length === 1 ? 'Falta un jugador' : 'Faltan dos jugadores'}. Por turnos y cruces pendientes entra ${detalle}.</div>` +
+                        '<button class="btn btn-warning btn-sm" style="margin-top:8px; font-weight:700;" onclick="applySuggestedEntrants()">Poner a los sugeridos</button>';
+                } else {
+                    box.innerHTML = '<span style="opacity:0.55;">Elige los cuatro jugadores para revisar los cruces.</span>';
+                }
                 return;
             }
             if (!retaSession || retaSession.matches.length === 0) {
@@ -3572,10 +3602,71 @@
             updateRetaStatus();
         }
 
-        // Siguiente partido de la reta: limpia el marcador y pide las parejas
+        // Siguiente partido de la reta: limpia el marcador, coloca a los ganadores
+        // separados y deja libres los dos lugares que hay que elegir.
         function nextRetaMatch() {
             resetMatch();
+            prepareNextLineup();
             showRetaModal();
+        }
+
+        function setSelValue(id, valor) {
+            const sel = document.getElementById(id);
+            if (!sel) return;
+            sel.value = valor;
+            sel.dataset.prev = valor;
+        }
+
+        function prepareNextLineup() {
+            const wl = retaWinnersLosers();
+            if (!wl) return;
+            const ganadores = wl.winners.filter(n => retaRoster.includes(n));
+            if (ganadores.length < 2) return;
+            setSelValue('sel-p1a', ganadores[0]);
+            setSelValue('sel-p1b', '');
+            setSelValue('sel-p2a', ganadores[1]);
+            setSelValue('sel-p2b', '');
+            assignFromRoster(null);
+        }
+
+        // Con los ganadores ya puestos, propone quien entra en cada hueco
+        function suggestEntrants() {
+            const vals = RETA_SLOTS.map(k => {
+                const sel = document.getElementById('sel-' + k);
+                return sel ? sel.value : '';
+            });
+            const ocupados = vals.filter(Boolean);
+            const huecos = RETA_SLOTS.filter((k, i) => !vals[i]);
+            if (huecos.length === 0 || ocupados.length === 0) return null;
+            const wl = retaWinnersLosers();
+            const disponibles = retaRoster.filter(n => !ocupados.includes(n));
+            if (disponibles.length < huecos.length) return null;
+            const porTurno = (a, b) => retaPlayedCount(a) - retaPlayedCount(b) || retaRoster.indexOf(a) - retaRoster.indexOf(b);
+            // La banca tiene preferencia sobre quien acaba de jugar
+            const banca = wl ? disponibles.filter(n => !wl.winners.includes(n) && !wl.losers.includes(n)) : disponibles;
+            const resto = disponibles.filter(n => !banca.includes(n));
+            const candidatos = banca.slice().sort(porTurno).concat(resto.slice().sort(porTurno));
+            const { faced, partnered } = retaHistoryPairs();
+            const minJugados = Math.min(...retaRoster.map(retaPlayedCount));
+            const elegidos = candidatos.slice(0, huecos.length);
+            // Con dos huecos, se prueba cual va de cada lado
+            let best = null;
+            const permutaciones = elegidos.length === 2 ? [elegidos, [elegidos[1], elegidos[0]]] : [elegidos];
+            permutaciones.forEach(perm => {
+                const propuesta = {};
+                huecos.forEach((k, i) => propuesta[k] = perm[i]);
+                const full = RETA_SLOTS.map((k, i) => propuesta[k] || vals[i]);
+                const score = scoreSplit([full[0], full[1]], [full[2], full[3]], faced, partnered, minJugados);
+                if (!best || score > best.score) best = { propuesta, score };
+            });
+            return best ? best.propuesta : null;
+        }
+
+        function applySuggestedEntrants() {
+            const p = suggestEntrants();
+            if (!p) return;
+            Object.entries(p).forEach(([k, v]) => setSelValue('sel-' + k, v));
+            assignFromRoster(null);
         }
 
         // ── Clasificación ──
