@@ -112,6 +112,17 @@
             display: flex;
         }
 
+        /* Los tres botones deben caber en una fila incluso en la tarjeta que saca,
+           que pierde 6px de ancho por el borde amarillo */
+        .winner-badge .btn {
+            font-size: 0.78rem;
+            padding: 6px 10px;
+            white-space: nowrap;
+        }
+        @media (max-width: 400px) {
+            .winner-badge .btn { font-size: 0.72rem; padding: 6px 7px; }
+        }
+
         .score-card.serving {
             border: 3px solid #ffc107;
         }
@@ -1175,7 +1186,14 @@
             </div>
 
             <div style="margin:8px 0;">
-                <b style="color:#FFD54F;">7. Cerrar la reta</b><br>
+                <b style="color:#FFD54F;">7. Que todos jueguen contra todos</b><br>
+                La app lleva la cuenta de quien ya se enfrento con quien. Al elegir las parejas avisa si ese cruce ya se jugo y te dice quienes faltan por enfrentarse.<br>
+                Con <b>Armar el mejor partido</b> propone la combinacion que estrena mas cruces y reparte los partidos entre quienes menos han jugado.<br>
+                <span style="opacity:0.7;">Es un aviso, no un candado: si quieren repetir, se juega igual.</span>
+            </div>
+
+            <div style="margin:8px 0;">
+                <b style="color:#FFD54F;">8. Cerrar la reta</b><br>
                 Desde <b>Clasificación</b> → <b>Cerrar reta</b>: se guarda la tabla final, los participantes, la fecha y todos los partidos en <b>Retas anteriores</b>, y queda lista una reta nueva.
             </div>
 
@@ -1211,11 +1229,11 @@
                     <h3 style="margin:8px 0; font-weight:900; text-shadow:2px 2px 4px rgba(0,0,0,0.3);" id="winner-text-p1"></h3>
                     <p style="font-size:1rem; opacity:0.9; margin-bottom:10px;" id="winner-score-p1"></p>
                     <div style="display:flex; gap:8px; justify-content:center; flex-wrap:wrap;">
-                        <button class="btn btn-warning btn-sm d-none" id="winner-next-p1" onclick="event.stopPropagation(); nextRetaMatch();" style="font-weight:700;">Siguiente partido</button>
+                        <button class="btn btn-warning btn-sm d-none" id="winner-next-p1" onclick="event.stopPropagation(); nextRetaMatch();" style="font-weight:700;">Siguiente</button>
                         <button class="btn btn-light btn-sm" id="winner-new-p1" onclick="event.stopPropagation(); confirmReset();" style="font-weight:700;">Nuevo Partido</button>
                         <button class="btn btn-outline-light btn-sm" onclick="event.stopPropagation(); shareResult();" style="font-weight:700;">Compartir</button>
                         <button class="btn btn-outline-light btn-sm" id="winner-stats-p1" onclick="event.stopPropagation(); showCurrentMatchStats();" style="font-weight:700;">📊 Estadísticas</button>
-                        <button class="btn btn-outline-light btn-sm d-none" id="winner-standings-p1" onclick="event.stopPropagation(); showRetaStandings();" style="font-weight:700;">🏆 Clasificación</button>
+                        <button class="btn btn-outline-light btn-sm d-none" id="winner-standings-p1" onclick="event.stopPropagation(); showRetaStandings();" style="font-weight:700;">Clasificación</button>
                     </div>
                 </div>
                 <div class="card-header-row" id="players-row-p1" style="gap:4px;">
@@ -1240,11 +1258,11 @@
                     <h3 style="margin:8px 0; font-weight:900; text-shadow:2px 2px 4px rgba(0,0,0,0.3);" id="winner-text-p2"></h3>
                     <p style="font-size:1rem; opacity:0.9; margin-bottom:10px;" id="winner-score-p2"></p>
                     <div style="display:flex; gap:8px; justify-content:center; flex-wrap:wrap;">
-                        <button class="btn btn-warning btn-sm d-none" id="winner-next-p2" onclick="event.stopPropagation(); nextRetaMatch();" style="font-weight:700;">Siguiente partido</button>
+                        <button class="btn btn-warning btn-sm d-none" id="winner-next-p2" onclick="event.stopPropagation(); nextRetaMatch();" style="font-weight:700;">Siguiente</button>
                         <button class="btn btn-light btn-sm" id="winner-new-p2" onclick="event.stopPropagation(); confirmReset();" style="font-weight:700;">Nuevo Partido</button>
                         <button class="btn btn-outline-light btn-sm" onclick="event.stopPropagation(); shareResult();" style="font-weight:700;">Compartir</button>
                         <button class="btn btn-outline-light btn-sm" id="winner-stats-p2" onclick="event.stopPropagation(); showCurrentMatchStats();" style="font-weight:700;">📊 Estadísticas</button>
-                        <button class="btn btn-outline-light btn-sm d-none" id="winner-standings-p2" onclick="event.stopPropagation(); showRetaStandings();" style="font-weight:700;">🏆 Clasificación</button>
+                        <button class="btn btn-outline-light btn-sm d-none" id="winner-standings-p2" onclick="event.stopPropagation(); showRetaStandings();" style="font-weight:700;">Clasificación</button>
                     </div>
                 </div>
                 <div class="card-header-row" id="players-row-p2" style="gap:4px;">
@@ -1405,6 +1423,7 @@
                             <select class="reta-select" id="sel-p2b" onchange="assignFromRoster(this)"></select>
                         </div>
                     </div>
+                    <div id="reta-matchup-hint" style="font-size:0.78rem; margin-top:10px; line-height:1.35;"></div>
                 </div>
             </div>
 
@@ -1423,9 +1442,10 @@
             <div id="reta-standings-meta" style="font-size:0.75rem; color:#aaa; margin-bottom:8px;"></div>
             <div style="overflow-y:auto; flex:1; text-align:left;" id="reta-standings-content"></div>
             <div style="display:flex; gap:8px; justify-content:center; margin-top:12px; flex-wrap:wrap;">
-                <button class="btn btn-outline-light btn-sm" onclick="closeRetaStandings()">Cerrar</button>
+                <button class="btn btn-outline-warning btn-sm" id="btn-goto-matches" onclick="scrollToRetaMatches()">📋 Partidos</button>
                 <button class="btn btn-outline-info btn-sm" onclick="shareRetaStandings()">Compartir</button>
                 <button class="btn btn-outline-danger btn-sm" id="btn-close-reta" onclick="confirmCloseReta()">Cerrar reta</button>
+                <button class="btn btn-outline-light btn-sm" onclick="closeRetaStandings()">Cerrar</button>
             </div>
         </div>
     </div>
@@ -1438,6 +1458,18 @@
             <div style="display:flex; gap:8px; justify-content:center; margin-top:12px;">
                 <button class="btn btn-outline-light btn-sm" onclick="closeRetasHistoryModal()">Cerrar</button>
                 <button class="btn btn-outline-danger btn-sm" onclick="confirmClearRetas()">Borrar todo</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Aviso de partido repetido -->
+    <div class="winner-overlay d-none" id="reta-dup-overlay">
+        <div class="winner-card" style="background: linear-gradient(135deg, #b8860b, #2c3e50); max-width:380px;">
+            <h4 class="mb-3">Partido repetido</h4>
+            <div class="mb-3" style="opacity:0.9; font-size:0.9rem; text-align:left;" id="reta-dup-text"></div>
+            <div class="d-flex gap-2 justify-content-center flex-wrap">
+                <button class="btn btn-warning" style="font-weight:700;" onclick="dupUseSuggestion()">Cambiar parejas</button>
+                <button class="btn btn-outline-light" onclick="dupPlayAnyway()">Jugar así</button>
             </div>
         </div>
     </div>
@@ -1584,6 +1616,8 @@
         let retaSession = null;    // sesión en curso con puntos acumulados y partidos
         let _retaFinishReason = null; // como se definio el ultimo partido
         let _matchSaved = false;      // el partido actual ya se guardo en el historial
+        let _dupWarned = false;       // ya se aviso de que este partido repite cruces
+        let _pendingTimerResume = false; // hay un cronometro que reanudar tras recargar
         const RETA_SLOTS = ['p1a', 'p1b', 'p2a', 'p2b'];
         let freeMaxPoints = 30;
         let deuceMode = 'golden'; // 'golden' = punto de oro, '1adv' = 1 ventaja, '2adv' = 2 ventajas
@@ -1622,6 +1656,7 @@
         updateServeUI();
         updateConfigSummary();
         updateRetaUI();
+        resumeTimerFromStorage();
 
         function setMode(m) {
             // Guardar estado del modo actual antes de cambiar
@@ -1866,11 +1901,41 @@
             timerElapsed = timerStart ? Date.now() - timerStart : 0;
         }
 
+        // Tras recargar, el partido que seguia en juego retoma su cuenta exacta
+        function resumeTimerFromStorage() {
+            if (!_pendingTimerResume) {
+                if (!timerInterval) updateIdleTimerDisplay();
+                return;
+            }
+            _pendingTimerResume = false;
+            if (matchOver || !timerStart) return;
+            timerInterval = setInterval(updateTimerDisplay, 1000);
+            updateTimerDisplay();
+            updateControlsBar();
+        }
+
+        function updateIdleTimerDisplay() {
+            const el = document.getElementById('match-timer');
+            if (!el) return;
+            if (matchOver) { el.textContent = elapsedText(); el.style.color = '#ffc107'; return; }
+            if (timerElapsed > 0) {
+                // Partido a medias con el reloj detenido
+                el.style.color = '#ffc107';
+                el.textContent = isRetaTimed()
+                    ? '⏱ ' + fmtClock(retaTimeLimit * 60 - Math.floor(timerElapsed / 1000))
+                    : fmtClock(Math.floor(timerElapsed / 1000));
+                return;
+            }
+            el.style.color = '#ffc107';
+            el.textContent = isRetaTimed() ? '⏱ ' + fmtClock(retaTimeLimit * 60) : '00:00';
+        }
+
         function resetTimer() {
             stopTimer();
             timerStart = 0;
             timerElapsed = 0;
             retaTimeUp = false;
+            _pendingTimerResume = false;
             const el = document.getElementById('match-timer');
             el.style.color = '#ffc107';
             el.textContent = isRetaTimed() ? '⏱ ' + fmtClock(retaTimeLimit * 60) : '00:00';
@@ -1894,10 +1959,51 @@
         // Arranca el partido sin esperar al primer punto: el reloj empieza a correr ya
         function startMatchNow() {
             if (matchOver || timerInterval) return;
+            if (warnDuplicateMatchup()) return;  // avisa antes de repetir un partido ya jugado
+            doStartMatch();
+        }
+
+        function doStartMatch() {
+            if (matchOver || timerInterval) return;
             ensureRetaStarted();
             startTimer();
             addHistory(isRetaTimed() ? `Partido iniciado - ${retaTimeLimit} min` : 'Partido iniciado');
             updateControlsBar();
+            saveToStorage();
+        }
+
+        // Devuelve true si mostro el aviso (y por tanto el arranque queda en pausa)
+        function warnDuplicateMatchup() {
+            if (_dupWarned) return false;
+            if (mode !== 'padel' || padelFormat !== 'retas' || !retaActive || !retaSession) return false;
+            if (retaSession.matches.length === 0) return false;
+            const n = currentSlotNames();
+            const a = analyzeMatchup([n.p1a, n.p1b, n.p2a, n.p2b]);
+            if (a.repetidos.length === 0 || a.pendientes.length === 0) return false;
+            const s = suggestMatchup();
+            let txt = a.mismoPartido
+                ? `<b>${esc(n.p1a)} / ${esc(n.p1b)}</b> contra <b>${esc(n.p2a)} / ${esc(n.p2b)}</b> ya se jugó en esta reta, con las mismas parejas.`
+                : `Estos cruces ya se jugaron: ${a.repetidos.map(p => '<b>' + esc(p.join(' vs ')) + '</b>').join(', ')}.`;
+            txt += `<div style="margin-top:8px;">Faltan por enfrentarse: ${a.pendientes.slice(0, 4).map(p => esc(p.join(' vs '))).join(', ')}${a.pendientes.length > 4 ? ` y ${a.pendientes.length - 4} más` : ''}.</div>`;
+            if (s) {
+                txt += `<div style="margin-top:8px; color:#ffe082;">Sugerido: <b>${esc(s.t1.join(' / '))}</b> vs <b>${esc(s.t2.join(' / '))}</b></div>`;
+            }
+            document.getElementById('reta-dup-text').innerHTML = txt;
+            document.getElementById('reta-dup-overlay').classList.remove('d-none');
+            return true;
+        }
+
+        function dupPlayAnyway() {
+            _dupWarned = true;
+            document.getElementById('reta-dup-overlay').classList.add('d-none');
+            doStartMatch();
+        }
+
+        function dupUseSuggestion() {
+            _dupWarned = false;
+            document.getElementById('reta-dup-overlay').classList.add('d-none');
+            applySuggestedMatchup();
+            showRetaModal();
         }
 
         function matchStarted() {
@@ -2971,6 +3077,7 @@
             });
             syncNamesToCards();
             updateRetaStatus();
+            renderMatchupHint();
             saveRetaState();
         }
 
@@ -3013,6 +3120,7 @@
             if (!document.getElementById('reta-time').value) document.getElementById('reta-time').value = retaSession ? retaSession.time : nowHM();
             renderRoster();
             updateRetaTimeButtons();
+            renderMatchupHint();
             document.getElementById('reta-modal').classList.remove('d-none');
         }
 
@@ -3096,6 +3204,146 @@
             resetMatch();
             saveRetaState();
             updateRetaUI();
+        }
+
+        // ── Cruces: que todos se enfrenten con todos y no se repitan partidos ──
+        function pairKey(a, b) { return [a, b].sort().join(' ~ '); }
+
+        function matchKey(t1, t2) {
+            const a = [...t1].sort().join('+'), b = [...t2].sort().join('+');
+            return [a, b].sort().join(' vs ');
+        }
+
+        // Recorre los partidos jugados: quien enfrento a quien y quien jugo con quien
+        function retaHistoryPairs() {
+            const faced = new Map(), partnered = new Map(), exact = new Set();
+            if (retaSession) {
+                retaSession.matches.forEach(m => {
+                    const kp1 = pairKey(m.team1[0], m.team1[1]);
+                    const kp2 = pairKey(m.team2[0], m.team2[1]);
+                    partnered.set(kp1, (partnered.get(kp1) || 0) + 1);
+                    partnered.set(kp2, (partnered.get(kp2) || 0) + 1);
+                    m.team1.forEach(a => m.team2.forEach(b => {
+                        const k = pairKey(a, b);
+                        faced.set(k, (faced.get(k) || 0) + 1);
+                    }));
+                    exact.add(matchKey(m.team1, m.team2));
+                });
+            }
+            return { faced, partnered, exact };
+        }
+
+        // Que tan repetido es el partido que se va a jugar
+        function analyzeMatchup(four) {
+            const [a1, a2, b1, b2] = four;
+            const { faced, partnered, exact } = retaHistoryPairs();
+            const cruces = [[a1, b1], [a1, b2], [a2, b1], [a2, b2]];
+            const repetidos = cruces.filter(([x, y]) => faced.get(pairKey(x, y)));
+            const parejasRepetidas = [[a1, a2], [b1, b2]].filter(([x, y]) => partnered.get(pairKey(x, y)));
+            const pendientes = [];
+            for (let i = 0; i < retaRoster.length; i++) {
+                for (let j = i + 1; j < retaRoster.length; j++) {
+                    if (!faced.get(pairKey(retaRoster[i], retaRoster[j]))) {
+                        pendientes.push([retaRoster[i], retaRoster[j]]);
+                    }
+                }
+            }
+            return {
+                repetidos,
+                nuevos: cruces.length - repetidos.length,
+                parejasRepetidas,
+                pendientes,
+                mismoPartido: exact.has(matchKey([a1, a2], [b1, b2]))
+            };
+        }
+
+        // Mejor combinacion posible: prioriza cruces nuevos, luego parejas nuevas,
+        // y reparte los partidos entre quienes menos han jugado.
+        function suggestMatchup() {
+            const R = retaRoster;
+            if (R.length < 4) return null;
+            const { faced, partnered } = retaHistoryPairs();
+            const jugados = n => (retaSession && retaSession.played[n]) || 0;
+            const minJugados = Math.min(...R.map(jugados));
+            let best = null;
+            for (let i = 0; i < R.length; i++) {
+                for (let j = i + 1; j < R.length; j++) {
+                    for (let k = j + 1; k < R.length; k++) {
+                        for (let l = k + 1; l < R.length; l++) {
+                            const four = [R[i], R[j], R[k], R[l]];
+                            const splits = [
+                                [[four[0], four[1]], [four[2], four[3]]],
+                                [[four[0], four[2]], [four[1], four[3]]],
+                                [[four[0], four[3]], [four[1], four[2]]]
+                            ];
+                            splits.forEach(([t1, t2]) => {
+                                let score = 0;
+                                t1.forEach(a => t2.forEach(b => {
+                                    const veces = faced.get(pairKey(a, b)) || 0;
+                                    score += veces === 0 ? 10 : -4 * veces;
+                                }));
+                                [t1, t2].forEach(t => {
+                                    const veces = partnered.get(pairKey(t[0], t[1])) || 0;
+                                    score += veces === 0 ? 3 : -2 * veces;
+                                });
+                                four.forEach(n => { score -= 2 * (jugados(n) - minJugados); });
+                                if (!best || score > best.score) best = { t1, t2, score };
+                            });
+                        }
+                    }
+                }
+            }
+            return best;
+        }
+
+        function applySuggestedMatchup() {
+            const s = suggestMatchup();
+            if (!s) return;
+            const valores = { 'sel-p1a': s.t1[0], 'sel-p1b': s.t1[1], 'sel-p2a': s.t2[0], 'sel-p2b': s.t2[1] };
+            Object.entries(valores).forEach(([id, v]) => {
+                const sel = document.getElementById(id);
+                if (sel) { sel.value = v; sel.dataset.prev = v; }
+            });
+            assignFromRoster(null);
+        }
+
+        // Aviso en vivo dentro de la pantalla Reta
+        function renderMatchupHint() {
+            const box = document.getElementById('reta-matchup-hint');
+            if (!box) return;
+            const vals = RETA_SLOTS.map(k => {
+                const sel = document.getElementById('sel-' + k);
+                return sel ? sel.value : '';
+            });
+            if (vals.some(v => !v)) {
+                box.innerHTML = '<span style="opacity:0.55;">Elige los cuatro jugadores para revisar los cruces.</span>';
+                return;
+            }
+            if (!retaSession || retaSession.matches.length === 0) {
+                box.innerHTML = '<span style="color:#8bc34a;">✓ Primer partido de la reta.</span>';
+                return;
+            }
+            const a = analyzeMatchup(vals);
+            if (a.repetidos.length === 0) {
+                let txt = '<span style="color:#8bc34a;">✓ Los cuatro cruces son nuevos.</span>';
+                if (a.parejasRepetidas.length) {
+                    txt += `<div style="opacity:0.6; margin-top:2px;">Ya habían jugado juntos: ${a.parejasRepetidas.map(p => esc(p.join(' y '))).join(', ')}.</div>`;
+                }
+                box.innerHTML = txt;
+                return;
+            }
+            const grave = a.mismoPartido;
+            let html = `<div style="color:${grave ? '#ff6b6b' : '#ffc107'}; font-weight:600;">` +
+                (grave ? '⚠️ Este partido ya se jugó, con las mismas parejas.' : `⚠️ ${a.repetidos.length} de 4 cruces ya se jugaron: ${a.repetidos.map(p => esc(p.join(' vs '))).join(', ')}.`) +
+                '</div>';
+            if (a.pendientes.length) {
+                const muestra = a.pendientes.slice(0, 4).map(p => esc(p.join(' vs '))).join(', ');
+                html += `<div style="opacity:0.75; margin-top:3px;">Aún no se enfrentan: ${muestra}${a.pendientes.length > 4 ? ` y ${a.pendientes.length - 4} más` : ''}.</div>`;
+                html += '<button class="btn btn-warning btn-sm" style="margin-top:8px; font-weight:700;" onclick="applySuggestedMatchup()">🔀 Armar el mejor partido</button>';
+            } else {
+                html += '<div style="opacity:0.75; margin-top:3px;">Ya se enfrentaron todos contra todos: a partir de aquí toca repetir.</div>';
+            }
+            box.innerHTML = html;
         }
 
         // Tabla ordenada: puntos, luego partidos ganados, luego menos jugados
@@ -3254,7 +3502,7 @@
             }
             // Partidos de la reta
             if (retaSession.matches.length > 0) {
-                html += '<div style="margin-top:12px; font-weight:700; font-size:0.85rem;">Partidos de la reta</div>';
+                html += '<div id="reta-matches-anchor" style="margin-top:14px; font-weight:700; font-size:0.85rem; color:#ffc107;">📋 Partidos de la reta</div>';
                 retaSession.matches.slice().reverse().forEach(m => {
                     const t1 = `${esc(m.team1[0])} / ${esc(m.team1[1])}`;
                     const t2 = `${esc(m.team2[0])} / ${esc(m.team2[1])}`;
@@ -3294,6 +3542,18 @@
             retaSession.points[name] = isNaN(v) || v < 0 ? 0 : v;
             saveRetaState();
             showRetaStandings();
+        }
+
+        // Lleva al detalle de partidos, que explica de donde salio cada punto
+        function scrollToRetaMatches() {
+            const anchor = document.getElementById('reta-matches-anchor');
+            if (!anchor) return;
+            anchor.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            anchor.animate([
+                { backgroundColor: 'rgba(255,193,7,0)' },
+                { backgroundColor: 'rgba(255,193,7,0.35)' },
+                { backgroundColor: 'rgba(255,193,7,0)' }
+            ], { duration: 1200 });
         }
 
         function closeRetaStandings() {
@@ -3380,12 +3640,7 @@
                 if (!document.getElementById('reta-time').value) document.getElementById('reta-time').value = retaSession ? retaSession.time : nowHM();
                 renderRoster();
             }
-            // Partido sin empezar: el reloj muestra el tiempo configurado
-            if (!timerInterval && timerElapsed === 0 && !matchOver) {
-                const el = document.getElementById('match-timer');
-                el.style.color = '#ffc107';
-                el.textContent = isRetaTimed() ? '⏱ ' + fmtClock(retaTimeLimit * 60) : '00:00';
-            }
+            if (!timerInterval && !_pendingTimerResume) updateIdleTimerDisplay();
             updateRetaTimeButtons();
             updateConfigSummary();
         }
@@ -3460,6 +3715,8 @@
             const prev = JSON.parse(localStorage.getItem('padel-state') || '{}');
             const data = {
                 mode, nameMode, padelFormat, setsToWin, gamesPerSet, retasGames, retasEarlyWin, retaTimeLimit, freeMaxPoints, deuceMode, trackShots, serve, matchOver,
+                // Marca absoluta de arranque: al recargar, el reloj sigue donde iba
+                timerStart, timerElapsed, timerRunning: !!timerInterval, retaTimeUp,
                 points, games, sets, setsWon, tiebreak, advantage, deuceCount,
                 freePoints, playerStats, matchLog,
                 namesPadel: mode === 'padel' ? getCurrentNames() : (prev.namesPadel || ['Jugador 1','Jugador 2','Jugador 3','Jugador 4']),
@@ -3505,6 +3762,11 @@
                     playerStats = emptyPlayerStats();
                 }
                 matchLog = d.matchLog || [];
+                // Cronometro: se reanuda desde la hora real de arranque, no desde cero
+                retaTimeUp = d.retaTimeUp || false;
+                timerElapsed = d.timerElapsed || 0;
+                timerStart = d.timerStart || 0;
+                _pendingTimerResume = !!(d.timerRunning && d.timerStart && !matchOver);
                 nameMode = d.nameMode || 'players';
                 const modeNames = mode === 'padel' ? d.namesPadel : d.namesFree;
                 if (modeNames && modeNames.length === 4) {
@@ -3584,6 +3846,7 @@
             history = []; serve = 1;
             _matchSaved = false;
             _retaFinishReason = null;
+            _dupWarned = false;
             updateServeUI();
             document.getElementById('history-list').innerHTML = '';
             hideWinnerCard();
