@@ -365,14 +365,59 @@
             cursor: pointer;
         }
         .light-theme .reta-chip { background: #f0f2f5; color: #1a1a1a; border-color: #ccc; }
+        /* Fecha y hora: compactas, no necesitan el tamano de un campo de nombre */
+        .reta-compact-input {
+            width: 100%;
+            font-size: 0.9rem;
+            border: 1px solid #666;
+            background: #2c2c54;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 6px 4px;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+        .reta-compact-input:focus { outline: none; border-color: #ffc107; }
+        .light-theme .reta-compact-input { background: #fff; color: #1a1a1a; border-color: #aaa; }
+
+        /* Cada pareja en una fila, con el color de su equipo */
+        .reta-team-box {
+            border-radius: 10px;
+            padding: 10px 10px 10px 12px;
+            border-left: 5px solid;
+            background: rgba(255,255,255,0.05);
+        }
+        .reta-team-box.t1 { border-left-color: #e94560; background: rgba(233,69,96,0.13); }
+        .reta-team-box.t2 { border-left-color: #4a90d9; background: rgba(74,144,217,0.13); }
+        .reta-team-title {
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+        .reta-team-box.t1 .reta-team-title { color: #ff8a9b; }
+        .reta-team-box.t2 .reta-team-title { color: #8ec5ff; }
+        .light-theme .reta-team-box.t1 .reta-team-title { color: #c0392b; }
+        .light-theme .reta-team-box.t2 .reta-team-title { color: #1565c0; }
+        .reta-vs {
+            text-align: center;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            color: #888;
+            margin: 6px 0;
+        }
         .reta-select {
             width: 100%;
-            font-size: 1rem;
+            min-width: 0;
+            font-size: 0.9rem;
             border: 1px solid #666;
             background: #2c2c54;
             color: #fff;
             border-radius: 6px;
-            padding: 9px 8px;
+            padding: 8px 6px;
         }
         .reta-select:focus { outline: none; border-color: #ffc107; }
         .light-theme .reta-select { background: #fff; color: #1a1a1a; border-color: #aaa; }
@@ -802,8 +847,8 @@
                     <div onclick="toggleHamburger(); showRules('padel')" style="padding:10px 14px; cursor:pointer; border-bottom:1px solid #444; display:flex; justify-content:space-between; align-items:center;">Cómo jugar pádel <span>🎾</span></div>
                     <div onclick="toggleHamburger(); showRules('retas')" style="padding:10px 14px; cursor:pointer; border-bottom:1px solid #444; display:flex; justify-content:space-between; align-items:center;">Cómo jugar retas <span>🏆</span></div>
                     <div onclick="toggleHamburger(); showRules('libre')" style="padding:10px 14px; cursor:pointer; border-bottom:1px solid #444; display:flex; justify-content:space-between; align-items:center;">Cómo jugar libre <span>🎯</span></div>
-                    <div onclick="toggleHamburger(); showRetaModal()" style="padding:10px 14px; cursor:pointer; border-bottom:1px solid #444; display:flex; justify-content:space-between; align-items:center;">Reta: jugadores y parejas <span>🏆</span></div>
-                    <div onclick="toggleHamburger(); showRetaStandings()" style="padding:10px 14px; cursor:pointer; border-bottom:1px solid #444; display:flex; justify-content:space-between; align-items:center;">Clasificación reta <span>📊</span></div>
+                    <div onclick="toggleHamburger(); showRetaModal()" style="padding:10px 14px; cursor:pointer; border-bottom:1px solid #444; display:flex; justify-content:space-between; align-items:center;">Reta <span>🏆</span></div>
+                    <div onclick="toggleHamburger(); showRetaStandings()" style="padding:10px 14px; cursor:pointer; border-bottom:1px solid #444; display:flex; justify-content:space-between; align-items:center;">Clasificación <span>📊</span></div>
                     <div onclick="toggleHamburger(); showRetasHistoryModal()" style="padding:10px 14px; cursor:pointer; border-bottom:1px solid #444; display:flex; justify-content:space-between; align-items:center;">Retas anteriores <span>📖</span></div>
                     <div onclick="toggleHamburger(); showMatchesModal()" style="padding:10px 14px; cursor:pointer; border-bottom:1px solid #444; display:flex; justify-content:space-between; align-items:center;">Partidos <span>🏅</span></div>
                     <div onclick="toggleHamburger(); showHistoryModal()" style="padding:10px 14px; cursor:pointer; border-bottom:1px solid #444; display:flex; justify-content:space-between; align-items:center;">Historial <span>📋</span></div>
@@ -1282,14 +1327,14 @@
                 <!-- 1. Jornada -->
                 <div class="reta-section">
                     <div class="reta-section-title">Jornada</div>
-                    <div style="display:flex; gap:10px;">
-                        <div style="flex:1; min-width:0;">
-                            <small class="cfg-label">Fecha</small>
-                            <input type="date" class="config-name-input" id="reta-date" onchange="saveRetaMeta()">
+                    <div style="display:flex; gap:10px; align-items:center;">
+                        <div style="flex:1; min-width:0; display:flex; align-items:center; gap:6px;">
+                            <small class="cfg-label" style="margin:0; white-space:nowrap;">Fecha</small>
+                            <input type="date" class="reta-compact-input" id="reta-date" onchange="saveRetaMeta()">
                         </div>
-                        <div style="flex:1; min-width:0;">
-                            <small class="cfg-label">Hora de inicio</small>
-                            <input type="time" class="config-name-input" id="reta-time" onchange="saveRetaMeta()">
+                        <div style="flex:0 0 auto; display:flex; align-items:center; gap:6px;">
+                            <small class="cfg-label" style="margin:0; white-space:nowrap;">Inicio</small>
+                            <input type="time" class="reta-compact-input" id="reta-time" onchange="saveRetaMeta()" style="width:auto;">
                         </div>
                     </div>
                     <div style="margin-top:12px;">
@@ -1317,16 +1362,19 @@
                 <!-- 3. Parejas del partido -->
                 <div class="reta-section">
                     <div class="reta-section-title">Parejas de este partido</div>
-                    <div style="display:flex; gap:10px;">
-                        <div style="flex:1; min-width:0;">
-                            <small style="display:block; font-size:0.75rem; color:#ef9a9a; margin-bottom:4px; font-weight:600;">Equipo 1</small>
+                    <div class="reta-team-box t1">
+                        <div class="reta-team-title">🔴 Equipo 1</div>
+                        <div style="display:flex; gap:8px;">
                             <select class="reta-select" id="sel-p1a" onchange="assignFromRoster(this)"></select>
-                            <select class="reta-select" id="sel-p1b" onchange="assignFromRoster(this)" style="margin-top:6px;"></select>
+                            <select class="reta-select" id="sel-p1b" onchange="assignFromRoster(this)"></select>
                         </div>
-                        <div style="flex:1; min-width:0;">
-                            <small style="display:block; font-size:0.75rem; color:#90caf9; margin-bottom:4px; font-weight:600;">Equipo 2</small>
+                    </div>
+                    <div class="reta-vs">VS</div>
+                    <div class="reta-team-box t2">
+                        <div class="reta-team-title">🔵 Equipo 2</div>
+                        <div style="display:flex; gap:8px;">
                             <select class="reta-select" id="sel-p2a" onchange="assignFromRoster(this)"></select>
-                            <select class="reta-select" id="sel-p2b" onchange="assignFromRoster(this)" style="margin-top:6px;"></select>
+                            <select class="reta-select" id="sel-p2b" onchange="assignFromRoster(this)"></select>
                         </div>
                     </div>
                 </div>
@@ -2826,7 +2874,7 @@
             const cont = document.getElementById('reta-roster-chips');
             cont.innerHTML = retaRoster.length
                 ? retaRoster.map((n, i) => `<span class="reta-chip">${esc(n)}<button onclick="removeRosterPlayer(${i})" title="Quitar">✕</button></span>`).join('')
-                : '<span style="opacity:0.5; font-size:0.8rem;">Agrega los jugadores que van a participar en la reta</span>';
+                : '<span style="opacity:0.5; font-size:0.78rem;">Sin jugadores todavía</span>';
             RETA_SLOTS.forEach(k => {
                 const sel = document.getElementById('sel-' + k);
                 const cur = sel.value;
