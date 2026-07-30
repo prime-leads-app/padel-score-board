@@ -4,10 +4,7 @@ description: Estado volatil de la sesion; se REEMPLAZA cada cierre
 type: project
 updated: 2026-07-30
 ---
-<!-- ESTADO. Volatil: REEMPLAZAR este bloque entero cada cierre (2-3 frases + proximo paso).
-     NUNCA apilar cronica aqui; lo cerrado va a bitacora.md como una linea fechada.
-     Caps propios: el cuerpo no pasa de 20 lineas no vacias ni de 3 bloques separados por linea
-     en blanco; mas que eso es cronica apilada y el chequeo lo marca. -->
 
-**Ahora:** Memoria Mnemo recien inicializada en este repo; sin trabajo registrado aun.
-**Proximo paso:** Trabajar normal; Claude clasifica y escribe la memoria segun las reglas Mnemo.
+**Ahora:** Retas v4.0 implementada y verificada en navegador (roster, parejas por partido, tiempo regresivo con alarma, clasificacion editable, cierre de reta a historial). De paso se corrigio un doble guardado de partido preexistente en showWinner.
+**Proximo paso:** probar en celular real y decidir si se publica (falta git push).
+

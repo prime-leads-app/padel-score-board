@@ -8,3 +8,4 @@ updated: 2026-07-30
      Dice QUE se cerro y remite al shard con el detalle. NO metas aqui la decision, el bug, la
      metrica ni el proximo paso: cada uno tiene su clase. Una bitacora que revienta el cap de
      25 KB casi siempre es eso, y se arregla RECLASIFICANDO, no rotando. -->
+- 2026-07-30-14-05-43-01: retas convertidas en sesion con roster, cronometro regresivo y clasificacion individual (commit 9a97ff6)
