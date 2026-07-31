@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <!-- Sube en cada publicacion: la app la compara contra la red para saber si esta al dia -->
-    <meta name="app-version" content="5.2">
+    <meta name="app-version" content="5.3">
     <title>Padel Scoreboard</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1086,7 +1086,7 @@
             <div style="margin:8px 0;">
                 <b style="color:#FFD54F;">Juegos: 4, 6, 8 o ∞</b> (solo en Retas)<br>
                 Cuantos juegos dura cada partido de la reta.<br>
-                <b>∞:</b> sin limite de juegos. El partido termina cuando se acaba el tiempo o cuando tocas <b>Fin partido</b>.
+                <b>∞:</b> sin limite de juegos. El partido termina cuando se acaba el tiempo o cuando tocas <b>Fin</b>.
             </div>
 
             <div style="margin:8px 0;">
@@ -1098,7 +1098,9 @@
 
             <div style="margin:8px 0;">
                 <b style="color:#FFD54F;">Participantes y parejas</b> (solo en Retas)<br>
-                Capturas la lista de jugadores de la reta y, antes de cada partido, eliges de la lista desplegable quienes forman cada equipo. La lista se guarda en el telefono para la proxima reta.
+                Se administran en la pantalla <b>Reta</b>: desde el menu ☰ → <b>Reta</b>, o con el boton amarillo de Configuracion.<br>
+                Ahi capturas la lista de jugadores y, antes de cada partido, eliges de las listas desplegables quienes forman cada equipo. La lista se guarda en el telefono para la proxima reta.<br>
+                <span style="opacity:0.7;">Si eliges a alguien que ya estaba en el otro equipo, los dos se intercambian: nadie queda repetido.</span>
             </div>
 
             <div style="margin:8px 0;">
@@ -1149,6 +1151,37 @@
                 <b>Sin detalle:</b> Al tocar el nombre solo se atribuye el punto al jugador, sin pedir tipo de golpe. Mas rapido si no necesitas ese nivel de detalle.
             </div>
 
+            <div style="margin:8px 0;">
+                <b style="color:#FFD54F;">Botones del encabezado</b><br>
+                <b>☰</b> Menu.<br>
+                <b>ⓘ</b> Datos del partido: formato, juegos, tiempo, 40-40 y partidos jugados de la reta.<br>
+                <b>Reloj (al centro):</b> en Retas va en cuenta regresiva y se pone rojo en los ultimos 2 minutos. En los demas modos cuenta hacia arriba.<br>
+                <b>👥</b> Jugadores del partido: cambia los integrantes de cada equipo sin salir del marcador <span style="opacity:0.7;">(solo en Retas)</span>.<br>
+                <b>⇄</b> Cambia los equipos de lado: los del rojo pasan al azul y viceversa, con su marcador y estadisticas <span style="opacity:0.7;">(solo en Retas)</span>.<br>
+                <b>🏆</b> Clasificacion de la reta <span style="opacity:0.7;">(solo en Retas)</span>.
+            </div>
+
+            <div style="margin:8px 0;">
+                <b style="color:#FFD54F;">Botones de abajo</b><br>
+                Solo se muestran los que sirven en ese momento, para que los visibles sean mas grandes:<br>
+                <b>Iniciar:</b> arranca el partido y el cronometro. Parpadea en verde y amarillo mientras no lo tocas, y desaparece al arrancar <span style="opacity:0.7;">(solo en Retas)</span>.<br>
+                <b>Saque:</b> alterna que equipo saca. Sirve para corregir el indicador si se desfasa.<br>
+                <b>Deshacer:</b> quita el ultimo punto. Aparece cuando el partido ya empezo.<br>
+                <b>Reiniciar:</b> marcador a cero con los mismos jugadores.<br>
+                <b>Limpiar:</b> ademas suelta a los jugadores. En Retas vacia los desplegables de parejas, sin tocar la lista de participantes ni la clasificacion.<br>
+                <b>Fin:</b> termina el partido en curso <span style="opacity:0.7;">(solo en Retas)</span>.
+            </div>
+
+            <div style="margin:8px 0;">
+                <b style="color:#FFD54F;">Menu ☰</b><br>
+                <b>Reta:</b> participantes, parejas, fecha y tiempo por partido.<br>
+                <b>Clasificacion:</b> tabla de la reta en curso, con sus partidos.<br>
+                <b>Retas anteriores:</b> jornadas ya cerradas.<br>
+                <b>Partidos:</b> historial de partidos, con opcion de borrar uno por uno.<br>
+                <b>Historial:</b> registro de puntos del partido actual.<br>
+                <b>Buscar actualizacion:</b> revisa si hay una version nueva publicada y la instala.
+            </div>
+
         </div>
 
         <!-- Rules -->
@@ -1195,19 +1228,27 @@
 
             <div style="margin:8px 0;">
                 <b style="color:#FFD54F;">2. Antes de empezar</b><br>
-                En <b>Configuración</b> capturas la fecha, la hora de inicio y la lista de participantes.<br>
-                Antes de cada partido eliges de las listas desplegables quienes forman el equipo 1 y el equipo 2. Un jugador no puede estar en dos lugares a la vez.<br>
-                Con al menos 4 participantes se activa <b>Iniciar reta</b>.
+                Abre la pantalla <b>Reta</b> (menu ☰ → Reta) y captura la fecha, la hora de inicio y la lista de participantes.<br>
+                Antes de cada partido eliges de las listas desplegables quienes forman el equipo 1 y el equipo 2. Un jugador no puede estar en dos lugares a la vez: si lo repites, los dos se intercambian.<br>
+                Con al menos 4 participantes se activa <b>Iniciar</b>. Si se te olvida, la reta se abre sola en cuanto empiezas a jugar.
             </div>
 
             <div style="margin:8px 0;">
-                <b style="color:#FFD54F;">3. Cada partido</b><br>
+                <b style="color:#FFD54F;">3. Arrancar el partido</b><br>
+                El boton verde <b>Iniciar</b> pone en marcha el cronometro sin esperar al primer punto. Parpadea hasta que lo tocas.<br>
+                <span style="opacity:0.7;">Si empiezan a anotar sin tocarlo, el reloj arranca solo con el primer punto.</span><br>
+                Si cierras la app o recargas a media reta, el cronometro sigue exacto: se guarda la hora real de arranque.
+            </div>
+
+            <div style="margin:8px 0;">
+                <b style="color:#FFD54F;">4. Cada partido</b><br>
                 Dura los juegos configurados (<b>4, 6, 8</b>) o <b>∞</b> si no quieres tope, y el tiempo que hayas puesto.<br>
-                Los puntos dentro de cada juego son los de padel: <b>0 → 15 → 30 → 40</b>, con Oro, 1 Ventaja o 2 Ventajas segun la config.
+                Los puntos dentro de cada juego son los de padel: <b>0 → 15 → 30 → 40</b>, con Oro, 1 Ventaja o 2 Ventajas segun la config.<br>
+                Con el boton <b>⇄</b> del encabezado los equipos cambian de lado sin perder su marcador, y con <b>👥</b> cambias a los integrantes sin salir del marcador.
             </div>
 
             <div style="margin:8px 0;">
-                <b style="color:#FFD54F;">4. Cuando se acaba el tiempo</b><br>
+                <b style="color:#FFD54F;">5. Cuando se acaba el tiempo</b><br>
                 Suena la alarma y el cronometro sigue en <b>+</b>.<br>
                 <b>Si un equipo va arriba en juegos</b>, gana ahi mismo.<br>
                 <span style="opacity:0.7;">Ej: van 4-3 y suena el tiempo → gana 4-3, aunque el juego en curso quede a medias.</span><br>
@@ -1216,14 +1257,14 @@
             </div>
 
             <div style="margin:8px 0;">
-                <b style="color:#FFD54F;">5. Boton Fin partido</b><br>
+                <b style="color:#FFD54F;">6. Boton Fin</b><br>
                 Corta el partido en cualquier momento, para cuando ya no alcanza el tiempo de cancha.<br>
                 Gana quien vaya arriba en juegos; si van iguales, gana quien lleve mas puntos en el juego en disputa.<br>
                 <span style="opacity:0.7;">Si van iguales en juegos Y en puntos, la app avisa y no cierra: hay que jugar al menos un punto mas.</span>
             </div>
 
             <div style="margin:8px 0;">
-                <b style="color:#FFD54F;">6. Como se suman los puntos</b><br>
+                <b style="color:#FFD54F;">7. Como se suman los puntos</b><br>
                 Solo suma la <b>pareja que gana</b>, y cada uno de los dos ganadores suma los <b>juegos que gano su equipo</b>.<br>
                 <span style="opacity:0.7;">Ej: ganan 6-2 → cada ganador suma 6 pts; los perdedores no suman.</span><br>
                 Si el partido se definio con juegos empatados, cuentan los juegos completos (3-3 definido por puntos = 3 pts).<br>
@@ -1231,22 +1272,30 @@
             </div>
 
             <div style="margin:8px 0;">
-                <b style="color:#FFD54F;">7. Rotacion: el que gana se queda, pero separado</b><br>
+                <b style="color:#FFD54F;">8. Rotacion: el que gana se queda, pero separado</b><br>
                 La pareja que gana se mantiene en la cancha y se <b>divide</b>: cada uno pasa a un lado. Los que pierden salen y entran dos de los que esperan, uno con cada ganador.<br>
                 <span style="opacity:0.7;">Ej: ganan Ana y Beto → siguiente partido Ana + Elena contra Beto + Fer.</span><br>
                 Entran primero los que menos partidos llevan. Si solo son cuatro y no hay banca, se cruzan las parejas entre ellos.
             </div>
 
             <div style="margin:8px 0;">
-                <b style="color:#FFD54F;">8. Que todos jueguen contra todos</b><br>
+                <b style="color:#FFD54F;">9. Que todos jueguen contra todos</b><br>
                 La app lleva la cuenta de quien ya se enfrento con quien. Al elegir las parejas avisa si ese cruce ya se jugo y te dice quienes faltan por enfrentarse.<br>
                 Con <b>Armar el mejor partido</b> propone la combinacion que estrena mas cruces y reparte los partidos entre quienes menos han jugado.<br>
                 <span style="opacity:0.7;">Es un aviso, no un candado: si quieren repetir, se juega igual.</span>
             </div>
 
             <div style="margin:8px 0;">
-                <b style="color:#FFD54F;">9. Cerrar la reta</b><br>
-                Desde <b>Clasificación</b> → <b>Cerrar reta</b>: se guarda la tabla final, los participantes, la fecha y todos los partidos en <b>Retas anteriores</b>, y queda lista una reta nueva.
+                <b style="color:#FFD54F;">10. La clasificacion</b><br>
+                Se abre con <b>🏆</b> en el encabezado o desde el menu. Muestra puntos, partidos jugados (PJ) y ganados (PG) de cada quien.<br>
+                Los puntos se pueden <b>corregir a mano</b> si algo se resolvio fuera de la cancha.<br>
+                Con <b>📋 Partidos</b> ves el detalle de cada partido, y cada uno tiene una papelera para borrarlo: al hacerlo se le descuentan sus puntos y estadisticas a todos los que jugaron.
+            </div>
+
+            <div style="margin:8px 0;">
+                <b style="color:#FFD54F;">11. Cerrar la reta</b><br>
+                Con <b>Cerrar reta</b>, desde la clasificacion o desde la pantalla Reta: se guarda la tabla final, los participantes, la fecha y todos los partidos en <b>Retas anteriores</b>, y queda lista una reta nueva.<br>
+                <span style="opacity:0.7;">Pide confirmacion porque no se puede deshacer.</span>
             </div>
 
         </div>
@@ -1370,7 +1419,7 @@
             </a>
             <a href="https://github.com/prime-leads-app/padel-score-board" target="_blank" rel="noopener" class="card bg-dark border-secondary text-decoration-none flex-fill" style="cursor:pointer;">
                 <div class="card-body py-0 px-2 text-center">
-                    <small class="text-white">PadelApp v<span id="app-version-label">5.2</span></small>
+                    <small class="text-white">PadelApp v<span id="app-version-label">5.3</span></small>
                 </div>
             </a>
             <div class="card bg-dark border-secondary flex-fill">

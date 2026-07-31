@@ -78,6 +78,21 @@ Modo libre para cualquier actividad. Cada toque suma 1 punto.
 - **PWA:** Se puede instalar como app en el celular
 - **Landscape:** En mobile, las tarjetas se muestran lado a lado en modo horizontal
 
+## Controles del marcador
+
+**Encabezado:** ☰ menú · ⓘ datos del partido · reloj al centro (cuenta regresiva en Retas, ascendente en los demás modos) · 👥 jugadores del partido · ⇄ cambiar de lado · 🏆 clasificación. Los tres últimos solo aparecen en Retas.
+
+**Barra inferior:** solo se muestran los botones útiles en cada momento, para que los visibles sean más grandes.
+
+| Botón | Cuándo aparece | Qué hace |
+|-------|----------------|----------|
+| Iniciar | Retas, antes de arrancar | Pone en marcha el partido y el cronómetro. Parpadea hasta que lo tocas |
+| Saque | Siempre | Alterna qué equipo saca |
+| Deshacer | Con el partido ya empezado | Quita el último punto |
+| Reiniciar | Siempre | Marcador a cero con los mismos jugadores |
+| Limpiar | Siempre | Además suelta a los jugadores; en Retas vacía las parejas sin tocar el roster |
+| Fin | Retas, partido en curso | Termina el partido |
+
 ## Navegación
 
 Toda la app se controla desde el menú hamburguesa (icono ☰) en la parte superior:
@@ -85,9 +100,11 @@ Toda la app se controla desde el menú hamburguesa (icono ☰) en la parte super
 - **Configuración** - Muestra/oculta todas las opciones de juego (modo, nombres, formato, etc.)
 - **Ayuda opciones** - Explica qué significa cada opción de configuración
 - **Cómo jugar pádel/retas/libre** - Reglas y ejemplos de cada modo
-- **Clasificación reta** - Tabla de la reta en curso, sus partidos y cierre de la jornada
+- **Reta** - Participantes, parejas, fecha y tiempo por partido
+- **Clasificación** - Tabla de la reta en curso, sus partidos y cierre de la jornada
 - **Retas anteriores** - Historial de retas cerradas con tabla final y participantes
-- **Partidos** - Historial de partidos terminados
+- **Partidos** - Historial de partidos terminados, con opción de borrar uno por uno
+- **Buscar actualización** - Comprueba contra la red si hay una versión nueva publicada
 - **Historial** - Registro de puntos anotados
 - **Tema claro/oscuro** - Alterna entre modo oscuro y claro
 
