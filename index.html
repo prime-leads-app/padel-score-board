@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <!-- Sube en cada publicacion: la app la compara contra la red para saber si esta al dia -->
-    <meta name="app-version" content="5.1">
+    <meta name="app-version" content="5.2">
     <title>Padel Scoreboard</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1370,7 +1370,7 @@
             </a>
             <a href="https://github.com/prime-leads-app/padel-score-board" target="_blank" rel="noopener" class="card bg-dark border-secondary text-decoration-none flex-fill" style="cursor:pointer;">
                 <div class="card-body py-0 px-2 text-center">
-                    <small class="text-white">PadelApp v<span id="app-version-label">5.1</span></small>
+                    <small class="text-white">PadelApp v<span id="app-version-label">5.2</span></small>
                 </div>
             </a>
             <div class="card bg-dark border-secondary flex-fill">
@@ -1506,8 +1506,8 @@
             <div style="overflow-y:auto; flex:1; text-align:left;" id="reta-standings-content"></div>
             <div style="display:flex; gap:8px; justify-content:center; margin-top:12px; flex-wrap:wrap;">
                 <button class="btn btn-outline-warning btn-sm" id="btn-goto-matches" onclick="scrollToRetaMatches()">📋 Partidos</button>
-                <button class="btn btn-outline-info btn-sm" onclick="shareRetaStandings()">Compartir</button>
-                <button class="btn btn-outline-danger btn-sm" id="btn-close-reta" onclick="confirmCloseReta()">Cerrar reta</button>
+                <!-- Compartir: en pausa hasta rehacer el formato del texto -->
+                <button class="btn btn-outline-danger btn-sm" id="btn-close-reta" onclick="closeRetaStandings(); confirmCloseReta();">Cerrar reta</button>
                 <button class="btn btn-outline-light btn-sm" onclick="closeRetaStandings()">Salir</button>
             </div>
         </div>
@@ -1557,14 +1557,14 @@
         </div>
     </div>
 
-    <!-- Confirm Close Reta Overlay -->
-    <div class="winner-overlay d-none" id="confirm-close-reta-overlay">
-        <div class="winner-card" style="background: linear-gradient(135deg, #c0392b, #2c3e50);">
-            <h4 class="mb-3">Cerrar la reta?</h4>
-            <p class="mb-4" style="opacity:0.8;">Se guarda la reta con su tabla final en Retas anteriores y se empieza una nueva.</p>
+    <!-- Confirm Close Reta Overlay: por encima de cualquier otro modal -->
+    <div class="winner-overlay d-none" id="confirm-close-reta-overlay" style="z-index:1200;">
+        <div class="winner-card" style="background: linear-gradient(135deg, #c0392b, #2c3e50); max-width:380px;">
+            <h4 class="mb-3">¿Cerrar la reta?</h4>
+            <div class="mb-4" style="opacity:0.9; font-size:0.9rem; text-align:left;" id="close-reta-text"></div>
             <div class="d-flex gap-3 justify-content-center">
                 <button class="btn btn-outline-light btn-lg" onclick="cancelCloseReta()">Cancelar</button>
-                <button class="btn btn-danger btn-lg" onclick="closeReta()">Cerrar reta</button>
+                <button class="btn btn-danger btn-lg" onclick="closeReta()">Sí, cerrar</button>
             </div>
         </div>
     </div>
@@ -3424,7 +3424,14 @@
         }
 
         function confirmCloseReta() {
-            if (!retaActive) return;
+            if (!retaActive || !retaSession) return;
+            const n = retaSession.matches.length;
+            const lider = retaStandings()[0];
+            document.getElementById('close-reta-text').innerHTML =
+                `<div>Vas a dar por terminada la reta del <b>${esc(fmtRetaDate(retaSession.date))}</b>` +
+                ` con <b>${n}</b> ${n === 1 ? 'partido jugado' : 'partidos jugados'}.</div>` +
+                (lider && lider.points > 0 ? `<div style="margin-top:6px;">Va ganando <b>${esc(lider.name)}</b> con ${lider.points} pts.</div>` : '') +
+                `<div style="margin-top:8px; opacity:0.85;">Se guardará en <b>Retas anteriores</b> con su tabla y sus partidos, y quedará lista una reta nueva. Esto no se puede deshacer.</div>`;
             document.getElementById('confirm-close-reta-overlay').classList.remove('d-none');
         }
 
