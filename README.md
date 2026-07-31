@@ -47,6 +47,8 @@ Formato informal popular en México. Una reta es una **jornada con varios partid
 
 **Cronómetro a prueba de refrescos:** se guarda la hora exacta de arranque del partido, así que si cierras la app o recargas la página, la cuenta regresiva continúa donde iba. Si el tiempo se agotó mientras estaba cerrada, al volver se aplica la regla de fin de tiempo.
 
+**Borrar un partido:** cada partido de la clasificación tiene un botón de papelera. Al borrarlo (con confirmación) se descuentan sus puntos, partidos jugados, ganados y estadísticas de golpes de todos los involucrados, y el partido también desaparece del historial de Partidos. Cada partido guarda su propio aporte, así que se puede borrar cualquiera, no solo el último.
+
 **Cerrar la reta:** guarda la tabla final, participantes, fecha, hora de inicio y todos los partidos en **Retas anteriores**.
 
 ### Libre
