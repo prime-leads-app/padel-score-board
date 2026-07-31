@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <!-- Sube en cada publicacion: la app la compara contra la red para saber si esta al dia -->
-    <meta name="app-version" content="4.7">
+    <meta name="app-version" content="4.8">
     <title>Padel Scoreboard</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1368,7 +1368,7 @@
             </a>
             <a href="https://github.com/prime-leads-app/padel-score-board" target="_blank" rel="noopener" class="card bg-dark border-secondary text-decoration-none flex-fill" style="cursor:pointer;">
                 <div class="card-body py-0 px-2 text-center">
-                    <small class="text-white">PadelApp v<span id="app-version-label">4.7</span></small>
+                    <small class="text-white">PadelApp v<span id="app-version-label">4.8</span></small>
                 </div>
             </a>
             <div class="card bg-dark border-secondary flex-fill">
@@ -2843,7 +2843,7 @@
             if (matches.length === 0) {
                 list.innerHTML = '<div style="opacity:0.5; text-align:center; padding:16px;">No hay partidos guardados</div>';
             } else {
-                list.innerHTML = matches.map(m => {
+                list.innerHTML = matches.map((m, idx) => {
                     const modeLabel = m.format === 'retas' ? 'Retas' : m.format === 'libre' ? 'Libre' : 'Normal';
                     const winnerName = m.winner === 1 ? m.team1 : m.team2;
                     let scoreLine = m.score;
@@ -2883,9 +2883,11 @@
                         </div>`;
                     }
                     return `<div style="background:#2c2c54; border-radius:8px; padding:8px 10px; margin-bottom:6px; font-size:0.8rem;">
-                        <div style="display:flex; justify-content:space-between; color:#aaa; font-size:0.7rem;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; color:#aaa; font-size:0.7rem;">
                             <span>${m.date}</span>
-                            <span>${modeLabel} · ${m.duration}</span>
+                            <span style="display:flex; align-items:center; gap:8px;">${modeLabel} · ${m.duration}
+                                <button onclick="confirmDeleteSavedMatch(${idx})" title="Borrar este partido" style="background:none; border:1px solid rgba(233,69,96,0.6); color:#ff8a9b; border-radius:6px; padding:1px 7px; cursor:pointer; font-size:0.75rem;"><i class="bi bi-trash"></i></button>
+                            </span>
                         </div>
                         <div style="margin-top:4px; font-weight:600;">${m.team1} vs ${m.team2}</div>
                         <div style="color:#ffc107; font-weight:700;">${winnerName} gana · ${scoreLine}</div>
@@ -3791,46 +3793,89 @@
             updateRetaStatus();
         }
 
-        // ── Borrar un partido concreto de la reta ──
-        let _matchToDelete = null;
+        // ── Borrar partidos ──
+        let _deleteAction = null;
 
-        function confirmDeleteRetaMatch(idx) {
-            if (!retaSession || !retaSession.matches[idx]) return;
-            _matchToDelete = idx;
-            const m = retaSession.matches[idx];
-            const ganadores = (m.winner === 1 ? m.team1 : m.team2).join(' / ');
-            document.getElementById('delete-match-text').innerHTML =
-                `<div><b>Partido ${m.n}</b> · ${esc(m.time)}</div>
-                 <div style="margin-top:6px;">${esc(m.team1.join(' / '))} <b>${m.games[0]} - ${m.games[1]}</b> ${esc(m.team2.join(' / '))}</div>
-                 <div style="margin-top:8px; color:#ffe082;">Se le quitarán ${m.pts} pts a ${esc(ganadores)} y el partido dejará de contar para todos.</div>`;
+        function askDeleteMatch(detalle, accion) {
+            document.getElementById('delete-match-text').innerHTML = detalle;
+            _deleteAction = accion;
             document.getElementById('confirm-delete-match-overlay').classList.remove('d-none');
         }
 
         function cancelDeleteRetaMatch() {
-            _matchToDelete = null;
+            _deleteAction = null;
             document.getElementById('confirm-delete-match-overlay').classList.add('d-none');
         }
 
         function deleteRetaMatch() {
             document.getElementById('confirm-delete-match-overlay').classList.add('d-none');
-            if (_matchToDelete === null || !retaSession) return;
-            const m = retaSession.matches[_matchToDelete];
-            _matchToDelete = null;
-            if (!m) return;
+            const accion = _deleteAction;
+            _deleteAction = null;
+            if (accion) accion();
+        }
+
+        // Quita el partido del historial general, si esta guardado ahi
+        function removeFromMatchHistory(matchId) {
+            if (!matchId) return;
+            try {
+                const guardados = JSON.parse(localStorage.getItem('padel-matches') || '[]');
+                const quedan = guardados.filter(g => g.id !== matchId);
+                if (quedan.length !== guardados.length) localStorage.setItem('padel-matches', JSON.stringify(quedan));
+            } catch(e) {}
+        }
+
+        // Quita el partido de la reta en curso y descuenta lo que aporto
+        function removeFromRetaSession(matchId) {
+            if (!retaSession || !matchId) return false;
+            const m = retaSession.matches.find(x => x.matchId === matchId);
+            if (!m) return false;
             subtractMatchFromReta(m);
             retaSession.matches = retaSession.matches.filter(x => x !== m);
             retaSession.matches.forEach((x, i) => x.n = i + 1);
-            // El mismo partido en el historial general se va con el
-            if (m.matchId) {
-                try {
-                    const guardados = JSON.parse(localStorage.getItem('padel-matches') || '[]');
-                    const quedan = guardados.filter(g => g.id !== m.matchId);
-                    if (quedan.length !== guardados.length) localStorage.setItem('padel-matches', JSON.stringify(quedan));
-                } catch(e) {}
-            }
             saveRetaState();
             updateRetaStatus();
-            showRetaStandings();
+            return true;
+        }
+
+        // Desde la clasificacion de la reta
+        function confirmDeleteRetaMatch(idx) {
+            if (!retaSession || !retaSession.matches[idx]) return;
+            const m = retaSession.matches[idx];
+            const ganadores = (m.winner === 1 ? m.team1 : m.team2).join(' / ');
+            askDeleteMatch(
+                `<div><b>Partido ${m.n}</b> · ${esc(m.time)}</div>
+                 <div style="margin-top:6px;">${esc(m.team1.join(' / '))} <b>${m.games[0]} - ${m.games[1]}</b> ${esc(m.team2.join(' / '))}</div>
+                 <div style="margin-top:8px; color:#ffe082;">Se le quitarán ${m.pts} pts a ${esc(ganadores)} y el partido dejará de contar para todos.</div>`,
+                () => {
+                    subtractMatchFromReta(m);
+                    retaSession.matches = retaSession.matches.filter(x => x !== m);
+                    retaSession.matches.forEach((x, i) => x.n = i + 1);
+                    removeFromMatchHistory(m.matchId);
+                    saveRetaState();
+                    updateRetaStatus();
+                    showRetaStandings();
+                });
+        }
+
+        // Desde el historial de Partidos
+        function confirmDeleteSavedMatch(idx) {
+            const guardados = JSON.parse(localStorage.getItem('padel-matches') || '[]');
+            const m = guardados[idx];
+            if (!m) return;
+            const enReta = m.id && retaSession && retaSession.matches.some(x => x.matchId === m.id);
+            const ganador = m.winner === 1 ? m.team1 : m.team2;
+            askDeleteMatch(
+                `<div style="color:#ccc; font-size:0.78rem;">${esc(m.date)}</div>
+                 <div style="margin-top:6px;">${esc(m.team1)} <b>${esc(m.score)}</b> ${esc(m.team2)}</div>
+                 <div style="margin-top:4px; color:#ffc107;">Ganó ${esc(ganador)}</div>
+                 ${enReta ? '<div style="margin-top:8px; color:#ffe082;">Este partido es de la reta en curso: también se descontarán sus puntos y estadísticas de la clasificación.</div>' : ''}`,
+                () => {
+                    const lista = JSON.parse(localStorage.getItem('padel-matches') || '[]');
+                    const quitado = lista.splice(idx, 1)[0];
+                    localStorage.setItem('padel-matches', JSON.stringify(lista));
+                    if (quitado && quitado.id) removeFromRetaSession(quitado.id);
+                    showMatchesModal();
+                });
         }
 
         // Siguiente partido de la reta: limpia el marcador, coloca a los ganadores
