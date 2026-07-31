@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <!-- Sube en cada publicacion: la app la compara contra la red para saber si esta al dia -->
-    <meta name="app-version" content="4.4">
+    <meta name="app-version" content="4.5">
     <title>Padel Scoreboard</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1368,7 +1368,7 @@
             </a>
             <a href="https://github.com/prime-leads-app/padel-score-board" target="_blank" rel="noopener" class="card bg-dark border-secondary text-decoration-none flex-fill" style="cursor:pointer;">
                 <div class="card-body py-0 px-2 text-center">
-                    <small class="text-white">PadelApp v<span id="app-version-label">4.4</span></small>
+                    <small class="text-white">PadelApp v<span id="app-version-label">4.5</span></small>
                 </div>
             </a>
             <div class="card bg-dark border-secondary flex-fill">
@@ -1470,10 +1470,11 @@
                 </div>
             </div>
 
-            <div style="display:flex; gap:8px; justify-content:center; flex-wrap:wrap; padding-top:14px;">
-                <button class="btn btn-warning" id="btn-start-reta" onclick="startReta()" style="font-weight:700;">Iniciar reta</button>
-                <button class="btn btn-outline-info" onclick="closeRetaModal(); showRetaStandings();">📊 Clasificación</button>
-                <button class="btn btn-outline-light" onclick="closeRetaModal()">Listo</button>
+            <div style="display:flex; gap:6px; justify-content:center; flex-wrap:wrap; padding-top:14px;">
+                <button class="btn btn-warning btn-sm" id="btn-start-reta" onclick="startReta()" style="font-weight:700;">Iniciar</button>
+                <button class="btn btn-outline-info btn-sm" onclick="closeRetaModal(); showRetaStandings();">📊 Clasificación</button>
+                <button class="btn btn-outline-danger btn-sm" id="btn-close-reta-footer" onclick="closeRetaModal(); confirmCloseReta();">Cerrar reta</button>
+                <button class="btn btn-outline-light btn-sm" onclick="closeRetaModal()">Listo</button>
             </div>
         </div>
     </div>
@@ -3265,17 +3266,20 @@
                 const n = retaSession.matches.length;
                 html = `Reta del ${esc(fmtRetaDate(retaSession.date))}, inicio ${esc(retaSession.time)} · ` +
                     `<strong>${n}</strong> ${n === 1 ? 'partido jugado' : 'partidos jugados'} · ${retaSession.roster.length} participantes`;
-                startBtn.textContent = 'Reta iniciada';
+                startBtn.textContent = 'Iniciada';
                 startBtn.disabled = true;
                 startBtn.classList.add('disabled');
             } else {
                 html = retaRoster.length < 4
                     ? 'Agrega al menos 4 participantes para iniciar la reta.'
-                    : 'Elige las parejas del primer partido y toca Iniciar reta.';
-                startBtn.textContent = 'Iniciar reta';
+                    : 'Elige las parejas del primer partido y toca Iniciar.';
+                startBtn.textContent = 'Iniciar';
                 startBtn.disabled = retaRoster.length < 4;
                 startBtn.classList.toggle('disabled', retaRoster.length < 4);
             }
+            // Cerrar la reta solo tiene sentido con una jornada en curso
+            const cerrarBtn = document.getElementById('btn-close-reta-footer');
+            if (cerrarBtn) cerrarBtn.classList.toggle('d-none', !retaActive);
             if (mini) mini.innerHTML = html;
         }
 
