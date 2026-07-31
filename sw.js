@@ -1,4 +1,4 @@
-const CACHE_NAME = 'padel-v4.0';
+const CACHE_NAME = 'padel-v4.1';
 const ASSETS = [
     './',
     './index.html',
@@ -23,10 +23,21 @@ self.addEventListener('activate', e => {
     self.clients.claim();
 });
 
-// Network first: intenta la red, si falla usa el cache (para offline)
+// La pagina puede pedir que el service worker nuevo tome el control de inmediato
+self.addEventListener('message', e => {
+    if (e.data && e.data.type === 'SKIP_WAITING') self.skipWaiting();
+});
+
+// Network first. Lo propio se pide con cache: 'no-store' para saltarse la cache
+// HTTP del navegador, que en iOS servia el index.html viejo durante horas.
 self.addEventListener('fetch', e => {
+    if (e.request.method !== 'GET') return;
+    const mismoOrigen = new URL(e.request.url).origin === self.location.origin;
+    const peticion = mismoOrigen
+        ? new Request(e.request, { cache: 'no-store' })
+        : e.request;
     e.respondWith(
-        fetch(e.request)
+        fetch(peticion)
             .then(response => {
                 const clone = response.clone();
                 caches.open(CACHE_NAME).then(c => c.put(e.request, clone));

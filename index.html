@@ -887,7 +887,8 @@
                     <div onclick="toggleHamburger(); showRetasHistoryModal()" style="padding:10px 14px; cursor:pointer; border-bottom:1px solid #444; display:flex; justify-content:space-between; align-items:center;">Retas anteriores <span>📖</span></div>
                     <div onclick="toggleHamburger(); showMatchesModal()" style="padding:10px 14px; cursor:pointer; border-bottom:1px solid #444; display:flex; justify-content:space-between; align-items:center;">Partidos <span>🏅</span></div>
                     <div onclick="toggleHamburger(); showHistoryModal()" style="padding:10px 14px; cursor:pointer; border-bottom:1px solid #444; display:flex; justify-content:space-between; align-items:center;">Historial <span>📋</span></div>
-                    <div onclick="toggleHamburger(); toggleTheme()" id="theme-menu-item" style="padding:10px 14px; cursor:pointer; display:flex; justify-content:space-between; align-items:center;">Tema claro <span>☀️</span></div>
+                    <div onclick="toggleHamburger(); toggleTheme()" id="theme-menu-item" style="padding:10px 14px; cursor:pointer; border-bottom:1px solid #444; display:flex; justify-content:space-between; align-items:center;">Tema claro <span>☀️</span></div>
+                    <div onclick="toggleHamburger(); checkForUpdate(true)" style="padding:10px 14px; cursor:pointer; display:flex; justify-content:space-between; align-items:center;">Buscar actualización <span>🔄</span></div>
                 </div>
             </div>
             <span id="config-summary" onclick="showQuickPanel()" style="font-size:0.8rem; color:#aaa; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; cursor:pointer; text-decoration:underline; text-decoration-style:dotted; text-underline-offset:3px;"></span>
@@ -1325,7 +1326,7 @@
             </a>
             <a href="https://github.com/prime-leads-app/padel-score-board" target="_blank" rel="noopener" class="card bg-dark border-secondary text-decoration-none flex-fill" style="cursor:pointer;">
                 <div class="card-body py-0 px-2 text-center">
-                    <small class="text-white">PadelApp V4.0</small>
+                    <small class="text-white">PadelApp V4.1</small>
                 </div>
             </a>
             <div class="card bg-dark border-secondary flex-fill">
@@ -4237,8 +4238,97 @@
         }
     </script>
     <script>
+        // ── Actualizaciones de la app instalada ──
+        // En iOS la PWA se queda con la version cacheada durante horas. Se busca
+        // version nueva al abrir y cada vez que la app vuelve al primer plano.
+        let _swReg = null;
+        let _recargando = false;
+
+        function checkForUpdate(manual) {
+            if (!('serviceWorker' in navigator)) {
+                if (manual) alert('Este navegador no soporta actualizaciones automáticas.');
+                return;
+            }
+            if (!_swReg) {
+                if (manual) location.reload();
+                return;
+            }
+            if (manual) showUpdateBanner('Buscando actualización…', false);
+            _swReg.update().then(() => {
+                if (!manual) return;
+                // Si habia una version nueva, updatefound ya mostro el aviso
+                setTimeout(() => {
+                    const banner = document.getElementById('update-banner');
+                    if (banner && banner.dataset.state !== 'ready') {
+                        showUpdateBanner('Ya tienes la última versión', true);
+                        setTimeout(hideUpdateBanner, 2500);
+                    }
+                }, 1200);
+            }).catch(() => {
+                if (manual) {
+                    showUpdateBanner('Sin conexión: no se pudo verificar', true);
+                    setTimeout(hideUpdateBanner, 2500);
+                }
+            });
+        }
+
+        function showUpdateBanner(texto, cerrable) {
+            let b = document.getElementById('update-banner');
+            if (!b) {
+                b = document.createElement('div');
+                b.id = 'update-banner';
+                b.style.cssText = 'position:fixed; left:12px; right:12px; bottom:12px; z-index:2000; background:#1b5e20; color:#fff; border-radius:10px; padding:10px 14px; font-size:0.85rem; display:flex; align-items:center; justify-content:space-between; gap:10px; box-shadow:0 4px 16px rgba(0,0,0,0.5);';
+                document.body.appendChild(b);
+            }
+            b.dataset.state = '';
+            b.innerHTML = `<span>${texto}</span>` + (cerrable ? '<button onclick="hideUpdateBanner()" style="background:none; border:1px solid rgba(255,255,255,0.5); color:#fff; border-radius:6px; padding:2px 10px; cursor:pointer;">OK</button>' : '');
+            return b;
+        }
+
+        function hideUpdateBanner() {
+            const b = document.getElementById('update-banner');
+            if (b) b.remove();
+        }
+
+        function applyUpdate() {
+            const b = document.getElementById('update-banner');
+            if (b) b.innerHTML = '<span>Actualizando…</span>';
+            if (_swReg && _swReg.waiting) {
+                _swReg.waiting.postMessage({ type: 'SKIP_WAITING' });
+                setTimeout(() => { if (!_recargando) { _recargando = true; location.reload(); } }, 800);
+            } else {
+                _recargando = true;
+                location.reload();
+            }
+        }
+
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('./sw.js');
+            navigator.serviceWorker.register('./sw.js').then(reg => {
+                _swReg = reg;
+                reg.update();
+                reg.addEventListener('updatefound', () => {
+                    const nuevo = reg.installing;
+                    if (!nuevo) return;
+                    nuevo.addEventListener('statechange', () => {
+                        if (nuevo.state === 'installed' && navigator.serviceWorker.controller) {
+                            const b = showUpdateBanner('Hay una versión nueva de la app', false);
+                            b.dataset.state = 'ready';
+                            b.innerHTML = '<span>Hay una versión nueva</span><button onclick="applyUpdate()" style="background:#ffc107; border:none; color:#111; font-weight:700; border-radius:6px; padding:4px 12px; cursor:pointer;">Actualizar</button>';
+                        }
+                    });
+                });
+            }).catch(() => {});
+
+            navigator.serviceWorker.addEventListener('controllerchange', () => {
+                if (_recargando) return;
+                _recargando = true;
+                location.reload();
+            });
+
+            // Al volver a abrir la app instalada se revisa si hay algo nuevo
+            document.addEventListener('visibilitychange', () => {
+                if (!document.hidden) checkForUpdate(false);
+            });
         }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
