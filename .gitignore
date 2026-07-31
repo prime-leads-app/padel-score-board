@@ -2,3 +2,13 @@ logo.png
 *.png
 .claude/
 .playwright-mcp/
+
+# === Claude Code (Mnemo: memoria del repo RAIZ versionada en git) ===
+# Si arriba hay reglas que excluyen .claude/ o **/.claude/, git NO puede reincluir un hijo cuando su
+# directorio padre esta excluido: primero se REINCLUYE el .claude raiz, luego se re-excluye su
+# contenido y se reincluye lo que si va a git. Anclado con / a la raiz (no afecta .claude anidados).
+!/.claude/
+/.claude/*
+# memory/ (el dato) y settings.json (la ruta) SI van a git; settings.local.json queda ignorado.
+!/.claude/memory/
+!/.claude/settings.json
