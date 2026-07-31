@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <!-- Sube en cada publicacion: la app la compara contra la red para saber si esta al dia -->
-    <meta name="app-version" content="5.0">
+    <meta name="app-version" content="5.1">
     <title>Padel Scoreboard</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -936,6 +936,7 @@
             <span id="match-timer" class="timer-card">00:00</span>
             <button class="btn btn-outline-light btn-sm header-icon-btn d-none" onclick="showLineupModal()" id="btn-lineup" title="Cambiar los integrantes de los equipos"><i class="bi bi-people"></i></button>
             <button class="btn btn-outline-light btn-sm header-icon-btn" onclick="swapTeams()" id="btn-swap-header" title="Los equipos cambian de lado"><i class="bi bi-arrow-left-right"></i></button>
+            <button class="btn btn-outline-light btn-sm header-icon-btn d-none" onclick="showRetaStandings()" id="btn-standings-header" title="Clasificación de la reta"><i class="bi bi-trophy"></i></button>
         </div>
 
         <!-- Config Modal -->
@@ -1369,7 +1370,7 @@
             </a>
             <a href="https://github.com/prime-leads-app/padel-score-board" target="_blank" rel="noopener" class="card bg-dark border-secondary text-decoration-none flex-fill" style="cursor:pointer;">
                 <div class="card-body py-0 px-2 text-center">
-                    <small class="text-white">PadelApp v<span id="app-version-label">5.0</span></small>
+                    <small class="text-white">PadelApp v<span id="app-version-label">5.1</span></small>
                 </div>
             </a>
             <div class="card bg-dark border-secondary flex-fill">
@@ -4157,6 +4158,7 @@
             document.getElementById('reta-config-shortcut').classList.toggle('d-none', !isRetas);
             document.getElementById('names-config').classList.toggle('d-none', isRetas);
             document.getElementById('btn-lineup').classList.toggle('d-none', !isRetas);
+            document.getElementById('btn-standings-header').classList.toggle('d-none', !isRetas);
             updateControlsBar();
             if (isRetas && nameMode !== 'players') setNameMode('players');
             if (isRetas) {
