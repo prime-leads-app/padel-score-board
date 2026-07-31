@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <!-- Sube en cada publicacion: la app la compara contra la red para saber si esta al dia -->
-    <meta name="app-version" content="4.2">
+    <meta name="app-version" content="4.3">
     <title>Padel Scoreboard</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -327,6 +327,9 @@
             flex-shrink: 0;
         }
         .timer-card {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
             background: rgba(255,255,255,0.07);
             border: 1px solid rgba(255,193,7,0.4);
             border-radius: 10px;
@@ -908,7 +911,7 @@
 <body>
     <div class="app-wrapper">
         <!-- Header -->
-        <div class="header" style="display:flex; align-items:center; justify-content:flex-start; gap:8px;">
+        <div class="header" style="display:flex; align-items:center; justify-content:flex-start; gap:8px; position:relative;">
             <div style="position:relative; flex-shrink:0;">
                 <button class="btn btn-outline-light btn-sm" onclick="toggleHamburger()" id="hamburger-btn" style="font-size:1.2rem; line-height:1; padding:2px 6px;">☰</button>
                 <div class="d-none" id="hamburger-menu" style="position:absolute; left:0; top:100%; margin-top:4px; background:#2c2c54; border:1px solid #555; border-radius:8px; min-width:220px; z-index:999; overflow:hidden;">
@@ -927,9 +930,10 @@
                 </div>
             </div>
             <button class="btn btn-outline-light btn-sm header-icon-btn" onclick="showQuickPanel()" id="btn-quick" title="Datos del partido y la reta"><i class="bi bi-info-circle"></i></button>
-            <div style="flex:1; display:flex; justify-content:center; min-width:0;">
-                <span id="match-timer" class="timer-card">00:00</span>
-            </div>
+            <!-- Espaciador: empuja el boton de cambio de lado al extremo derecho -->
+            <div style="flex:1; min-width:0;"></div>
+            <!-- El reloj se ancla al centro de la pantalla, no al hueco entre botones -->
+            <span id="match-timer" class="timer-card">00:00</span>
             <button class="btn btn-outline-light btn-sm header-icon-btn" onclick="swapTeams()" id="btn-swap-header" title="Los equipos cambian de lado"><i class="bi bi-arrow-left-right"></i></button>
         </div>
 
@@ -1364,7 +1368,7 @@
             </a>
             <a href="https://github.com/prime-leads-app/padel-score-board" target="_blank" rel="noopener" class="card bg-dark border-secondary text-decoration-none flex-fill" style="cursor:pointer;">
                 <div class="card-body py-0 px-2 text-center">
-                    <small class="text-white">PadelApp v<span id="app-version-label">4.2</span></small>
+                    <small class="text-white">PadelApp v<span id="app-version-label">4.3</span></small>
                 </div>
             </a>
             <div class="card bg-dark border-secondary flex-fill">
