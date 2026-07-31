@@ -6,19 +6,25 @@
      Formato de puntero: - [Titulo](archivo.md) -- descripcion (updated: YYYY-MM-DD) -->
 # Memoria del proyecto
 
+App de una sola pagina (`index.html`, vanilla JS + localStorage) publicada en GitHub Pages.
+
 ## Estado
-- [estado.md](estado.md) -- estado vivo de la sesion (updated: 2026-07-30)
+- [estado.md](estado.md) -- estado vivo de la sesion (updated: 2026-07-31)
 
 ## Decisiones
+- [decisiones-retas.md](decisiones-retas.md) -- ADR de las reglas de negocio de las retas: reparto de puntos, fin de tiempo, boton Fin, tabla editable (updated: 2026-07-31)
 <!-- punteros a decisiones-*.md (ADR, append-only) -->
 
 ## Conocimiento / Diseno
+- [conocimiento-retas-dinamica.md](conocimiento-retas-dinamica.md) -- rotacion en cancha (el que gana se queda pero separado) y reparto de enfrentamientos (updated: 2026-07-31)
+- [conocimiento-pwa-despliegue.md](conocimiento-pwa-despliegue.md) -- por que la PWA se quedaba vieja en iOS; hay que subir app-version y CACHE_NAME en cada publicacion (updated: 2026-07-31)
+- [conocimiento-ui-criterios.md](conocimiento-ui-criterios.md) -- criterios de interfaz del usuario: cada boton solo si sirve, cada modal se cierra solo (updated: 2026-07-31)
 <!-- punteros a conocimiento-*.md -->
 
 ## Referencia / Bugs
-- [por-clasificar.md](por-clasificar.md) -- bandeja de lo que espera clasificacion en el proximo cierre (updated: 2026-07-30)
+- [por-clasificar.md](por-clasificar.md) -- bandeja de lo que espera clasificacion; vaciada en la auditoria del 2026-07-31 (updated: 2026-07-31)
 <!-- punteros a referencia-*.md -->
 
 ## Bitacora
-- [bitacora.md](bitacora.md) -- historico append-only, una linea por unidad cerrada (updated: 2026-07-30)
+- [bitacora.md](bitacora.md) -- historico append-only, una linea por unidad cerrada (updated: 2026-07-31)
 <!-- 1 puntero a bitacora.md -->
