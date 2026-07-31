@@ -317,6 +317,40 @@
             border-color: #aaa;
         }
 
+        /* ── Encabezado: menu, datos, reloj al centro, cambio de lado ── */
+        .header-icon-btn {
+            font-size: 1.05rem;
+            line-height: 1;
+            padding: 4px 9px;
+            flex-shrink: 0;
+        }
+        .timer-card {
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(255,193,7,0.4);
+            border-radius: 10px;
+            padding: 3px 14px;
+            font-size: 1rem;
+            font-weight: 700;
+            color: #ffc107;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+        .timer-card.urgente {
+            border-color: #e94560;
+            background: rgba(233,69,96,0.18);
+            color: #ff8a9b;
+        }
+        .light-theme .timer-card {
+            background: #fff8e1;
+            border-color: #ffb300;
+            color: #b26a00;
+        }
+        .light-theme .timer-card.urgente {
+            background: #ffebee;
+            border-color: #e94560;
+            color: #c62828;
+        }
+
         /* ── Retas: roster, parejas y clasificacion ── */
         #reta-modal {
             align-items: flex-start;
@@ -827,7 +861,6 @@
         .light-theme .card .text-white { color: #1a1a1a !important; }
 
         .light-theme #config-summary { color: #333 !important; font-weight: 600; }
-        .light-theme #match-timer { color: #c62828; }
 
         /* Hamburger button and menu - !important to override inline styles */
         .light-theme #hamburger-btn { color: #1a1a1a; border-color: #aaa; border-width: 2px; }
@@ -891,8 +924,11 @@
                     <div onclick="toggleHamburger(); checkForUpdate(true)" style="padding:10px 14px; cursor:pointer; display:flex; justify-content:space-between; align-items:center;">Buscar actualización <span>🔄</span></div>
                 </div>
             </div>
-            <span id="config-summary" onclick="showQuickPanel()" style="font-size:0.8rem; color:#aaa; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; cursor:pointer; text-decoration:underline; text-decoration-style:dotted; text-underline-offset:3px;"></span>
-            <span id="match-timer" style="font-size:0.8rem; color:#ffc107; font-weight:600; margin-left:auto; flex-shrink:0;">00:00</span>
+            <button class="btn btn-outline-light btn-sm header-icon-btn" onclick="showQuickPanel()" id="btn-quick" title="Datos del partido y la reta"><i class="bi bi-info-circle"></i></button>
+            <div style="flex:1; display:flex; justify-content:center; min-width:0;">
+                <span id="match-timer" class="timer-card">00:00</span>
+            </div>
+            <button class="btn btn-outline-light btn-sm header-icon-btn" onclick="swapTeams()" id="btn-swap-header" title="Los equipos cambian de lado"><i class="bi bi-arrow-left-right"></i></button>
         </div>
 
         <!-- Config Modal -->
@@ -1864,7 +1900,9 @@
                 const timeLabel = retaTimeLimit > 0 ? retaTimeLimit + ' min' : '∞';
                 txt = 'Retas · Juegos: ' + gamesLabel + ' · Tiempo: ' + timeLabel + ' · Fin: ' + (retasEarlyWin ? 'Anticipado' : 'Todos') + ' · 40-40: ' + deuceLabel;
             }
-            document.getElementById('config-summary').textContent = txt;
+            // El resumen ya no vive en el encabezado: se lee en el panel de datos
+            const resumenEl = document.getElementById('config-summary');
+            if (resumenEl) resumenEl.textContent = txt;
         }
 
         function showRules(type) {
@@ -1934,19 +1972,15 @@
         }
 
         function updateIdleTimerDisplay() {
-            const el = document.getElementById('match-timer');
-            if (!el) return;
-            if (matchOver) { el.textContent = elapsedText(); el.style.color = '#ffc107'; return; }
+            if (matchOver) { setTimerLook(elapsedText(), false); return; }
             if (timerElapsed > 0) {
                 // Partido a medias con el reloj detenido
-                el.style.color = '#ffc107';
-                el.textContent = isRetaTimed()
-                    ? '⏱ ' + fmtClock(retaTimeLimit * 60 - Math.floor(timerElapsed / 1000))
-                    : fmtClock(Math.floor(timerElapsed / 1000));
+                setTimerLook(isRetaTimed()
+                    ? fmtClock(retaTimeLimit * 60 - Math.floor(timerElapsed / 1000))
+                    : fmtClock(Math.floor(timerElapsed / 1000)), false);
                 return;
             }
-            el.style.color = '#ffc107';
-            el.textContent = isRetaTimed() ? '⏱ ' + fmtClock(retaTimeLimit * 60) : '00:00';
+            setTimerLook(isRetaTimed() ? fmtClock(retaTimeLimit * 60) : '00:00', false);
         }
 
         function resetTimer() {
@@ -2082,23 +2116,27 @@
             return mode === 'padel' && padelFormat === 'retas' && retaTimeLimit > 0;
         }
 
-        function updateTimerDisplay() {
+        function setTimerLook(texto, urgente) {
             const el = document.getElementById('match-timer');
+            if (!el) return;
+            el.textContent = texto;
+            el.classList.toggle('urgente', !!urgente);
+            el.style.color = '';
+        }
+
+        function updateTimerDisplay() {
             const elapsed = Math.floor((Date.now() - timerStart) / 1000);
             if (isRetaTimed()) {
                 const left = retaTimeLimit * 60 - elapsed;
                 if (left > 0) {
-                    el.textContent = '⏱ ' + fmtClock(left);
-                    el.style.color = left <= 120 ? '#e94560' : '#ffc107';
+                    setTimerLook(fmtClock(left), left <= 120);
                 } else {
-                    el.textContent = '⏱ TIEMPO +' + fmtClock(-left);
-                    el.style.color = '#e94560';
+                    setTimerLook('+' + fmtClock(-left), true);
                     if (!retaTimeUp) onRetaTimeUp();
                 }
                 return;
             }
-            el.style.color = '#ffc107';
-            el.textContent = fmtClock(elapsed);
+            setTimerLook(fmtClock(elapsed), false);
         }
 
         // Se agotó el tiempo: si hay ventaja en juegos cierra ya; si van
@@ -2991,10 +3029,8 @@
             } else {
                 scoreText = `${freePoints[0]} - ${freePoints[1]} · ${timerText}`;
             }
-            // Al cerrar el partido el header muestra lo que se jugó, no el restante
-            const timerEl = document.getElementById('match-timer');
-            timerEl.textContent = timerText;
-            timerEl.style.color = '#ffc107';
+            // Al cerrar el partido el reloj muestra lo que se jugó, no el restante
+            setTimerLook(timerText, false);
             document.getElementById('winner-text-p' + p).textContent = `${getName(p)} gana!`;
             document.getElementById('winner-score-p' + p).textContent = scoreText;
             document.getElementById('winner-badge-p' + p).classList.add('show');
