@@ -21,3 +21,4 @@ metadata:
 - 2026-07-31: v4.5-v5.0 borrado de partidos individuales con sus estadisticas vinculadas por matchId (4c4a665, 74da886)
 - 2026-07-31: v5.0-v5.1 cambio de integrantes y clasificacion accesibles desde el encabezado del marcador (7db2f9f, fe1607c)
 - 2026-07-31: v5.3 ayuda de la app actualizada al estado real; v5.4 cada modal se cierra por su cuenta (0b496bd, 986d923)
+- 2026-07-31-08-43-27-01: memoria Mnemo auditada, versionada en git y pusheada (commits b663270, 55bfc7b)
