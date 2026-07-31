@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <!-- Sube en cada publicacion: la app la compara contra la red para saber si esta al dia -->
-    <meta name="app-version" content="5.3">
+    <meta name="app-version" content="5.4">
     <title>Padel Scoreboard</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1061,7 +1061,7 @@
 
             <!-- En Retas, los jugadores se administran en su propia pantalla -->
             <div id="reta-config-shortcut" class="d-none">
-                <button class="btn btn-warning w-100" onclick="toggleAllConfig(); showRetaModal();" style="font-weight:700; padding:12px;">🏆 Participantes y parejas de la reta</button>
+                <button class="btn btn-warning w-100" onclick="showRetaModal()" style="font-weight:700; padding:12px;">🏆 Participantes y parejas de la reta</button>
                 <div id="reta-status-mini" style="text-align:center; font-size:0.78rem; color:#aaa; margin-top:8px;"></div>
             </div>
         </div>
@@ -1419,7 +1419,7 @@
             </a>
             <a href="https://github.com/prime-leads-app/padel-score-board" target="_blank" rel="noopener" class="card bg-dark border-secondary text-decoration-none flex-fill" style="cursor:pointer;">
                 <div class="card-body py-0 px-2 text-center">
-                    <small class="text-white">PadelApp v<span id="app-version-label">5.3</span></small>
+                    <small class="text-white">PadelApp v<span id="app-version-label">5.4</span></small>
                 </div>
             </a>
             <div class="card bg-dark border-secondary flex-fill">
@@ -1505,8 +1505,8 @@
 
             <div style="display:flex; gap:6px; justify-content:center; flex-wrap:wrap; padding-top:14px;">
                 <button class="btn btn-warning btn-sm" id="btn-start-reta" onclick="startReta()" style="font-weight:700;">Iniciar</button>
-                <button class="btn btn-outline-info btn-sm" onclick="closeRetaModal(); showRetaStandings();">📊 Clasificación</button>
-                <button class="btn btn-outline-danger btn-sm" id="btn-close-reta-footer" onclick="closeRetaModal(); confirmCloseReta();">Cerrar reta</button>
+                <button class="btn btn-outline-info btn-sm" onclick="showRetaStandings()">📊 Clasificación</button>
+                <button class="btn btn-outline-danger btn-sm" id="btn-close-reta-footer" onclick="confirmCloseReta()">Cerrar reta</button>
                 <button class="btn btn-outline-light btn-sm" onclick="closeRetaModal()">Listo</button>
             </div>
         </div>
@@ -1556,7 +1556,7 @@
             <div style="display:flex; gap:8px; justify-content:center; margin-top:12px; flex-wrap:wrap;">
                 <button class="btn btn-outline-warning btn-sm" id="btn-goto-matches" onclick="scrollToRetaMatches()">📋 Partidos</button>
                 <!-- Compartir: en pausa hasta rehacer el formato del texto -->
-                <button class="btn btn-outline-danger btn-sm" id="btn-close-reta" onclick="closeRetaStandings(); confirmCloseReta();">Cerrar reta</button>
+                <button class="btn btn-outline-danger btn-sm" id="btn-close-reta" onclick="confirmCloseReta()">Cerrar reta</button>
                 <button class="btn btn-outline-light btn-sm" onclick="closeRetaStandings()">Salir</button>
             </div>
         </div>
@@ -3502,7 +3502,10 @@
             }
             retaActive = false;
             retaSession = null;
+            // La jornada termino: las pantallas que la muestran ya no aplican
             closeRetaStandings();
+            closeLineupModal();
+            closeRetaModal();
             resetMatch();
             saveRetaState();
             updateRetaUI();
