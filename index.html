@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <!-- Sube en cada publicacion: la app la compara contra la red para saber si esta al dia -->
-    <meta name="app-version" content="4.3">
+    <meta name="app-version" content="4.4">
     <title>Padel Scoreboard</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1368,7 +1368,7 @@
             </a>
             <a href="https://github.com/prime-leads-app/padel-score-board" target="_blank" rel="noopener" class="card bg-dark border-secondary text-decoration-none flex-fill" style="cursor:pointer;">
                 <div class="card-body py-0 px-2 text-center">
-                    <small class="text-white">PadelApp v<span id="app-version-label">4.3</span></small>
+                    <small class="text-white">PadelApp v<span id="app-version-label">4.4</span></small>
                 </div>
             </a>
             <div class="card bg-dark border-secondary flex-fill">
@@ -1417,9 +1417,7 @@
                 <h5 style="margin:0; font-weight:700;">🏆 Reta</h5>
                 <button class="btn btn-sm" onclick="closeRetaModal()" style="padding:0 8px; background:#e94560; color:#fff; font-weight:700; border-radius:4px;">✕</button>
             </div>
-            <div id="reta-status" style="font-size:0.78rem; color:#aaa; margin-bottom:14px;"></div>
-
-            <div style="overflow-y:auto; flex:1;">
+            <div style="overflow-y:auto; flex:1; margin-top:10px;">
                 <!-- 1. Jornada: en una linea; la fecha solo se edita si hace falta -->
                 <div class="reta-section" style="padding:10px 12px;">
                     <div style="display:flex; align-items:center; gap:8px;">
@@ -3259,10 +3257,9 @@
         }
 
         function updateRetaStatus() {
-            const el = document.getElementById('reta-status');
             const mini = document.getElementById('reta-status-mini');
-            if (!el) return;
             const startBtn = document.getElementById('btn-start-reta');
+            if (!startBtn) return;
             let html;
             if (retaActive && retaSession) {
                 const n = retaSession.matches.length;
@@ -3279,7 +3276,6 @@
                 startBtn.disabled = retaRoster.length < 4;
                 startBtn.classList.toggle('disabled', retaRoster.length < 4);
             }
-            el.innerHTML = html;
             if (mini) mini.innerHTML = html;
         }
 
@@ -3595,12 +3591,10 @@
                     const nombres = { p1a: 'equipo 1', p1b: 'equipo 1', p2a: 'equipo 2', p2b: 'equipo 2' };
                     const detalle = Object.entries(p).map(([k, v]) => `<b>${esc(v)}</b> al ${nombres[k]}`).join(' y ');
                     box.innerHTML = `<div style="color:#7ec8e3;">${Object.keys(p).length === 1 ? 'Falta un jugador' : 'Faltan dos jugadores'}. Por turnos y cruces pendientes entra ${detalle}.</div>` +
-                        '<div style="display:flex; gap:8px; margin-top:8px; flex-wrap:wrap;">' +
-                        '<button class="btn btn-warning btn-sm" style="font-weight:700;" onclick="applySuggestedEntrants()">Poner a los sugeridos</button>' +
-                        swapButtonHTML() + '</div>';
+                        '<button class="btn btn-warning btn-sm w-100" style="font-weight:700; margin-top:8px; padding:8px;" onclick="applySuggestedEntrants()">Poner a los sugeridos</button>' +
+                        swapButtonHTML();
                 } else {
-                    box.innerHTML = '<span style="opacity:0.55;">Elige los cuatro jugadores para revisar los cruces.</span>' +
-                        '<div style="margin-top:8px;">' + swapButtonHTML() + '</div>';
+                    box.innerHTML = '<span style="opacity:0.55;">Elige los cuatro jugadores para revisar los cruces.</span>' + swapButtonHTML();
                 }
                 return;
             }
@@ -3638,15 +3632,14 @@
                 if (s) {
                     html += `<div style="opacity:0.8; margin-top:6px;">Sugerido: <b>${esc(s.t1.join(' / '))}</b> vs <b>${esc(s.t2.join(' / '))}</b></div>`;
                 }
-                acciones += '<button class="btn btn-warning btn-sm" style="font-weight:700;" onclick="applySuggestedMatchup()">🔀 Armar el mejor partido</button>';
+                acciones += '<button class="btn btn-warning btn-sm w-100" style="font-weight:700; margin-top:8px; padding:8px;" onclick="applySuggestedMatchup()">🔀 Armar el mejor partido</button>';
             }
-            acciones += swapButtonHTML();
-            box.innerHTML = html + `<div style="display:flex; gap:8px; margin-top:8px; flex-wrap:wrap;">${acciones}</div>`;
+            box.innerHTML = html + acciones + swapButtonHTML();
         }
 
-        // Boton para que los equipos cambien de color/lado
+        // Cambio de lado: ocupa todo el ancho, debajo de las parejas
         function swapButtonHTML() {
-            return '<button class="btn btn-outline-light btn-sm" style="font-weight:700;" onclick="swapTeams()" title="Los del rojo pasan al azul y viceversa">🔄 Cambiar de lado</button>';
+            return '<button class="btn btn-outline-light w-100" style="font-weight:700; margin-top:8px; padding:10px;" onclick="swapTeams()" title="Los del rojo pasan al azul y viceversa"><i class="bi bi-arrow-left-right"></i> Cambiar de lado</button>';
         }
 
         // Tabla ordenada: puntos, luego partidos ganados, luego menos jugados
