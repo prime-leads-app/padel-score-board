@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <!-- Sube en cada publicacion: la app la compara contra la red para saber si esta al dia -->
+    <meta name="app-version" content="4.2">
     <title>Padel Scoreboard</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1362,7 +1364,7 @@
             </a>
             <a href="https://github.com/prime-leads-app/padel-score-board" target="_blank" rel="noopener" class="card bg-dark border-secondary text-decoration-none flex-fill" style="cursor:pointer;">
                 <div class="card-body py-0 px-2 text-center">
-                    <small class="text-white">PadelApp V4.1</small>
+                    <small class="text-white">PadelApp v<span id="app-version-label">4.2</span></small>
                 </div>
             </a>
             <div class="card bg-dark border-secondary flex-fill">
@@ -4261,37 +4263,64 @@
     </script>
     <script>
         // ── Actualizaciones de la app instalada ──
-        // En iOS la PWA se queda con la version cacheada durante horas. Se busca
-        // version nueva al abrir y cada vez que la app vuelve al primer plano.
+        // No basta con registration.update(): eso solo mira si sw.js cambio. Aqui se
+        // compara la version publicada en la red contra la que esta corriendo.
         let _swReg = null;
         let _recargando = false;
 
-        function checkForUpdate(manual) {
-            if (!('serviceWorker' in navigator)) {
-                if (manual) alert('Este navegador no soporta actualizaciones automáticas.');
-                return;
-            }
-            if (!_swReg) {
-                if (manual) location.reload();
-                return;
-            }
+        function appVersion() {
+            const m = document.querySelector('meta[name="app-version"]');
+            return m ? m.content : '?';
+        }
+
+        async function fetchRemoteVersion() {
+            const res = await fetch('./index.html?nocache=' + Date.now(), { cache: 'no-store' });
+            const txt = await res.text();
+            const m = txt.match(/name="app-version"\s+content="([^"]+)"/);
+            return m ? m[1] : null;
+        }
+
+        async function forceUpdate() {
+            _recargando = true;
+            try {
+                const keys = await caches.keys();
+                await Promise.all(keys.map(k => caches.delete(k)));
+            } catch(e) {}
+            try { if (_swReg) await _swReg.update(); } catch(e) {}
+            location.replace('./index.html?v=' + Date.now());
+        }
+
+        async function checkForUpdate(manual) {
             if (manual) showUpdateBanner('Buscando actualización…', false);
-            _swReg.update().then(() => {
-                if (!manual) return;
-                // Si habia una version nueva, updatefound ya mostro el aviso
-                setTimeout(() => {
-                    const banner = document.getElementById('update-banner');
-                    if (banner && banner.dataset.state !== 'ready') {
-                        showUpdateBanner('Ya tienes la última versión', true);
-                        setTimeout(hideUpdateBanner, 2500);
-                    }
-                }, 1200);
-            }).catch(() => {
+            let remota = null;
+            try {
+                remota = await fetchRemoteVersion();
+            } catch(e) {
                 if (manual) {
                     showUpdateBanner('Sin conexión: no se pudo verificar', true);
                     setTimeout(hideUpdateBanner, 2500);
                 }
-            });
+                return;
+            }
+            if (!remota) {
+                if (manual) { showUpdateBanner('No se pudo leer la versión publicada', true); setTimeout(hideUpdateBanner, 2500); }
+                return;
+            }
+            if (remota === appVersion()) {
+                if (manual) {
+                    showUpdateBanner(`Ya tienes la última versión (v${appVersion()})`, true);
+                    setTimeout(hideUpdateBanner, 2500);
+                }
+                return;
+            }
+            if (manual) {
+                forceUpdate();
+                return;
+            }
+            const b = showUpdateBanner('', false);
+            b.dataset.state = 'ready';
+            b.innerHTML = `<span>Versión nueva disponible (v${esc(remota)})</span>` +
+                '<button onclick="forceUpdate()" style="background:#ffc107; border:none; color:#111; font-weight:700; border-radius:6px; padding:4px 12px; cursor:pointer;">Actualizar</button>';
         }
 
         function showUpdateBanner(texto, cerrable) {
@@ -4315,43 +4344,27 @@
         function applyUpdate() {
             const b = document.getElementById('update-banner');
             if (b) b.innerHTML = '<span>Actualizando…</span>';
-            if (_swReg && _swReg.waiting) {
-                _swReg.waiting.postMessage({ type: 'SKIP_WAITING' });
-                setTimeout(() => { if (!_recargando) { _recargando = true; location.reload(); } }, 800);
-            } else {
-                _recargando = true;
-                location.reload();
-            }
+            forceUpdate();
         }
 
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('./sw.js').then(reg => {
                 _swReg = reg;
                 reg.update();
-                reg.addEventListener('updatefound', () => {
-                    const nuevo = reg.installing;
-                    if (!nuevo) return;
-                    nuevo.addEventListener('statechange', () => {
-                        if (nuevo.state === 'installed' && navigator.serviceWorker.controller) {
-                            const b = showUpdateBanner('Hay una versión nueva de la app', false);
-                            b.dataset.state = 'ready';
-                            b.innerHTML = '<span>Hay una versión nueva</span><button onclick="applyUpdate()" style="background:#ffc107; border:none; color:#111; font-weight:700; border-radius:6px; padding:4px 12px; cursor:pointer;">Actualizar</button>';
-                        }
-                    });
-                });
             }).catch(() => {});
-
-            navigator.serviceWorker.addEventListener('controllerchange', () => {
-                if (_recargando) return;
-                _recargando = true;
-                location.reload();
-            });
-
-            // Al volver a abrir la app instalada se revisa si hay algo nuevo
-            document.addEventListener('visibilitychange', () => {
-                if (!document.hidden) checkForUpdate(false);
-            });
         }
+
+        // El pie siempre muestra la version que esta corriendo de verdad
+        (function () {
+            const lbl = document.getElementById('app-version-label');
+            if (lbl) lbl.textContent = appVersion();
+        })();
+
+        // Se compara la version al abrir y cada vez que la app vuelve al primer plano
+        checkForUpdate(false);
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) checkForUpdate(false);
+        });
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
