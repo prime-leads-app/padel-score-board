@@ -1,4 +1,4 @@
-const CACHE_NAME = 'padel-v4.9';
+const CACHE_NAME = 'padel-v5.0';
 const ASSETS = [
     './',
     './index.html',
