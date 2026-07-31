@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <!-- Sube en cada publicacion: la app la compara contra la red para saber si esta al dia -->
-    <meta name="app-version" content="4.8">
+    <meta name="app-version" content="4.9">
     <title>Padel Scoreboard</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1368,7 +1368,7 @@
             </a>
             <a href="https://github.com/prime-leads-app/padel-score-board" target="_blank" rel="noopener" class="card bg-dark border-secondary text-decoration-none flex-fill" style="cursor:pointer;">
                 <div class="card-body py-0 px-2 text-center">
-                    <small class="text-white">PadelApp v<span id="app-version-label">4.8</span></small>
+                    <small class="text-white">PadelApp v<span id="app-version-label">4.9</span></small>
                 </div>
             </a>
             <div class="card bg-dark border-secondary flex-fill">
@@ -3621,7 +3621,7 @@
                 return;
             }
             if (!retaSession || retaSession.matches.length === 0) {
-                box.innerHTML = '<span style="color:#8bc34a;">✓ Primer partido de la reta.</span>';
+                box.innerHTML = '<span style="color:#8bc34a;">✓ Primer partido de la reta.</span>' + swapButtonHTML();
                 return;
             }
             const a = analyzeMatchup(vals);
