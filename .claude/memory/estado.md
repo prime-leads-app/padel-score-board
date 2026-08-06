@@ -10,5 +10,5 @@ metadata:
   modified: 2026-07-31T13:35:51.259Z
 ---
 
-**Ahora:** v5.7 implementada y verificada a 390 px: nombres de jugadores ampliados 28% mediante escala responsive y padding interno reducido, sin redimensionar tarjetas ni encimar Error/Acierto.
-**Proximo paso:** validar la legibilidad durante una reta real en cancha.
+**Ahora:** v5.8 reubica Error/Acierto dentro de Reta y reemplaza la captura extensa de participantes por dos accesos compactos a listado/eliminacion y alta.
+**Proximo paso:** Validar en una reta real que el flujo resulte comodo en cancha.

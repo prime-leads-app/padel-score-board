@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <!-- Sube en cada publicacion: la app la compara contra la red para saber si esta al dia -->
-    <meta name="app-version" content="5.7">
+    <meta name="app-version" content="5.8">
     <title>Padel Scoreboard</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -451,30 +451,186 @@
             font-size: 0.8rem;
         }
         .light-theme .cfg-label { color: #0d47a1; font-weight: 700; }
-        .reta-chip {
+        .reta-compact-section {
+            padding: 10px 12px;
+            margin-bottom: 10px;
+        }
+        .reta-compact-section .reta-section-title {
+            margin-bottom: 7px;
+        }
+        .reta-compact-toggle,
+        .reta-participant-actions {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 7px;
+            width: 100%;
+        }
+        .reta-compact-toggle .btn,
+        .reta-participant-action {
+            min-height: 38px;
+            padding: 5px 8px !important;
+            font-size: 0.82rem !important;
+            line-height: 1.15;
+            font-weight: 700;
+            border-radius: 7px !important;
+        }
+        .reta-compact-toggle .btn {
+            width: 100%;
+        }
+        .reta-participant-action {
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: 6px;
-            background: #2c2c54;
-            border: 1px solid #555;
-            color: #fff;
-            border-radius: 999px;
-            padding: 4px 6px 4px 12px;
-            font-size: 0.85rem;
+            white-space: nowrap;
         }
-        .reta-chip button {
-            border: none;
+        .reta-participant-label-short {
+            display: none;
+        }
+        .reta-count-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 20px;
+            height: 20px;
+            padding: 0 6px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.18);
+            font-size: 0.7rem;
+        }
+        .winner-overlay.reta-submodal {
+            z-index: 1150;
+            padding: 16px;
+        }
+        .winner-card.reta-submodal-card {
+            width: 100%;
+            max-width: 420px;
+            max-height: 82dvh;
+            display: flex;
+            flex-direction: column;
+            padding: 16px;
+            text-align: left;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #2c3e50, #1a1a2e);
+        }
+        #reta-add-player-modal .reta-submodal-card {
+            max-width: 360px;
+        }
+        .reta-submodal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        .reta-submodal-header h5 {
+            margin: 0;
+            font-weight: 700;
+        }
+        .reta-modal-close {
+            padding: 0 8px;
             background: #e94560;
             color: #fff;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            line-height: 1;
-            font-size: 0.7rem;
-            padding: 0;
-            cursor: pointer;
+            font-weight: 700;
+            border-radius: 4px;
         }
-        .light-theme .reta-chip { background: #f0f2f5; color: #1a1a1a; border-color: #ccc; }
+        .reta-roster-list {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+            overflow-y: auto;
+            min-height: 0;
+        }
+        .reta-roster-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            min-height: 42px;
+            padding: 6px 7px 6px 10px;
+            border: 1px solid rgba(255,255,255,0.16);
+            border-radius: 9px;
+            background: rgba(255,255,255,0.06);
+        }
+        .reta-roster-name {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            min-width: 0;
+            font-weight: 600;
+        }
+        .reta-roster-name > span:last-child {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .reta-roster-index {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex: 0 0 24px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: rgba(126,200,227,0.16);
+            color: #7ec8e3;
+            font-size: 0.72rem;
+        }
+        .reta-roster-delete {
+            min-height: 30px;
+            padding: 4px 8px;
+            font-size: 0.74rem;
+            white-space: nowrap;
+        }
+        .reta-player-feedback {
+            min-height: 18px;
+            margin-top: 5px;
+            color: #ff8a9b;
+            font-size: 0.74rem;
+        }
+        .light-theme .winner-card.reta-submodal-card {
+            background: #fff;
+            color: #1a1a1a;
+        }
+        .light-theme .reta-roster-item {
+            background: #f5f7fa;
+            border-color: #d6dce3;
+        }
+        .light-theme .reta-roster-index {
+            background: #e3f2fd;
+            color: #0d47a1;
+        }
+        @media (max-width: 350px) {
+            .reta-time-row {
+                gap: 4px !important;
+            }
+            .reta-time-row .cfg-sq-btn {
+                width: 34px;
+                height: 34px;
+            }
+            .reta-time-row .reta-num-input {
+                width: 46px;
+                height: 34px;
+                font-size: 0.74rem;
+            }
+            .reta-participant-action {
+                gap: 4px;
+                padding: 4px !important;
+                font-size: 0.76rem !important;
+            }
+            .reta-participant-action i,
+            .reta-participant-label-full {
+                display: none;
+            }
+            .reta-participant-label-short {
+                display: inline;
+            }
+            .reta-count-badge {
+                min-width: 18px;
+                height: 18px;
+                padding: 0 5px;
+            }
+        }
         /* Fecha y hora: compactas, no necesitan el tamano de un campo de nombre */
         .reta-compact-input {
             width: 100%;
@@ -1021,10 +1177,6 @@
                     <button class="btn btn-outline-light mode-btn active" onclick="setTrackShots(true)" id="btn-shots-on">Con detalle de golpes</button>
                     <button class="btn btn-outline-light mode-btn" onclick="setTrackShots(false)" id="btn-shots-off">Sin detalle de golpes</button>
                 </div>
-                <div class="btn-group" role="group" id="outcome-detail-config">
-                    <button class="btn btn-outline-light mode-btn active" onclick="setTrackOutcomes(true)" id="btn-outcomes-on">Con detalle de Error/Acierto</button>
-                    <button class="btn btn-outline-light mode-btn" onclick="setTrackOutcomes(false)" id="btn-outcomes-off">Sin detalle de Error/Acierto</button>
-                </div>
             </div>
             <div id="libre-config" class="d-none">
                 <div class="config-row-wrap" style="justify-items:center;">
@@ -1165,7 +1317,7 @@
             <div style="margin:8px 0;">
                 <b style="color:#FFD54F;">Participantes y parejas</b> (solo en Retas)<br>
                 Se administran en la pantalla <b>Reta</b>: desde el menu ☰ → <b>Reta</b>, o con el boton amarillo de Configuracion.<br>
-                Ahi capturas la lista de jugadores y, antes de cada partido, eliges de las listas desplegables quienes forman cada equipo. La lista se guarda en el telefono para la proxima reta.<br>
+                <b>Ver participantes</b> abre la lista donde puedes quitar jugadores y <b>Agregar</b> abre la captura de un nombre nuevo. Antes de cada partido eliges de las listas desplegables quienes forman cada equipo. La lista se guarda en el telefono para la proxima reta.<br>
                 <span style="opacity:0.7;">Si eliges a alguien que ya estaba en el otro equipo, los dos se intercambian: nadie queda repetido.</span>
             </div>
 
@@ -1219,6 +1371,7 @@
 
             <div style="margin:8px 0;">
                 <b style="color:#FFD54F;">Detalle de Error/Acierto</b> (solo en Retas)<br>
+                Se activa o desactiva desde la pantalla <b>Reta</b>.<br>
                 <b>Con detalle:</b> La tarjeta de cada jugador se divide en <b>Error</b> a la izquierda y <b>Acierto</b> a la derecha. Error da el punto al equipo contrario; Acierto lo da al equipo del jugador. Ambos quedan en sus estadisticas por juego, partido y reta.<br>
                 <b>Sin detalle:</b> La tarjeta vuelve a funcionar como antes y atribuye el punto al jugador sin clasificarlo como Error o Acierto.<br>
                 <span style="opacity:0.7;">La zona grande del equipo siempre permite sumar un punto rapido sin atribuirlo. Deshacer revierte tambien Error/Acierto y el detalle de golpe.</span>
@@ -1509,7 +1662,7 @@
             </a>
             <a href="https://github.com/prime-leads-app/padel-score-board" target="_blank" rel="noopener" class="card bg-dark border-secondary text-decoration-none flex-fill" style="cursor:pointer;">
                 <div class="card-body py-0 px-2 text-center">
-                    <small class="text-white">PadelApp v<span id="app-version-label">5.7</span></small>
+                    <small class="text-white">PadelApp v<span id="app-version-label">5.8</span></small>
                 </div>
             </a>
             <div class="card bg-dark border-secondary flex-fill">
@@ -1561,7 +1714,7 @@
             <div style="overflow-y:auto; flex:1; margin-top:10px;">
                 <!-- 1. Jornada: en una linea; la fecha solo se edita si hace falta -->
                 <div class="reta-section" style="padding:10px 12px;">
-                    <div style="display:flex; align-items:center; gap:8px;">
+                    <div class="reta-time-row" style="display:flex; align-items:center; gap:8px;">
                         <small class="cfg-label" style="margin:0; white-space:nowrap;">Tiempo</small>
                         <button class="btn btn-outline-light cfg-sq-btn" onclick="setRetaTime(15)" id="rt-15">15</button>
                         <button class="btn btn-outline-light cfg-sq-btn active" onclick="setRetaTime(20)" id="rt-20">20</button>
@@ -1579,17 +1732,33 @@
                     </div>
                 </div>
 
-                <!-- 2. Participantes -->
-                <div class="reta-section">
-                    <div class="reta-section-title">Participantes</div>
-                    <div style="display:flex; gap:6px; margin-bottom:10px;">
-                        <input type="text" class="config-name-input" id="reta-new-player" maxlength="12" placeholder="Nombre del jugador" onkeydown="if(event.key==='Enter'){event.preventDefault();addRosterPlayer();}">
-                        <button class="btn btn-warning" style="font-weight:700; white-space:nowrap;" onclick="addRosterPlayer()">Agregar</button>
+                <!-- 2. Detalle de Error/Acierto -->
+                <div class="reta-section reta-compact-section" id="outcome-detail-config">
+                    <div class="reta-section-title">Error/Acierto</div>
+                    <div class="reta-compact-toggle" role="group" aria-label="Detalle de Error/Acierto">
+                        <button class="btn btn-outline-light mode-btn active" onclick="setTrackOutcomes(true)" id="btn-outcomes-on">Con detalle</button>
+                        <button class="btn btn-outline-light mode-btn" onclick="setTrackOutcomes(false)" id="btn-outcomes-off">Sin detalle</button>
                     </div>
-                    <div id="reta-roster-chips" style="display:flex; flex-wrap:wrap; gap:6px;"></div>
                 </div>
 
-                <!-- 3. Parejas del partido (se presta al modal del marcador) -->
+                <!-- 3. Participantes -->
+                <div class="reta-section reta-compact-section">
+                    <div class="reta-section-title">Participantes</div>
+                    <div class="reta-participant-actions">
+                        <button type="button" class="btn btn-outline-info reta-participant-action" onclick="showRetaParticipantsModal()">
+                            <i class="bi bi-people-fill" aria-hidden="true"></i>
+                            <span class="reta-participant-label-full">Ver participantes</span>
+                            <span class="reta-participant-label-short">Participantes</span>
+                            <span class="reta-count-badge" id="reta-roster-count">0</span>
+                        </button>
+                        <button type="button" class="btn btn-warning reta-participant-action" onclick="showAddRetaPlayerModal()">
+                            <i class="bi bi-person-plus-fill" aria-hidden="true"></i>
+                            <span>Agregar</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 4. Parejas del partido (se presta al modal del marcador) -->
                 <div id="reta-pairs-home"></div>
             </div>
 
@@ -1598,6 +1767,35 @@
                 <button class="btn btn-outline-info btn-sm" onclick="showRetaStandings()">📊 Clasificación</button>
                 <button class="btn btn-outline-danger btn-sm" id="btn-close-reta-footer" onclick="confirmCloseReta()">Cerrar reta</button>
                 <button class="btn btn-outline-light btn-sm" onclick="closeRetaModal()">Listo</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lista de participantes: se abre encima del modal de la reta -->
+    <div class="winner-overlay d-none reta-submodal" id="reta-participants-modal" onclick="if(event.target===this)closeRetaParticipantsModal()">
+        <div class="winner-card reta-submodal-card">
+            <div class="reta-submodal-header">
+                <h5>Participantes de la reta</h5>
+                <button type="button" class="btn btn-sm reta-modal-close" onclick="closeRetaParticipantsModal()" aria-label="Cerrar">✕</button>
+            </div>
+            <div class="reta-roster-list" id="reta-roster-chips"></div>
+            <button type="button" class="btn btn-outline-light btn-sm w-100" style="margin-top:12px;" onclick="closeRetaParticipantsModal()">Listo</button>
+        </div>
+    </div>
+
+    <!-- Alta de participante: separada para mantener compacta la pantalla principal de Reta -->
+    <div class="winner-overlay d-none reta-submodal" id="reta-add-player-modal" onclick="if(event.target===this)closeAddRetaPlayerModal()">
+        <div class="winner-card reta-submodal-card">
+            <div class="reta-submodal-header">
+                <h5>Agregar participante</h5>
+                <button type="button" class="btn btn-sm reta-modal-close" onclick="closeAddRetaPlayerModal()" aria-label="Cerrar">✕</button>
+            </div>
+            <label class="cfg-label" for="reta-new-player">Nombre del jugador</label>
+            <input type="text" class="config-name-input" id="reta-new-player" maxlength="12" autocomplete="off" placeholder="Escribe el nombre" oninput="clearRetaPlayerFeedback()" onkeydown="if(event.key==='Enter'){event.preventDefault();addRosterPlayer();}">
+            <div class="reta-player-feedback" id="reta-player-feedback" aria-live="polite"></div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:7px; margin-top:6px;">
+                <button type="button" class="btn btn-outline-light btn-sm" onclick="closeAddRetaPlayerModal()">Cancelar</button>
+                <button type="button" class="btn btn-warning btn-sm" style="font-weight:700;" onclick="addRosterPlayer()">Agregar</button>
             </div>
         </div>
     </div>
@@ -2161,8 +2359,6 @@
             document.querySelectorAll('.player-control').forEach(control => {
                 control.classList.toggle('outcome-detail-active', enabled);
             });
-            const config = document.getElementById('outcome-detail-config');
-            if (config) config.classList.toggle('d-none', !(mode === 'padel' && padelFormat === 'retas'));
         }
 
         function setFreeMaxPoints(n) {
@@ -3532,16 +3728,53 @@
         }
 
         // ── Roster ──
+        function clearRetaPlayerFeedback() {
+            const feedback = document.getElementById('reta-player-feedback');
+            if (feedback) feedback.textContent = '';
+        }
+
+        function showRetaParticipantsModal() {
+            renderRoster();
+            document.getElementById('reta-participants-modal').classList.remove('d-none');
+        }
+
+        function closeRetaParticipantsModal() {
+            document.getElementById('reta-participants-modal').classList.add('d-none');
+        }
+
+        function showAddRetaPlayerModal() {
+            const input = document.getElementById('reta-new-player');
+            input.value = '';
+            clearRetaPlayerFeedback();
+            document.getElementById('reta-add-player-modal').classList.remove('d-none');
+            setTimeout(() => input.focus(), 0);
+        }
+
+        function closeAddRetaPlayerModal() {
+            document.getElementById('reta-add-player-modal').classList.add('d-none');
+            clearRetaPlayerFeedback();
+        }
+
         function addRosterPlayer() {
             const input = document.getElementById('reta-new-player');
             const name = (input.value || '').trim();
-            input.value = '';
-            if (!name) return;
-            if (retaRoster.some(n => n.toLowerCase() === name.toLowerCase())) return;
+            const feedback = document.getElementById('reta-player-feedback');
+            if (!name) {
+                feedback.textContent = 'Escribe el nombre del participante.';
+                input.focus();
+                return;
+            }
+            if (retaRoster.some(n => n.toLowerCase() === name.toLowerCase())) {
+                feedback.textContent = 'Ese participante ya está en la lista.';
+                input.select();
+                return;
+            }
             retaRoster.push(name);
             if (retaActive) { ensureRetaPlayer(name); }
+            input.value = '';
             renderRoster();
             saveRetaState();
+            closeAddRetaPlayerModal();
         }
 
         function removeRosterPlayer(i) {
@@ -3559,9 +3792,11 @@
 
         function renderRoster() {
             const cont = document.getElementById('reta-roster-chips');
+            const count = document.getElementById('reta-roster-count');
+            if (count) count.textContent = retaRoster.length;
             cont.innerHTML = retaRoster.length
-                ? retaRoster.map((n, i) => `<span class="reta-chip">${esc(n)}<button onclick="removeRosterPlayer(${i})" title="Quitar">✕</button></span>`).join('')
-                : '<span style="opacity:0.5; font-size:0.78rem;">Sin jugadores todavía</span>';
+                ? retaRoster.map((n, i) => `<div class="reta-roster-item"><div class="reta-roster-name"><span class="reta-roster-index">${i + 1}</span><span>${esc(n)}</span></div><button type="button" class="btn btn-outline-danger reta-roster-delete" onclick="removeRosterPlayer(${i})" aria-label="Eliminar a ${esc(n)}"><i class="bi bi-trash" aria-hidden="true"></i> Eliminar</button></div>`).join('')
+                : '<div style="opacity:0.6; font-size:0.82rem; text-align:center; padding:18px 8px;">Aún no hay participantes.</div>';
             RETA_SLOTS.forEach(k => {
                 const sel = document.getElementById('sel-' + k);
                 const cur = sel.value;
@@ -3659,6 +3894,7 @@
             if (!document.getElementById('reta-date').value) document.getElementById('reta-date').value = retaSession ? retaSession.date : todayISO();
             if (!document.getElementById('reta-time').value) document.getElementById('reta-time').value = retaSession ? retaSession.time : nowHM();
             renderRoster();
+            updateOutcomeControls();
             updateRetaTimeButtons();
             updateRetaDateLabels();
             renderMatchupHint();
@@ -3666,6 +3902,8 @@
         }
 
         function closeRetaModal() {
+            closeRetaParticipantsModal();
+            closeAddRetaPlayerModal();
             document.getElementById('reta-modal').classList.add('d-none');
         }
 
