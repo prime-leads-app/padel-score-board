@@ -4,7 +4,7 @@ description: "Historico append-only, una linea corta por unidad de trabajo cerra
 metadata: 
   node_type: memory
   type: reference
-  updated: 2026-07-31
+  updated: 2026-08-06
   originSessionId: 3f0c74ee-036b-4a00-a437-ba79ac59d1c9
   modified: 2026-07-31T13:36:22.612Z
 ---
@@ -22,3 +22,4 @@ metadata:
 - 2026-07-31: v5.0-v5.1 cambio de integrantes y clasificacion accesibles desde el encabezado del marcador (7db2f9f, fe1607c)
 - 2026-07-31: v5.3 ayuda de la app actualizada al estado real; v5.4 cada modal se cierra por su cuenta (0b496bd, 986d923)
 - 2026-07-31-08-43-27-01: memoria Mnemo auditada, versionada en git y pusheada (commits b663270, 55bfc7b)
+- 2026-08-06-15-59-53-01: v5.5 incorpora Error/Acierto por jugador en Retas con persistencia y Deshacer

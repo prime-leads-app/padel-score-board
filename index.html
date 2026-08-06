@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <!-- Sube en cada publicacion: la app la compara contra la red para saber si esta al dia -->
-    <meta name="app-version" content="5.4">
+    <meta name="app-version" content="5.5">
     <title>Padel Scoreboard</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -196,22 +196,82 @@
             margin-top: -2px;
         }
 
-        .player-name {
-            font-size: 1rem;
-            font-weight: 600;
-            color: #fff;
-            text-align: center;
-            padding: 20px 2px;
-            cursor: pointer;
+        .player-control {
+            position: relative;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            flex: 1;
+            min-width: 0;
+            min-height: 62px;
+            overflow: hidden;
             border-radius: 6px;
             background: rgba(255,255,255,0.12);
-            flex: 1;
             -webkit-tap-highlight-color: transparent;
             transition: background 0.15s;
         }
 
-        .player-name:active {
+        .player-name {
+            position: absolute;
+            inset: 0;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #fff;
+            text-align: center;
+            padding: 2px 24px;
+            cursor: pointer;
+            pointer-events: auto;
+        }
+
+        .player-control:active {
             background: rgba(255,255,255,0.3);
+        }
+
+        /* La misma tarjeta representa media cancha: Error a la izquierda,
+           Acierto a la derecha, sin crecer ni desplazar el marcador. */
+        .player-outcome-btn {
+            display: none;
+            align-items: flex-start;
+            min-width: 0;
+            padding: 5px 7px;
+            border: 0;
+            background: transparent;
+            color: rgba(255,255,255,0.78);
+            font-size: 0.62rem;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            line-height: 1;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .player-outcome-btn.error {
+            justify-content: flex-start;
+            border-right: 1px solid rgba(255,255,255,0.28);
+        }
+
+        .player-outcome-btn.acierto {
+            justify-content: flex-end;
+        }
+
+        .player-control.outcome-detail-active .player-outcome-btn {
+            display: flex;
+        }
+
+        .player-control.outcome-detail-active .player-name {
+            pointer-events: none;
+        }
+
+        .player-control.outcome-detail-active .player-outcome-btn:active {
+            background: rgba(255,255,255,0.22);
+        }
+
+        .player-control.outcome-detail-active .player-outcome-btn:focus-visible {
+            outline: 2px solid #FFD54F;
+            outline-offset: -3px;
         }
 
         .team-name {
@@ -808,6 +868,8 @@
             .score-points { font-size: 4rem; }
             .score-points.free-score { font-size: 5rem; }
             .player-name { font-size: 0.9rem; }
+            .player-control { min-height: 42px; }
+            .player-outcome-btn { padding: 4px; font-size: 0.52rem; }
             .team-name { font-size: 0.9rem; }
 
             .vs-separator { display: none; }
@@ -958,6 +1020,10 @@
                 <div class="btn-group" role="group">
                     <button class="btn btn-outline-light mode-btn active" onclick="setTrackShots(true)" id="btn-shots-on">Con detalle de golpes</button>
                     <button class="btn btn-outline-light mode-btn" onclick="setTrackShots(false)" id="btn-shots-off">Sin detalle de golpes</button>
+                </div>
+                <div class="btn-group" role="group" id="outcome-detail-config">
+                    <button class="btn btn-outline-light mode-btn active" onclick="setTrackOutcomes(true)" id="btn-outcomes-on">Con detalle de Error/Acierto</button>
+                    <button class="btn btn-outline-light mode-btn" onclick="setTrackOutcomes(false)" id="btn-outcomes-off">Sin detalle de Error/Acierto</button>
                 </div>
             </div>
             <div id="libre-config" class="d-none">
@@ -1146,9 +1212,16 @@
             </div>
 
             <div style="margin:8px 0;">
-                <b style="color:#FFD54F;">Con detalle / Sin detalle</b><br>
+                <b style="color:#FFD54F;">Detalle de golpes</b><br>
                 <b>Con detalle:</b> Al tocar el nombre de un jugador, se le atribuye el punto y aparece un modal para registrar el tipo de golpe (Volea, Bandeja, Globo, Smash, Remate, Otro).<br>
                 <b>Sin detalle:</b> Al tocar el nombre solo se atribuye el punto al jugador, sin pedir tipo de golpe. Mas rapido si no necesitas ese nivel de detalle.
+            </div>
+
+            <div style="margin:8px 0;">
+                <b style="color:#FFD54F;">Detalle de Error/Acierto</b> (solo en Retas)<br>
+                <b>Con detalle:</b> La tarjeta de cada jugador se divide en <b>Error</b> a la izquierda y <b>Acierto</b> a la derecha. Error da el punto al equipo contrario; Acierto lo da al equipo del jugador. Ambos quedan en sus estadisticas por juego, partido y reta.<br>
+                <b>Sin detalle:</b> La tarjeta vuelve a funcionar como antes y atribuye el punto al jugador sin clasificarlo como Error o Acierto.<br>
+                <span style="opacity:0.7;">La zona grande del equipo siempre permite sumar un punto rapido sin atribuirlo. Deshacer revierte tambien Error/Acierto y el detalle de golpe.</span>
             </div>
 
             <div style="margin:8px 0;">
@@ -1244,6 +1317,7 @@
                 <b style="color:#FFD54F;">4. Cada partido</b><br>
                 Dura los juegos configurados (<b>4, 6, 8</b>) o <b>∞</b> si no quieres tope, y el tiempo que hayas puesto.<br>
                 Los puntos dentro de cada juego son los de padel: <b>0 → 15 → 30 → 40</b>, con Oro, 1 Ventaja o 2 Ventajas segun la config.<br>
+                Con el detalle activo, toca <b>Error</b> en quien fallo para dar el punto al rival, o <b>Acierto</b> en quien gano el punto. La app calcula su rendimiento por juego y lo acumula durante la reta.<br>
                 Con el boton <b>⇄</b> del encabezado los equipos cambian de lado sin perder su marcador, y con <b>👥</b> cambias a los integrantes sin salir del marcador.
             </div>
 
@@ -1338,8 +1412,16 @@
                     </div>
                 </div>
                 <div class="card-header-row" id="players-row-p1" style="gap:4px;">
-                    <span class="player-name" id="name-p1a" data-player="p1a">Jugador 1</span>
-                    <span class="player-name" id="name-p1b" data-player="p1b">Jugador 2</span>
+                    <div class="player-control" data-player="p1a">
+                        <button type="button" class="player-outcome-btn error" onclick="scorePlayerOutcome(event, 'p1a', 'error')">Error</button>
+                        <span class="player-name" id="name-p1a" data-player="p1a">Jugador 1</span>
+                        <button type="button" class="player-outcome-btn acierto" onclick="scorePlayerOutcome(event, 'p1a', 'acierto')">Acierto</button>
+                    </div>
+                    <div class="player-control" data-player="p1b">
+                        <button type="button" class="player-outcome-btn error" onclick="scorePlayerOutcome(event, 'p1b', 'error')">Error</button>
+                        <span class="player-name" id="name-p1b" data-player="p1b">Jugador 2</span>
+                        <button type="button" class="player-outcome-btn acierto" onclick="scorePlayerOutcome(event, 'p1b', 'acierto')">Acierto</button>
+                    </div>
                 </div>
                 <div class="card-header-row d-none" id="team-row-p1">
                     <span class="team-name" id="name-team1">Equipo 1</span>
@@ -1367,8 +1449,16 @@
                     </div>
                 </div>
                 <div class="card-header-row" id="players-row-p2" style="gap:4px;">
-                    <span class="player-name" id="name-p2a" data-player="p2a">Jugador 3</span>
-                    <span class="player-name" id="name-p2b" data-player="p2b">Jugador 4</span>
+                    <div class="player-control" data-player="p2a">
+                        <button type="button" class="player-outcome-btn error" onclick="scorePlayerOutcome(event, 'p2a', 'error')">Error</button>
+                        <span class="player-name" id="name-p2a" data-player="p2a">Jugador 3</span>
+                        <button type="button" class="player-outcome-btn acierto" onclick="scorePlayerOutcome(event, 'p2a', 'acierto')">Acierto</button>
+                    </div>
+                    <div class="player-control" data-player="p2b">
+                        <button type="button" class="player-outcome-btn error" onclick="scorePlayerOutcome(event, 'p2b', 'error')">Error</button>
+                        <span class="player-name" id="name-p2b" data-player="p2b">Jugador 4</span>
+                        <button type="button" class="player-outcome-btn acierto" onclick="scorePlayerOutcome(event, 'p2b', 'acierto')">Acierto</button>
+                    </div>
                 </div>
                 <div class="card-header-row d-none" id="team-row-p2">
                     <span class="team-name" id="name-team2">Equipo 2</span>
@@ -1419,7 +1509,7 @@
             </a>
             <a href="https://github.com/prime-leads-app/padel-score-board" target="_blank" rel="noopener" class="card bg-dark border-secondary text-decoration-none flex-fill" style="cursor:pointer;">
                 <div class="card-body py-0 px-2 text-center">
-                    <small class="text-white">PadelApp v<span id="app-version-label">5.4</span></small>
+                    <small class="text-white">PadelApp v<span id="app-version-label">5.5</span></small>
                 </div>
             </a>
             <div class="card bg-dark border-secondary flex-fill">
@@ -1758,18 +1848,111 @@
         let freeMaxPoints = 30;
         let deuceMode = 'golden'; // 'golden' = punto de oro, '1adv' = 1 ventaja, '2adv' = 2 ventajas
         let trackShots = true; // true = mostrar modal de tipo de golpe, false = solo atribuir punto
+        let trackOutcomes = true; // true = dividir cada jugador en Error / Acierto
         const SHOT_TYPES = ['smash', 'bandeja', 'globo', 'remate', 'volea', 'otro'];
+        const SHOT_LABELS = { smash: 'Smash', bandeja: 'Bandeja', globo: 'Globo', remate: 'Remate', volea: 'Volea', otro: 'Otro' };
+        function emptyPlayerStat() {
+            const shots = {};
+            SHOT_TYPES.forEach(t => shots[t] = 0);
+            return { points: 0, aciertos: 0, errors: 0, games: {}, shots };
+        }
+
         function emptyPlayerStats() {
             const s = {};
-            ['p1a','p1b','p2a','p2b'].forEach(k => {
-                s[k] = { points: 0, shots: {} };
-                SHOT_TYPES.forEach(t => s[k].shots[t] = 0);
-            });
+            RETA_SLOTS.forEach(k => s[k] = emptyPlayerStat());
             return s;
         }
+
+        function normalizePlayerStat(stat) {
+            const normalized = emptyPlayerStat();
+            if (!stat || typeof stat !== 'object') return normalized;
+            normalized.points = Number(stat.points) || 0;
+            normalized.aciertos = Number(stat.aciertos) || 0;
+            normalized.errors = Number(stat.errors) || 0;
+            SHOT_TYPES.forEach(t => normalized.shots[t] = Number(stat.shots && stat.shots[t]) || 0);
+            if (stat.games && typeof stat.games === 'object') {
+                Object.entries(stat.games).forEach(([game, values]) => {
+                    normalized.games[game] = {
+                        aciertos: Number(values && values.aciertos) || 0,
+                        errors: Number(values && values.errors) || 0
+                    };
+                });
+            }
+            return normalized;
+        }
+
+        function normalizePlayerStats(stats) {
+            const normalized = {};
+            RETA_SLOTS.forEach(k => normalized[k] = normalizePlayerStat(stats && stats[k]));
+            return normalized;
+        }
+
+        function clonePlayerStats(stats = playerStats) {
+            return normalizePlayerStats(stats);
+        }
+
+        function playerHasStats(stat) {
+            const s = normalizePlayerStat(stat);
+            return s.points > 0 || s.aciertos > 0 || s.errors > 0 || SHOT_TYPES.some(t => s.shots[t] > 0);
+        }
+
+        function performancePercent(stat) {
+            const s = normalizePlayerStat(stat);
+            const total = s.aciertos + s.errors;
+            return total ? Math.round((s.aciertos / total) * 100) : null;
+        }
+
+        function countLabel(value, singular, plural) {
+            return `${value} ${value === 1 ? singular : plural}`;
+        }
+
+        function playerStatForStorage(stat) {
+            return normalizePlayerStat(stat);
+        }
+
+        function performanceSummary(stat) {
+            const s = normalizePlayerStat(stat);
+            const total = s.aciertos + s.errors;
+            if (!total) return s.points > 0 ? `${s.points} pts atribuidos` : '';
+            return `${countLabel(s.aciertos, 'Acierto', 'Aciertos')} · ${countLabel(s.errors, 'Error', 'Errores')} · ${performancePercent(s)}% de rendimiento`;
+        }
+
+        function shotSummary(stat) {
+            const s = normalizePlayerStat(stat);
+            return SHOT_TYPES.filter(t => s.shots[t] > 0).map(t => `${s.shots[t]} ${SHOT_LABELS[t]}`).join(', ');
+        }
+
+        function performanceByGameHTML(stat) {
+            const s = normalizePlayerStat(stat);
+            const gamesList = Object.entries(s.games)
+                .filter(([, values]) => values.aciertos + values.errors > 0)
+                .sort(([a], [b]) => Number(a) - Number(b));
+            if (!gamesList.length) return '';
+            return `<div style="margin:3px 0 0 8px; color:#9fb3c8; font-size:0.7rem;">${gamesList.map(([game, values]) => {
+                const total = values.aciertos + values.errors;
+                const percent = total ? Math.round((values.aciertos / total) * 100) : 0;
+                return `Juego ${game}: ${countLabel(values.aciertos, 'Acierto', 'Aciertos')} · ${countLabel(values.errors, 'Error', 'Errores')} · ${percent}%`;
+            }).join('<br>')}</div>`;
+        }
+
+        function playerStatLineHTML(name, stat) {
+            const performance = performanceSummary(stat);
+            const shots = shotSummary(stat);
+            const detail = [performance, shots].filter(Boolean).join(' · ');
+            return `<div style="margin-left:8px; font-size:0.78rem; color:#ddd; padding:3px 0;">${esc(name)}: <strong>${esc(detail || 'Sin eventos atribuidos')}</strong>${performanceByGameHTML(stat)}</div>`;
+        }
+
+        function matchPerformanceHTML(stats) {
+            if (!stats || typeof stats !== 'object') return '';
+            return Object.entries(stats)
+                .filter(([, stat]) => playerHasStats(stat))
+                .map(([name, stat]) => playerStatLineHTML(name, stat))
+                .join('');
+        }
+
         let playerStats = emptyPlayerStats();
         let matchLog = [];
-        let _lastScoringPlayerId = null;
+        let _pendingPointAttribution = null;
         let serve = 1;
         let history = [];
         let matchOver = false;
@@ -1817,6 +2000,7 @@
             render();
             updateConfigSummary();
             updateRetaUI();
+            updateOutcomeControls();
         }
 
         function setNameMode(m) {
@@ -1831,6 +2015,7 @@
             const teamsConfig = document.getElementById('names-teams-config');
             teamsConfig.classList.toggle('d-none', m === 'players');
             if (m === 'teams') teamsConfig.style.display = 'block';
+            updateOutcomeControls();
             updateServeUI();
             saveToStorage();
         }
@@ -1886,6 +2071,7 @@
                 document.getElementById('config-retas').style.display = f === 'retas' ? 'contents' : 'none';
                 resetMatch();
                 updateRetaUI();
+                updateOutcomeControls();
             });
         }
 
@@ -1956,6 +2142,27 @@
             document.getElementById('btn-shots-on').classList.toggle('active', v);
             document.getElementById('btn-shots-off').classList.toggle('active', !v);
             saveToStorage();
+        }
+
+        function setTrackOutcomes(v) {
+            trackOutcomes = v;
+            document.getElementById('btn-outcomes-on').classList.toggle('active', v);
+            document.getElementById('btn-outcomes-off').classList.toggle('active', !v);
+            updateOutcomeControls();
+            saveToStorage();
+        }
+
+        function outcomeDetailEnabled() {
+            return trackOutcomes && mode === 'padel' && padelFormat === 'retas' && nameMode === 'players';
+        }
+
+        function updateOutcomeControls() {
+            const enabled = outcomeDetailEnabled();
+            document.querySelectorAll('.player-control').forEach(control => {
+                control.classList.toggle('outcome-detail-active', enabled);
+            });
+            const config = document.getElementById('outcome-detail-config');
+            if (config) config.classList.toggle('d-none', !(mode === 'padel' && padelFormat === 'retas'));
         }
 
         function setFreeMaxPoints(n) {
@@ -2103,6 +2310,7 @@
             startTimer();
             addHistory(isRetaTimed() ? `Partido iniciado - ${retaTimeLimit} min` : 'Partido iniciado');
             updateControlsBar();
+            updateOutcomeControls();
             saveToStorage();
         }
 
@@ -2357,20 +2565,52 @@
         }
 
         function cardTap(e, player) {
+            if (e.target.closest && e.target.closest('.player-outcome-btn')) return;
             const now = Date.now();
             const cdBlocked = now - lastPointTime < POINT_COOLDOWN;
             if (cdBlocked) return;
+            const playerEl = e.target.closest ? e.target.closest('[data-player]') : null;
+            const playerId = playerEl && nameMode === 'players' ? playerEl.dataset.player : null;
+            const attribution = playerId ? { playerId, outcome: null, game: currentGameNumber() } : null;
+            if (!addPoint(player, attribution)) return;
             lastPointTime = now;
-            const playerId = e.target.dataset && e.target.dataset.player;
-            if (playerId && nameMode === 'players') {
-                playerStats[playerId].points++;
-                _lastScoringPlayerId = playerId;
-                if (trackShots) showShotTypeModal(playerId);
-            } else {
-                _lastScoringPlayerId = null;
-            }
-            addPoint(player);
+            if (playerId && trackShots) showShotTypeModal(playerId);
             startCooldownBar(player);
+        }
+
+        function scorePlayerOutcome(e, playerId, outcome) {
+            e.stopPropagation();
+            if (!outcomeDetailEnabled() || !RETA_SLOTS.includes(playerId)) return;
+            const now = Date.now();
+            if (now - lastPointTime < POINT_COOLDOWN) return;
+            const ownTeam = playerId.startsWith('p1') ? 1 : 2;
+            const scoringTeam = outcome === 'error' ? (ownTeam === 1 ? 2 : 1) : ownTeam;
+            const attribution = { playerId, outcome, game: currentGameNumber() };
+            if (!addPoint(scoringTeam, attribution)) return;
+            lastPointTime = now;
+            if (outcome === 'acierto' && trackShots) showShotTypeModal(playerId);
+            startCooldownBar(scoringTeam);
+        }
+
+        function currentGameNumber() {
+            return mode === 'padel' ? games[0] + games[1] + 1 : 1;
+        }
+
+        function applyPointAttribution(attribution) {
+            if (!attribution || !RETA_SLOTS.includes(attribution.playerId)) return;
+            const stat = playerStats[attribution.playerId] = normalizePlayerStat(playerStats[attribution.playerId]);
+            if (attribution.outcome === 'error') {
+                stat.errors++;
+            } else {
+                stat.points++;
+                if (attribution.outcome === 'acierto') stat.aciertos++;
+            }
+            if (attribution.outcome === 'error' || attribution.outcome === 'acierto') {
+                const game = String(attribution.game || currentGameNumber());
+                if (!stat.games[game]) stat.games[game] = { aciertos: 0, errors: 0 };
+                stat.games[game][attribution.outcome === 'acierto' ? 'aciertos' : 'errors']++;
+            }
+            _pendingPointAttribution = { ...attribution };
         }
 
         let pendingShotPlayer = null;
@@ -2400,6 +2640,7 @@
         function registerShot(type) {
             if (pendingShotPlayer) {
                 _lastShotSlot = pendingShotPlayer;
+                playerStats[pendingShotPlayer] = normalizePlayerStat(playerStats[pendingShotPlayer]);
                 playerStats[pendingShotPlayer].shots[type]++;
                 // Update last matchLog entry with shot type
                 for (let i = matchLog.length - 1; i >= 0; i--) {
@@ -2424,12 +2665,9 @@
                         p2b: document.getElementById('cfg-name-p2b').value || 'Jugador 4'
                     };
                     matches[0].playerStats = {};
-                    ['p1a','p1b','p2a','p2b'].forEach(k => {
-                        if (playerStats[k].points > 0) {
-                            matches[0].playerStats[pNames[k]] = {
-                                points: playerStats[k].points,
-                                shots: { ...playerStats[k].shots }
-                            };
+                    RETA_SLOTS.forEach(k => {
+                        if (playerHasStats(playerStats[k])) {
+                            matches[0].playerStats[pNames[k]] = playerStatForStorage(playerStats[k]);
                         }
                     });
                     localStorage.setItem('padel-matches', JSON.stringify(matches));
@@ -2438,7 +2676,13 @@
                 if (retaActive && retaSession && _lastShotSlot) {
                     const pName = currentSlotNames()[_lastShotSlot];
                     if (pName && retaSession.stats[pName]) {
+                        retaSession.stats[pName] = normalizePlayerStat(retaSession.stats[pName]);
                         retaSession.stats[pName].shots[type]++;
+                        const retaMatch = retaSession.matches.find(m => m.matchId === _lastSavedMatchId);
+                        if (retaMatch && retaMatch.stats && retaMatch.stats[pName]) {
+                            retaMatch.stats[pName] = normalizePlayerStat(retaMatch.stats[pName]);
+                            retaMatch.stats[pName].shots[type]++;
+                        }
                         saveRetaState();
                     }
                 }
@@ -2451,12 +2695,13 @@
             document.getElementById('shot-type-overlay').classList.add('d-none');
         }
 
-        function addPoint(player) {
-            if (matchOver) return;
+        function addPoint(player, attribution = null) {
+            if (matchOver) return false;
             if (navigator.vibrate) navigator.vibrate(50);
             ensureRetaStarted();
             startTimer();
             saveState();
+            applyPointAttribution(attribution);
             const prevGames = games[0] + games[1];
             const prevSets = setsWon[0] + setsWon[1];
             if (mode === 'free') {
@@ -2484,6 +2729,7 @@
                 }
             }
             render();
+            return true;
         }
 
         function scorePadelPoint(player) {
@@ -2629,7 +2875,9 @@
                 points: [...points], games: [...games],
                 sets: [sets[0].slice(), sets[1].slice()],
                 setsWon: [...setsWon], tiebreak, advantage, deuceCount, serve,
-                matchOver, freePoints: [...freePoints], mode, deuceMode
+                matchOver, freePoints: [...freePoints], mode, deuceMode,
+                playerStats: clonePlayerStats(), matchLogLength: matchLog.length,
+                historyItemCount: document.querySelectorAll('#history-list .history-item').length
             });
         }
 
@@ -2640,6 +2888,7 @@
             setsWon = s.setsWon; tiebreak = s.tiebreak;
             advantage = s.advantage; deuceCount = s.deuceCount || 0; serve = s.serve;
             matchOver = s.matchOver; freePoints = s.freePoints;
+            if (s.playerStats) playerStats = clonePlayerStats(s.playerStats);
             // Si se deshace el punto que cerró el partido, se revierte tambien el registro
             if (_matchSaved && !matchOver) {
                 _matchSaved = false;
@@ -2652,10 +2901,22 @@
             }
             hideWinnerCard();
             const list = document.getElementById('history-list');
-            if (list.firstChild) list.removeChild(list.firstChild);
-            if (matchLog.length) matchLog.pop();
+            if (Number.isInteger(s.historyItemCount)) {
+                while (list.querySelectorAll('.history-item').length > s.historyItemCount) {
+                    const first = list.querySelector('.history-item');
+                    if (!first) break;
+                    first.remove();
+                }
+            } else if (list.firstChild) {
+                list.removeChild(list.firstChild);
+            }
+            if (Number.isInteger(s.matchLogLength)) matchLog.length = s.matchLogLength;
+            else if (matchLog.length) matchLog.pop();
+            _pendingPointAttribution = null;
+            _lastShotSlot = null;
             lastPointTime = 0;
             updateServeUI(); render();
+            saveToStorage();
         }
 
         function hideWinnerCard() {
@@ -2863,12 +3124,18 @@
             list.insertBefore(div, list.firstChild);
             // Structured log for match history
             let playerName = null;
-            if (_lastScoringPlayerId) {
-                const el = document.getElementById('name-' + _lastScoringPlayerId);
-                playerName = el ? el.textContent : _lastScoringPlayerId;
-                _lastScoringPlayerId = null; // consume - only first addHistory gets the player
+            let playerId = null;
+            let outcome = null;
+            let game = null;
+            if (_pendingPointAttribution) {
+                playerId = _pendingPointAttribution.playerId;
+                outcome = _pendingPointAttribution.outcome;
+                game = _pendingPointAttribution.game;
+                const el = document.getElementById('name-' + playerId);
+                playerName = el ? el.textContent : playerId;
+                _pendingPointAttribution = null; // solo el registro generado por este punto
             }
-            matchLog.push({ time: t, text, player: playerName, shot: null });
+            matchLog.push({ time: t, text, player: playerName, playerId, outcome, game, shot: null });
         }
 
         function toggleAllConfig() {
@@ -2921,25 +3188,24 @@
                         statsHTML = '<div style="margin-top:4px; padding-top:4px; border-top:1px solid rgba(255,255,255,0.1); font-size:0.7rem; color:#ccc;">';
                         statsHTML += '<div style="font-weight:600; color:#aaa; margin-bottom:2px;">Estadísticas individuales:</div>';
                         Object.entries(m.playerStats).forEach(([name, st]) => {
-                            const shotParts = Object.entries(st.shots).filter(([,v]) => v > 0).map(([k,v]) => {
-                                const labels = {smash:'Smash',bandeja:'Bandeja',globo:'Globo',remate:'Remate',volea:'Volea',otro:'Otro'};
-                                return `${v} ${labels[k] || k}`;
-                            });
-                            const shotText = shotParts.length > 0 ? ` — ${shotParts.join(', ')}` : '';
-                            statsHTML += `<div style="margin-left:6px;">⚡ ${name}: ${st.points} pts${shotText}</div>`;
+                            const performance = performanceSummary(st);
+                            const shots = shotSummary(st);
+                            const detail = [performance, shots].filter(Boolean).join(' · ');
+                            statsHTML += `<div style="margin:3px 0 0 6px;">⚡ ${esc(name)}: <strong>${esc(detail || 'Sin eventos atribuidos')}</strong>${performanceByGameHTML(st)}</div>`;
                         });
                         statsHTML += '</div>';
                     }
                     let historyHTML = '';
                     if (m.history && m.history.length > 0) {
                         const uid = 'mh-' + Math.random().toString(36).substr(2,6);
-                        const shotLabels = {smash:'Smash',bandeja:'Bandeja',globo:'Globo',remate:'Remate',volea:'Volea',otro:'Otro'};
                         const renderEntry = (h) => {
                             if (typeof h === 'string') return h; // Legacy text entries
                             let line = `${h.time} - ${h.text}`;
                             if (h.player) {
                                 line += ` · <span style="color:#7ec8e3;">${h.player}</span>`;
-                                if (h.shot) line += ` <span style="color:#ffc107;">[${shotLabels[h.shot] || h.shot}]</span>`;
+                                if (h.outcome === 'error') line += ' <span style="color:#ff9eaa;">[Error]</span>';
+                                if (h.outcome === 'acierto') line += ' <span style="color:#9be7a5;">[Acierto]</span>';
+                                if (h.shot) line += ` <span style="color:#ffc107;">[${SHOT_LABELS[h.shot] || h.shot}]</span>`;
                             }
                             return line;
                         };
@@ -3006,7 +3272,6 @@
                 p2a: document.getElementById('cfg-name-p2a').value || 'Jugador 3',
                 p2b: document.getElementById('cfg-name-p2b').value || 'Jugador 4'
             };
-            const shotLabels = {smash:'Smash',bandeja:'Bandeja',globo:'Globo',remate:'Remate',volea:'Volea',otro:'Otro'};
             // Resumen general
             let html = `<div style="background:#2c2c54; border-radius:8px; padding:10px 12px; margin-bottom:8px;">
                 <div style="display:flex; justify-content:space-between; color:#aaa; font-size:0.75rem;">
@@ -3017,7 +3282,7 @@
                 <div style="color:#ffc107; font-weight:700; font-size:0.9rem;">${getName(winner)} gana · ${scoreLine}</div>
             </div>`;
             // Stats por jugador
-            const hasStats = ['p1a','p1b','p2a','p2b'].some(k => playerStats[k].points > 0);
+            const hasStats = RETA_SLOTS.some(k => playerHasStats(playerStats[k]));
             if (hasStats) {
                 html += `<div style="background:#2c2c54; border-radius:8px; padding:10px 12px; margin-bottom:8px;">
                     <div style="font-weight:700; margin-bottom:6px; font-size:0.85rem;">⚡ Estadísticas Individuales</div>`;
@@ -3025,22 +3290,14 @@
                 html += `<div style="margin-bottom:8px;">
                     <div style="font-weight:600; color:#ef9a9a; font-size:0.8rem; margin-bottom:4px;">${getName(1)}</div>`;
                 ['p1a','p1b'].forEach(k => {
-                    if (playerStats[k].points > 0) {
-                        const shotParts = Object.entries(playerStats[k].shots).filter(([,v]) => v > 0).map(([s,v]) => `${v} ${shotLabels[s] || s}`);
-                        const shotText = shotParts.length > 0 ? ` — ${shotParts.join(', ')}` : '';
-                        html += `<div style="margin-left:8px; font-size:0.78rem; color:#ddd; padding:2px 0;">${pNames[k]}: <strong>${playerStats[k].points} pts</strong>${shotText}</div>`;
-                    }
+                    if (playerHasStats(playerStats[k])) html += playerStatLineHTML(pNames[k], playerStats[k]);
                 });
                 html += '</div>';
                 // Equipo 2
                 html += `<div>
                     <div style="font-weight:600; color:#90caf9; font-size:0.8rem; margin-bottom:4px;">${getName(2)}</div>`;
                 ['p2a','p2b'].forEach(k => {
-                    if (playerStats[k].points > 0) {
-                        const shotParts = Object.entries(playerStats[k].shots).filter(([,v]) => v > 0).map(([s,v]) => `${v} ${shotLabels[s] || s}`);
-                        const shotText = shotParts.length > 0 ? ` — ${shotParts.join(', ')}` : '';
-                        html += `<div style="margin-left:8px; font-size:0.78rem; color:#ddd; padding:2px 0;">${pNames[k]}: <strong>${playerStats[k].points} pts</strong>${shotText}</div>`;
-                    }
+                    if (playerHasStats(playerStats[k])) html += playerStatLineHTML(pNames[k], playerStats[k]);
                 });
                 html += '</div></div>';
             }
@@ -3052,7 +3309,9 @@
                     let line = `${h.time} - ${h.text}`;
                     if (h.player) {
                         line += ` · <span style="color:#7ec8e3;">${h.player}</span>`;
-                        if (h.shot) line += ` <span style="color:#ffc107;">[${shotLabels[h.shot] || h.shot}]</span>`;
+                        if (h.outcome === 'error') line += ' <span style="color:#ff9eaa;">[Error]</span>';
+                        if (h.outcome === 'acierto') line += ' <span style="color:#9be7a5;">[Acierto]</span>';
+                        if (h.shot) line += ` <span style="color:#ffc107;">[${SHOT_LABELS[h.shot] || h.shot}]</span>`;
                     }
                     return line;
                 };
@@ -3152,12 +3411,9 @@
                 p2b: document.getElementById('cfg-name-p2b').value || 'Jugador 4'
             };
             match.playerStats = {};
-            ['p1a','p1b','p2a','p2b'].forEach(k => {
-                if (playerStats[k].points > 0) {
-                    match.playerStats[pNames[k]] = {
-                        points: playerStats[k].points,
-                        shots: { ...playerStats[k].shots }
-                    };
+            RETA_SLOTS.forEach(k => {
+                if (playerHasStats(playerStats[k])) {
+                    match.playerStats[pNames[k]] = playerStatForStorage(playerStats[k]);
                 }
             });
             // Guardar historial estructurado de puntos
@@ -3203,6 +3459,15 @@
             document.getElementById('name-p1b').textContent = document.getElementById('cfg-name-p1b').value || 'Jugador 2';
             document.getElementById('name-p2a').textContent = document.getElementById('cfg-name-p2a').value || 'Jugador 3';
             document.getElementById('name-p2b').textContent = document.getElementById('cfg-name-p2b').value || 'Jugador 4';
+            RETA_SLOTS.forEach(k => {
+                const control = document.querySelector(`.player-control[data-player="${k}"]`);
+                const name = document.getElementById('name-' + k).textContent;
+                if (!control) return;
+                const error = control.querySelector('.player-outcome-btn.error');
+                const acierto = control.querySelector('.player-outcome-btn.acierto');
+                if (error) error.setAttribute('aria-label', `Registrar Error de ${name}`);
+                if (acierto) acierto.setAttribute('aria-label', `Registrar Acierto de ${name}`);
+            });
             document.getElementById('name-team1').textContent = document.getElementById('cfg-name-team1').value || 'Equipo 1';
             document.getElementById('name-team2').textContent = document.getElementById('cfg-name-team2').value || 'Equipo 2';
             if (mode === 'padel') renderSetsTable();
@@ -3252,7 +3517,7 @@
                 points: {},   // puntos de clasificación por jugador
                 played: {},   // partidos jugados
                 won: {},      // partidos ganados
-                stats: {},    // puntos anotados y golpes acumulados en toda la reta
+                stats: {},    // Error/Acierto, puntos atribuidos y golpes acumulados en la reta
                 matches: []
             };
         }
@@ -3262,11 +3527,7 @@
             if (retaSession.points[name] === undefined) retaSession.points[name] = 0;
             if (retaSession.played[name] === undefined) retaSession.played[name] = 0;
             if (retaSession.won[name] === undefined) retaSession.won[name] = 0;
-            if (!retaSession.stats[name]) {
-                const shots = {};
-                SHOT_TYPES.forEach(t => shots[t] = 0);
-                retaSession.stats[name] = { points: 0, shots };
-            }
+            retaSession.stats[name] = normalizePlayerStat(retaSession.stats[name]);
             if (!retaSession.roster.includes(name)) retaSession.roster.push(name);
         }
 
@@ -3831,15 +4092,16 @@
             // Aporte de este partido, guardado con el: permite deshacerlo o borrarlo
             const aporte = {};
             RETA_SLOTS.forEach(k => {
-                const shots = {};
-                SHOT_TYPES.forEach(t => shots[t] = playerStats[k].shots[t] || 0);
-                aporte[names[k]] = { points: playerStats[k].points, shots };
+                aporte[names[k]] = playerStatForStorage(playerStats[k]);
             });
             RETA_SLOTS.forEach(k => {
                 retaSession.played[names[k]]++;
-                const st = retaSession.stats[names[k]];
-                st.points += playerStats[k].points;
-                SHOT_TYPES.forEach(t => st.shots[t] += (playerStats[k].shots[t] || 0));
+                const st = retaSession.stats[names[k]] = normalizePlayerStat(retaSession.stats[names[k]]);
+                const contribution = normalizePlayerStat(playerStats[k]);
+                st.points += contribution.points;
+                st.aciertos += contribution.aciertos;
+                st.errors += contribution.errors;
+                SHOT_TYPES.forEach(t => st.shots[t] += contribution.shots[t]);
             });
             winnerSlots.forEach(k => {
                 retaSession.points[names[k]] += gamesWon;
@@ -3876,10 +4138,13 @@
             // Los partidos guardados antes de la v4.7 no traen su aporte de golpes
             if (m.stats) {
                 Object.entries(m.stats).forEach(([nombre, ap]) => {
-                    const st = retaSession.stats[nombre];
+                    const st = retaSession.stats[nombre] = normalizePlayerStat(retaSession.stats[nombre]);
                     if (!st) return;
-                    st.points = Math.max(0, st.points - (ap.points || 0));
-                    SHOT_TYPES.forEach(t => st.shots[t] = Math.max(0, st.shots[t] - ((ap.shots && ap.shots[t]) || 0)));
+                    const contribution = normalizePlayerStat(ap);
+                    st.points = Math.max(0, st.points - contribution.points);
+                    st.aciertos = Math.max(0, st.aciertos - contribution.aciertos);
+                    st.errors = Math.max(0, st.errors - contribution.errors);
+                    SHOT_TYPES.forEach(t => st.shots[t] = Math.max(0, st.shots[t] - contribution.shots[t]));
                 });
             }
         }
@@ -4088,6 +4353,8 @@
                     const t2 = `${esc(m.team2[0])} / ${esc(m.team2[1])}`;
                     const w1 = m.winner === 1 ? 'color:#ffc107; font-weight:700;' : 'opacity:0.7;';
                     const w2 = m.winner === 2 ? 'color:#ffc107; font-weight:700;' : 'opacity:0.7;';
+                    const performanceHTML = matchPerformanceHTML(m.stats);
+                    const performanceId = `reta-match-stats-${m.n}-${Math.random().toString(36).slice(2, 6)}`;
                     html += `<div style="background:#2c2c54; border-radius:8px; padding:8px 10px; margin-top:6px; font-size:0.8rem;">
                         <div style="display:flex; justify-content:space-between; align-items:center; color:#aaa; font-size:0.7rem;">
                             <span>Partido ${m.n}</span>
@@ -4098,21 +4365,22 @@
                         <div style="${w1}">${t1} — ${m.games[0]}</div>
                         <div style="${w2}">${t2} — ${m.games[1]}</div>
                         <div style="color:#888; font-size:0.7rem; margin-top:2px;">+${m.pts} pts a cada ganador${m.by === 'puntos' ? ' · definido por puntos' : m.by === 'tiempo' ? ' · por tiempo' : ''}</div>
+                        ${performanceHTML ? `<button type="button" onclick="document.getElementById('${performanceId}').classList.toggle('d-none')" style="background:none; border:0; color:#7ec8e3; padding:4px 0 0; font-size:0.72rem; font-weight:600; cursor:pointer;">▶ Ver Error/Acierto por juego</button><div id="${performanceId}" class="d-none" style="margin-top:3px;">${performanceHTML}</div>` : ''}
                     </div>`;
                 });
             }
-            // Golpes acumulados de la reta
-            const withStats = Object.keys(retaSession.stats).filter(n => retaSession.stats[n].points > 0);
+            // Rendimiento y golpes acumulados de la reta
+            const withStats = Object.keys(retaSession.stats).filter(n => playerHasStats(retaSession.stats[n]));
             if (withStats.length > 0) {
-                const shotLabels = { smash: 'Smash', bandeja: 'Bandeja', globo: 'Globo', remate: 'Remate', volea: 'Volea', otro: 'Otro' };
                 const uid = 'rs-' + Math.random().toString(36).substr(2, 6);
                 html += `<div style="background:#2c2c54; border-radius:8px; padding:8px 10px; margin-top:10px;">
                     <div onclick="document.getElementById('${uid}').classList.toggle('d-none')" style="font-size:0.78rem; color:#7ec8e3; cursor:pointer; font-weight:600;">▶ Estadísticas individuales de la reta</div>
                     <div id="${uid}" class="d-none" style="margin-top:6px; font-size:0.75rem; color:#ddd;">`;
                 withStats.sort((a, b) => retaSession.stats[b].points - retaSession.stats[a].points).forEach(n => {
                     const st = retaSession.stats[n];
-                    const parts = Object.entries(st.shots).filter(([, v]) => v > 0).map(([k, v]) => `${v} ${shotLabels[k] || k}`);
-                    html += `<div style="padding:2px 0;">⚡ ${esc(n)}: <strong>${st.points} pts anotados</strong>${parts.length ? ' — ' + parts.join(', ') : ''}</div>`;
+                    const performance = performanceSummary(st);
+                    const shots = shotSummary(st);
+                    html += `<div style="padding:3px 0;">⚡ ${esc(n)}: <strong>${esc([performance, shots].filter(Boolean).join(' · '))}</strong></div>`;
                 });
                 html += '</div></div>';
             }
@@ -4175,8 +4443,11 @@
                         const t1 = `${esc(m.team1[0])}/${esc(m.team1[1])}`;
                         const t2 = `${esc(m.team2[0])}/${esc(m.team2[1])}`;
                         const win = m.winner === 1 ? t1 : t2;
-                        return `<div style="padding:2px 0; border-bottom:1px solid rgba(255,255,255,0.05);">P${m.n} · ${t1} vs ${t2} — ${m.games[0]}-${m.games[1]} · <span style="color:#ffc107;">${win}</span> (${esc(m.duration)})</div>`;
+                        const performance = matchPerformanceHTML(m.stats);
+                        return `<div style="padding:4px 0; border-bottom:1px solid rgba(255,255,255,0.05);">P${m.n} · ${t1} vs ${t2} — ${m.games[0]}-${m.games[1]} · <span style="color:#ffc107;">${win}</span> (${esc(m.duration)})${performance}</div>`;
                     }).join('');
+                    const retaPerformance = matchPerformanceHTML(r.stats);
+                    const statsUid = 'rhs-' + Math.random().toString(36).substr(2, 6);
                     return `<div style="background:#2c2c54; border-radius:8px; padding:8px 10px; margin-bottom:6px; font-size:0.8rem;">
                         <div style="display:flex; justify-content:space-between; color:#aaa; font-size:0.7rem;">
                             <span>${esc(fmtRetaDate(r.date))} · inicio ${esc(r.time)}</span>
@@ -4184,6 +4455,7 @@
                         </div>
                         <div style="margin-top:4px; color:#bbb; font-size:0.72rem;">Participantes: ${(r.roster || []).map(esc).join(', ')}</div>
                         <div style="margin-top:6px;">${standings}</div>
+                        ${retaPerformance ? `<div style="margin-top:6px;"><div onclick="document.getElementById('${statsUid}').classList.toggle('d-none')" style="font-size:0.72rem; color:#7ec8e3; cursor:pointer; font-weight:600;">▶ Ver Error/Acierto de la reta</div><div id="${statsUid}" class="d-none" style="margin-top:4px;">${retaPerformance}</div></div>` : ''}
                         ${matchesHTML ? `<div style="margin-top:6px; padding-top:4px; border-top:1px solid rgba(255,255,255,0.1);">
                             <div onclick="document.getElementById('${uid}').classList.toggle('d-none')" style="font-size:0.72rem; color:#7ec8e3; cursor:pointer; font-weight:600;">▶ Ver partidos</div>
                             <div id="${uid}" class="d-none" style="font-size:0.7rem; color:#999; margin-top:4px;">${matchesHTML}</div>
@@ -4228,6 +4500,7 @@
             if (!timerInterval && !_pendingTimerResume) updateIdleTimerDisplay();
             updateRetaTimeButtons();
             updateConfigSummary();
+            updateOutcomeControls();
         }
 
         function saveRetaState() {
@@ -4253,6 +4526,18 @@
                 retaActive = !!d.active;
                 retaSession = d.session || null;
                 if (!retaSession) retaActive = false;
+                if (retaSession) {
+                    if (!retaSession.stats || typeof retaSession.stats !== 'object') retaSession.stats = {};
+                    Object.keys(retaSession.stats).forEach(name => {
+                        retaSession.stats[name] = normalizePlayerStat(retaSession.stats[name]);
+                    });
+                    (retaSession.matches || []).forEach(match => {
+                        if (!match.stats) return;
+                        Object.keys(match.stats).forEach(name => {
+                            match.stats[name] = normalizePlayerStat(match.stats[name]);
+                        });
+                    });
+                }
                 renderRoster();
                 if (retaSession) {
                     document.getElementById('reta-date').value = retaSession.date || todayISO();
@@ -4299,7 +4584,7 @@
         function saveToStorage() {
             const prev = JSON.parse(localStorage.getItem('padel-state') || '{}');
             const data = {
-                mode, nameMode, padelFormat, setsToWin, gamesPerSet, retasGames, retasEarlyWin, retaTimeLimit, freeMaxPoints, deuceMode, trackShots, serve, matchOver,
+                mode, nameMode, padelFormat, setsToWin, gamesPerSet, retasGames, retasEarlyWin, retaTimeLimit, freeMaxPoints, deuceMode, trackShots, trackOutcomes, serve, matchOver,
                 // Marca absoluta de arranque: al recargar, el reloj sigue donde iba
                 timerStart, timerElapsed, timerRunning: !!timerInterval, retaTimeUp,
                 points, games, sets, setsWon, tiebreak, advantage, deuceCount,
@@ -4331,6 +4616,7 @@
                 freeMaxPoints = d.freeMaxPoints || 30;
                 deuceMode = d.deuceMode === 'advantage' ? '2adv' : (d.deuceMode || 'golden');
                 trackShots = d.trackShots !== undefined ? d.trackShots : true;
+                trackOutcomes = d.trackOutcomes !== undefined ? d.trackOutcomes : true;
                 serve = d.serve || 1;
                 matchOver = d.matchOver || false;
                 points = d.points || [0, 0];
@@ -4342,7 +4628,7 @@
                 deuceCount = d.deuceCount || 0;
                 freePoints = d.freePoints || [0, 0];
                 if (d.playerStats && d.playerStats.p1a !== undefined && typeof d.playerStats.p1a === 'object') {
-                    playerStats = d.playerStats;
+                    playerStats = normalizePlayerStats(d.playerStats);
                 } else {
                     playerStats = emptyPlayerStats();
                 }
@@ -4398,6 +4684,9 @@
                 document.getElementById('deuce-2adv').classList.toggle('active', deuceMode === '2adv');
                 document.getElementById('btn-shots-on').classList.toggle('active', trackShots);
                 document.getElementById('btn-shots-off').classList.toggle('active', !trackShots);
+                document.getElementById('btn-outcomes-on').classList.toggle('active', trackOutcomes);
+                document.getElementById('btn-outcomes-off').classList.toggle('active', !trackOutcomes);
+                updateOutcomeControls();
             } catch(e) {}
         }
 
@@ -4428,6 +4717,8 @@
             }
             playerStats = emptyPlayerStats();
             matchLog = [];
+            _pendingPointAttribution = null;
+            _lastShotSlot = null;
             history = []; serve = 1;
             _matchSaved = false;
             _retaFinishReason = null;
@@ -4473,6 +4764,8 @@
             document.getElementById('cfg-name-team2').value = 'Equipo 2';
             playerStats = emptyPlayerStats();
             matchLog = [];
+            _pendingPointAttribution = null;
+            _lastShotSlot = null;
             // En retas los nombres vienen del roster: hay que soltar tambien las parejas
             if (mode === 'padel' && padelFormat === 'retas') {
                 RETA_SLOTS.forEach(k => {

@@ -4,7 +4,7 @@ description: Bandeja de entrada; lo que se registro en caliente y espera clasifi
 metadata: 
   node_type: memory
   type: project
-  updated: 2026-07-31
+  updated: 2026-08-06
   originSessionId: 3f0c74ee-036b-4a00-a437-ba79ac59d1c9
   modified: 2026-07-31T13:36:55.044Z
 ---
@@ -20,3 +20,7 @@ metadata:
      [[decisiones-retas]] como ADR (corrigiendo "Fin partido" -> "Fin", que es el nombre actual del
      boton), y la dinamica de cancha quedo en [[conocimiento-retas-dinamica]]. -->
 (vacio)
+
+
+## Candidatos a DECISION
+- 2026-08-06-15-59-53-01: En Retas se usan los terminos Error/Acierto: Error concede el punto al rival, Acierto al equipo propio y la zona grande conserva la anotacion rapida sin atribucion; Deshacer revierte marcador y estadisticas.

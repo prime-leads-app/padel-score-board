@@ -41,6 +41,8 @@ Formato informal popular en México. Una reta es una **jornada con varios partid
 
 **Clasificación individual:** solo suma la pareja que gana, y cada uno de los dos ganadores suma los juegos que ganó su equipo (ganan 6-2 → 6 pts a cada ganador). Si el partido se definió con juegos empatados, cuentan los juegos completos. Los puntos de la tabla se pueden **editar a mano** desde la clasificación.
 
+**Rendimiento por jugador:** opcionalmente, cada tarjeta de participante se divide en **Error** y **Acierto**. Error concede el punto al equipo contrario; Acierto lo concede al equipo del jugador. La app guarda ambos por juego y partido, calcula el porcentaje de rendimiento y los acumula durante toda la reta. La zona grande del equipo sigue disponible para anotar un punto rápido sin atribución.
+
 **Rotación de la reta:** la pareja que gana se queda en la cancha pero **se separa**, uno de cada lado; los que pierden salen y entran dos de los que esperan, uno como compañero de cada ganador. Entran primero los que menos partidos llevan jugados. Con solo cuatro participantes (sin banca) se cruzan las parejas entre ellos. La app propone la rotación correcta y avisa si las parejas elegidas no la respetan.
 
 **Todos contra todos:** la app registra quién se ha enfrentado con quién. Al elegir las parejas avisa si el cruce ya se jugó, muestra quiénes faltan por enfrentarse y con **Armar el mejor partido** propone la combinación que estrena más cruces y reparte los partidos entre quienes menos han jugado. Es un aviso, no un candado.
@@ -66,7 +68,7 @@ Modo libre para cualquier actividad. Cada toque suma 1 punto.
 - **Vibración:** Feedback háptico al anotar punto (en dispositivos compatibles)
 - **Temporizador:** Cuenta el tiempo del partido desde el primer punto hasta que termina
 - **Compartir resultado:** Botón para compartir el resultado final (Web Share API o copiar al portapapeles)
-- **Estadísticas individuales:** Al tocar el nombre de un jugador, se le atribuye el punto. Luego se puede registrar el tipo de golpe (Volea, Bandeja, Globo, Smash, Remate, Otro). En retas también se acumulan a lo largo de toda la jornada
+- **Estadísticas individuales:** Al tocar el nombre de un jugador, se le atribuye el punto. Luego se puede registrar el tipo de golpe (Volea, Bandeja, Globo, Smash, Remate, Otro). En Retas también se pueden clasificar los puntos como Error o Acierto y consultar el rendimiento por juego, partido y jornada
 - **Retas:** Roster de participantes, selección de parejas por partido, cronómetro con tiempo definido, tabla de clasificación individual editable e historial de retas anteriores
 - **Historial de puntos:** Registro de todos los puntos con hora, separado por modo
 - **Historial de partidos:** Registro de partidos terminados con fecha, resultado, duración, estadísticas individuales y detalle punto a punto con jugador y tipo de golpe
@@ -125,6 +127,7 @@ Accesible desde el menú hamburguesa > Configuración:
 | Participantes | Lista de nombres | Roster de la reta y parejas de cada partido (solo Retas) |
 | Puntos | 5, 10, 15, 20, 25, 30 | Puntos para ganar (solo Libre) |
 | 40-40 | Oro / 1 Ventaja / 2 Ventajas | Qué pasa en empate a 40 |
+| Error/Acierto | Con detalle / Sin detalle | Divide la tarjeta de cada jugador para registrar quién cometió el Error o consiguió el Acierto (solo Retas) |
 
 ## Instalar en el celular
 
