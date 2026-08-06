@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <!-- Sube en cada publicacion: la app la compara contra la red para saber si esta al dia -->
-    <meta name="app-version" content="5.6">
+    <meta name="app-version" content="5.7">
     <title>Padel Scoreboard</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -217,13 +217,17 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.18rem;
+            font-size: clamp(1.3rem, 6.2vw, 1.55rem);
             font-weight: 700;
+            line-height: 1;
             color: #fff;
             text-align: center;
-            padding: 2px 24px;
+            padding: 12px 2px 0;
             cursor: pointer;
             pointer-events: auto;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .player-control:active {
@@ -844,7 +848,7 @@
 
             .card-info { margin-top: -25px; }
             .score-points { font-size: 18rem; }
-            .player-name { font-size: 2rem; }
+            .player-name { font-size: 2.1rem; }
             .team-name { font-size: 1.8rem; }
             .header h1 { font-size: 1.4rem; }
         }
@@ -863,7 +867,7 @@
 
             .score-points { font-size: 4rem; }
             .score-points.free-score { font-size: 5rem; }
-            .player-name { font-size: 1rem; }
+            .player-name { font-size: 1.05rem; }
             .player-control { min-height: 42px; }
             .player-outcome-btn { padding: 4px; font-size: 0.52rem; }
             .team-name { font-size: 0.9rem; }
@@ -1505,7 +1509,7 @@
             </a>
             <a href="https://github.com/prime-leads-app/padel-score-board" target="_blank" rel="noopener" class="card bg-dark border-secondary text-decoration-none flex-fill" style="cursor:pointer;">
                 <div class="card-body py-0 px-2 text-center">
-                    <small class="text-white">PadelApp v<span id="app-version-label">5.6</span></small>
+                    <small class="text-white">PadelApp v<span id="app-version-label">5.7</span></small>
                 </div>
             </a>
             <div class="card bg-dark border-secondary flex-fill">

@@ -24,3 +24,4 @@ metadata:
 - 2026-07-31-08-43-27-01: memoria Mnemo auditada, versionada en git y pusheada (commits b663270, 55bfc7b)
 - 2026-08-06-15-59-53-01: v5.5 incorpora Error/Acierto por jugador en Retas con persistencia y Deshacer
 - 2026-08-06-16-06-57-02: v5.6 centra Error/Acierto y aumenta los nombres sin redimensionar tarjetas
+- 2026-08-06-16-19-33-03: v5.7 amplía los nombres de jugadores sin cambiar las tarjetas

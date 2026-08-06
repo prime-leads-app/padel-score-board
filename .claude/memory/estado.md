@@ -10,5 +10,5 @@ metadata:
   modified: 2026-07-31T13:35:51.259Z
 ---
 
-**Ahora:** v5.6 implementada y verificada a 390 px: Error/Acierto centrados y nombres de jugadores mas grandes sin cambiar las tarjetas.
+**Ahora:** v5.7 implementada y verificada a 390 px: nombres de jugadores ampliados 28% mediante escala responsive y padding interno reducido, sin redimensionar tarjetas ni encimar Error/Acierto.
 **Proximo paso:** validar la legibilidad durante una reta real en cancha.

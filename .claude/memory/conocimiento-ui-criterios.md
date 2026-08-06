@@ -47,3 +47,6 @@ media queries se evaluan contra el ancho del iframe. Medir con `offsetWidth`/`of
 
 ## 2026-08-06-16-06-57-02
 En las tarjetas divididas de Retas, Error y Acierto van centrados dentro de cada mitad; el nombre usa 18.88 px y peso 700 a 390 px, conservando una tarjeta medida de 172.33 x 62 px.
+
+## 2026-08-06-16-19-33-03
+Los nombres usan 24.18 px a 390 px mediante clamp(1.3rem, 6.2vw, 1.55rem), con padding 12px 2px 0; la tarjeta conserva 172.33 x 62 px y quedan 4.57 px entre las etiquetas Error/Acierto y el nombre.
