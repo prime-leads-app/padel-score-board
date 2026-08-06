@@ -37,7 +37,7 @@ Formato informal popular en México. Una reta es una **jornada con varios partid
 
 **Botón Fin partido:** corta el partido en cualquier momento. Gana quien vaya arriba en juegos; si van iguales, gana quien lleve más puntos en el juego en disputa. Si van iguales en juegos y en puntos, la app avisa y no cierra.
 
-**Participantes y parejas:** desde la pantalla Reta, **Ver participantes** abre la lista donde puedes quitar jugadores y **Agregar** abre una ventana independiente para capturar uno nuevo. La lista se guarda en el dispositivo para la próxima reta. Antes de cada partido eliges de listas desplegables quiénes forman cada equipo; un jugador no puede estar en dos lugares a la vez.
+**Participantes y parejas:** desde la pantalla Reta, **Ver participantes** abre la lista donde puedes editar o quitar jugadores y **Agregar** abre una ventana independiente para capturar uno nuevo. Al editar un nombre también se actualizan sus parejas y las estadísticas de la reta activa. La lista se guarda en el dispositivo para la próxima reta. Antes de cada partido eliges de listas desplegables quiénes forman cada equipo; un jugador no puede estar en dos lugares a la vez.
 
 **Clasificación individual:** solo suma la pareja que gana, y cada uno de los dos ganadores suma los juegos que ganó su equipo (ganan 6-2 → 6 pts a cada ganador). Si el partido se definió con juegos empatados, cuentan los juegos completos. Los puntos de la tabla se pueden **editar a mano** desde la clasificación.
 
@@ -124,7 +124,7 @@ Las opciones generales se abren desde el menú hamburguesa > Configuración; las
 | Juegos | 4, 6, 8, ∞ | Juegos por partido, ∞ = sin tope (solo Retas) |
 | Tiempo | 15, 20, 30, otro, ∞ | Minutos por partido, ∞ = sin reloj (solo Retas) |
 | Fin | Todos / Anticipado | Jugar todos los juegos o terminar con mayoría (solo Retas) |
-| Participantes | Ver participantes / Agregar | Consulta, elimina o agrega jugadores desde la pantalla Reta |
+| Participantes | Ver participantes / Agregar | Consulta, edita, elimina o agrega jugadores desde la pantalla Reta |
 | Puntos | 5, 10, 15, 20, 25, 30 | Puntos para ganar (solo Libre) |
 | 40-40 | Oro / 1 Ventaja / 2 Ventajas | Qué pasa en empate a 40 |
 | Error/Acierto | Con detalle / Sin detalle | Se configura en la pantalla Reta y divide la tarjeta de cada jugador para registrar quién cometió el Error o consiguió el Acierto |

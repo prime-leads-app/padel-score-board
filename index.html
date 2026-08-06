@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <!-- Sube en cada publicacion: la app la compara contra la red para saber si esta al dia -->
-    <meta name="app-version" content="5.8">
+    <meta name="app-version" content="5.9">
     <title>Padel Scoreboard</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -576,10 +576,17 @@
             color: #7ec8e3;
             font-size: 0.72rem;
         }
+        .reta-roster-actions {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            flex-shrink: 0;
+        }
+        .reta-roster-edit,
         .reta-roster-delete {
             min-height: 30px;
-            padding: 4px 8px;
-            font-size: 0.74rem;
+            padding: 4px 7px;
+            font-size: 0.7rem;
             white-space: nowrap;
         }
         .reta-player-feedback {
@@ -629,6 +636,10 @@
                 min-width: 18px;
                 height: 18px;
                 padding: 0 5px;
+            }
+            .reta-roster-edit,
+            .reta-roster-delete {
+                padding: 4px 6px;
             }
         }
         /* Fecha y hora: compactas, no necesitan el tamano de un campo de nombre */
@@ -1317,7 +1328,7 @@
             <div style="margin:8px 0;">
                 <b style="color:#FFD54F;">Participantes y parejas</b> (solo en Retas)<br>
                 Se administran en la pantalla <b>Reta</b>: desde el menu ☰ → <b>Reta</b>, o con el boton amarillo de Configuracion.<br>
-                <b>Ver participantes</b> abre la lista donde puedes quitar jugadores y <b>Agregar</b> abre la captura de un nombre nuevo. Antes de cada partido eliges de las listas desplegables quienes forman cada equipo. La lista se guarda en el telefono para la proxima reta.<br>
+                <b>Ver participantes</b> abre la lista donde puedes editar o quitar jugadores y <b>Agregar</b> abre la captura de un nombre nuevo. Antes de cada partido eliges de las listas desplegables quienes forman cada equipo. La lista se guarda en el telefono para la proxima reta.<br>
                 <span style="opacity:0.7;">Si eliges a alguien que ya estaba en el otro equipo, los dos se intercambian: nadie queda repetido.</span>
             </div>
 
@@ -1662,7 +1673,7 @@
             </a>
             <a href="https://github.com/prime-leads-app/padel-score-board" target="_blank" rel="noopener" class="card bg-dark border-secondary text-decoration-none flex-fill" style="cursor:pointer;">
                 <div class="card-body py-0 px-2 text-center">
-                    <small class="text-white">PadelApp v<span id="app-version-label">5.8</span></small>
+                    <small class="text-white">PadelApp v<span id="app-version-label">5.9</span></small>
                 </div>
             </a>
             <div class="card bg-dark border-secondary flex-fill">
@@ -1783,19 +1794,19 @@
         </div>
     </div>
 
-    <!-- Alta de participante: separada para mantener compacta la pantalla principal de Reta -->
+    <!-- Alta o edición de participante: un solo formulario mantiene consistente la validación -->
     <div class="winner-overlay d-none reta-submodal" id="reta-add-player-modal" onclick="if(event.target===this)closeAddRetaPlayerModal()">
         <div class="winner-card reta-submodal-card">
             <div class="reta-submodal-header">
-                <h5>Agregar participante</h5>
+                <h5 id="reta-player-modal-title">Agregar participante</h5>
                 <button type="button" class="btn btn-sm reta-modal-close" onclick="closeAddRetaPlayerModal()" aria-label="Cerrar">✕</button>
             </div>
             <label class="cfg-label" for="reta-new-player">Nombre del jugador</label>
-            <input type="text" class="config-name-input" id="reta-new-player" maxlength="12" autocomplete="off" placeholder="Escribe el nombre" oninput="clearRetaPlayerFeedback()" onkeydown="if(event.key==='Enter'){event.preventDefault();addRosterPlayer();}">
+            <input type="text" class="config-name-input" id="reta-new-player" maxlength="12" autocomplete="off" placeholder="Escribe el nombre" oninput="clearRetaPlayerFeedback()" onkeydown="if(event.key==='Enter'){event.preventDefault();saveRosterPlayer();}">
             <div class="reta-player-feedback" id="reta-player-feedback" aria-live="polite"></div>
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:7px; margin-top:6px;">
                 <button type="button" class="btn btn-outline-light btn-sm" onclick="closeAddRetaPlayerModal()">Cancelar</button>
-                <button type="button" class="btn btn-warning btn-sm" style="font-weight:700;" onclick="addRosterPlayer()">Agregar</button>
+                <button type="button" class="btn btn-warning btn-sm" id="reta-player-submit" style="font-weight:700;" onclick="saveRosterPlayer()">Agregar</button>
             </div>
         </div>
     </div>
@@ -3733,6 +3744,8 @@
             if (feedback) feedback.textContent = '';
         }
 
+        let _editingRosterIndex = null;
+
         function showRetaParticipantsModal() {
             renderRoster();
             document.getElementById('reta-participants-modal').classList.remove('d-none');
@@ -3742,38 +3755,121 @@
             document.getElementById('reta-participants-modal').classList.add('d-none');
         }
 
-        function showAddRetaPlayerModal() {
+        function openRetaPlayerForm(index) {
+            const editing = Number.isInteger(index) && retaRoster[index] !== undefined;
             const input = document.getElementById('reta-new-player');
-            input.value = '';
+            _editingRosterIndex = editing ? index : null;
+            document.getElementById('reta-player-modal-title').textContent = editing ? 'Editar participante' : 'Agregar participante';
+            document.getElementById('reta-player-submit').textContent = editing ? 'Guardar' : 'Agregar';
+            input.value = editing ? retaRoster[index] : '';
             clearRetaPlayerFeedback();
             document.getElementById('reta-add-player-modal').classList.remove('d-none');
-            setTimeout(() => input.focus(), 0);
+            setTimeout(() => {
+                input.focus();
+                if (editing) input.select();
+            }, 0);
+        }
+
+        function showAddRetaPlayerModal() {
+            openRetaPlayerForm(null);
+        }
+
+        function showEditRetaPlayerModal(index) {
+            openRetaPlayerForm(index);
         }
 
         function closeAddRetaPlayerModal() {
             document.getElementById('reta-add-player-modal').classList.add('d-none');
+            _editingRosterIndex = null;
             clearRetaPlayerFeedback();
         }
 
-        function addRosterPlayer() {
+        function renameObjectKey(obj, oldName, newName) {
+            if (!obj || typeof obj !== 'object' || !Object.prototype.hasOwnProperty.call(obj, oldName)) return;
+            obj[newName] = obj[oldName];
+            delete obj[oldName];
+        }
+
+        function retaTeamLabel(players) {
+            return (players || []).map(name => String(name).length > 5 ? String(name).substring(0, 5) : String(name)).join('/');
+        }
+
+        function renameSavedRetaMatches(oldName, newName) {
+            if (!retaSession) return;
+            try {
+                const retaMatches = new Map((retaSession.matches || []).filter(m => m.matchId).map(m => [m.matchId, m]));
+                const savedMatches = JSON.parse(localStorage.getItem('padel-matches') || '[]');
+                let changed = false;
+                savedMatches.forEach(saved => {
+                    const retaMatch = retaMatches.get(saved.id);
+                    if (!retaMatch) return;
+                    saved.team1 = retaTeamLabel(retaMatch.team1);
+                    saved.team2 = retaTeamLabel(retaMatch.team2);
+                    renameObjectKey(saved.playerStats, oldName, newName);
+                    (saved.history || []).forEach(entry => {
+                        if (entry.player === oldName) entry.player = newName;
+                    });
+                    changed = true;
+                });
+                if (changed) localStorage.setItem('padel-matches', JSON.stringify(savedMatches));
+            } catch(e) {}
+        }
+
+        function renameRosterPlayer(index, newName) {
+            const oldName = retaRoster[index];
+            const selection = RETA_SLOTS.map(k => {
+                const sel = document.getElementById('sel-' + k);
+                return sel && sel.value === oldName ? newName : (sel ? sel.value : '');
+            });
+            retaRoster[index] = newName;
+            matchLog.forEach(entry => {
+                if (entry.player === oldName) entry.player = newName;
+            });
+            if (retaSession) {
+                retaSession.roster = (retaSession.roster || []).map(name => name === oldName ? newName : name);
+                ['points', 'played', 'won', 'stats'].forEach(key => renameObjectKey(retaSession[key], oldName, newName));
+                (retaSession.matches || []).forEach(match => {
+                    match.team1 = (match.team1 || []).map(name => name === oldName ? newName : name);
+                    match.team2 = (match.team2 || []).map(name => name === oldName ? newName : name);
+                    renameObjectKey(match.stats, oldName, newName);
+                });
+                renameSavedRetaMatches(oldName, newName);
+            }
+            renderRoster();
+            RETA_SLOTS.forEach((k, i) => setSelValue('sel-' + k, selection[i]));
+            assignFromRoster(null);
+        }
+
+        function saveRosterPlayer() {
             const input = document.getElementById('reta-new-player');
             const name = (input.value || '').trim();
             const feedback = document.getElementById('reta-player-feedback');
+            const editingIndex = _editingRosterIndex;
+            const oldName = editingIndex === null ? null : retaRoster[editingIndex];
             if (!name) {
                 feedback.textContent = 'Escribe el nombre del participante.';
                 input.focus();
                 return;
             }
-            if (retaRoster.some(n => n.toLowerCase() === name.toLowerCase())) {
-                feedback.textContent = 'Ese participante ya está en la lista.';
+            const duplicateInRoster = retaRoster.some((n, i) => i !== editingIndex && n.toLowerCase() === name.toLowerCase());
+            const duplicateInSession = editingIndex !== null && retaSession && (retaSession.roster || []).some(n =>
+                n.toLowerCase() === name.toLowerCase() && (!oldName || n.toLowerCase() !== oldName.toLowerCase()));
+            if (duplicateInRoster || duplicateInSession) {
+                feedback.textContent = duplicateInSession
+                    ? 'Ese nombre ya pertenece a otro participante de la reta.'
+                    : 'Ese participante ya está en la lista.';
                 input.select();
                 return;
             }
-            retaRoster.push(name);
-            if (retaActive) { ensureRetaPlayer(name); }
+            if (editingIndex === null) {
+                retaRoster.push(name);
+                if (retaActive) ensureRetaPlayer(name);
+                renderRoster();
+                saveRetaState();
+            } else if (oldName !== name) {
+                renameRosterPlayer(editingIndex, name);
+            }
             input.value = '';
-            renderRoster();
-            saveRetaState();
             closeAddRetaPlayerModal();
         }
 
@@ -3795,7 +3891,13 @@
             const count = document.getElementById('reta-roster-count');
             if (count) count.textContent = retaRoster.length;
             cont.innerHTML = retaRoster.length
-                ? retaRoster.map((n, i) => `<div class="reta-roster-item"><div class="reta-roster-name"><span class="reta-roster-index">${i + 1}</span><span>${esc(n)}</span></div><button type="button" class="btn btn-outline-danger reta-roster-delete" onclick="removeRosterPlayer(${i})" aria-label="Eliminar a ${esc(n)}"><i class="bi bi-trash" aria-hidden="true"></i> Eliminar</button></div>`).join('')
+                ? retaRoster.map((n, i) => `<div class="reta-roster-item">
+                    <div class="reta-roster-name"><span class="reta-roster-index">${i + 1}</span><span>${esc(n)}</span></div>
+                    <div class="reta-roster-actions">
+                        <button type="button" class="btn btn-outline-warning reta-roster-edit" onclick="showEditRetaPlayerModal(${i})" aria-label="Editar a ${esc(n)}"><i class="bi bi-pencil" aria-hidden="true"></i> Editar</button>
+                        <button type="button" class="btn btn-outline-danger reta-roster-delete" onclick="removeRosterPlayer(${i})" aria-label="Eliminar a ${esc(n)}"><i class="bi bi-trash" aria-hidden="true"></i> Eliminar</button>
+                    </div>
+                </div>`).join('')
                 : '<div style="opacity:0.6; font-size:0.82rem; text-align:center; padding:18px 8px;">Aún no hay participantes.</div>';
             RETA_SLOTS.forEach(k => {
                 const sel = document.getElementById('sel-' + k);

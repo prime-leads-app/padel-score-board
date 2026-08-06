@@ -10,5 +10,5 @@ metadata:
   modified: 2026-07-31T13:35:51.259Z
 ---
 
-**Ahora:** v5.8 reubica Error/Acierto dentro de Reta y reemplaza la captura extensa de participantes por dos accesos compactos a listado/eliminacion y alta.
-**Proximo paso:** Validar en una reta real que el flujo resulte comodo en cancha.
+**Ahora:** v5.9 agrega Editar junto a Eliminar en la lista de participantes y conserva parejas, clasificacion y estadisticas al renombrar.
+**Proximo paso:** Validar en una reta real la edicion de un nombre despues de varios partidos.
