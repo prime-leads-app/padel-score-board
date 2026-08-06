@@ -71,6 +71,7 @@ Modo libre para cualquier actividad. Cada toque suma 1 punto.
 - **Estadísticas individuales:** Al tocar el nombre de un jugador, se le atribuye el punto. Luego se puede registrar el tipo de golpe (Volea, Bandeja, Globo, Smash, Remate, Otro). En Retas también se pueden clasificar los puntos como Error o Acierto y consultar el rendimiento por juego, partido y jornada
 - **Retas:** Roster de participantes, selección de parejas por partido, cronómetro con tiempo definido, tabla de clasificación individual editable e historial de retas anteriores
 - **Historial de puntos:** Registro de todos los puntos con hora, separado por modo
+- **Historial en vivo del partido:** Botón en el encabezado que muestra primero los eventos más recientes e indica quién consiguió o falló cada punto, el equipo beneficiado y el marcador resultante. También incluye los puntos rápidos anotados desde la tarjeta del equipo y respeta Deshacer
 - **Historial de partidos:** Registro de partidos terminados con fecha, resultado, duración, estadísticas individuales y detalle punto a punto con jugador y tipo de golpe
 - **Tema claro/oscuro:** Toggle desde el menú para uso al aire libre
 - **Deshacer:** Permite revertir el último punto anotado
@@ -82,7 +83,7 @@ Modo libre para cualquier actividad. Cada toque suma 1 punto.
 
 ## Controles del marcador
 
-**Encabezado:** ☰ menú · ⓘ datos del partido · reloj al centro (cuenta regresiva en Retas, ascendente en los demás modos) · 👥 jugadores del partido · ⇄ cambiar de lado · 🏆 clasificación. Los tres últimos solo aparecen en Retas.
+**Encabezado:** ☰ menú · ⓘ datos del partido · historial punto a punto · reloj al centro (cuenta regresiva en Retas, ascendente en los demás modos) · 👥 jugadores del partido · ⇄ cambiar de lado · 🏆 clasificación. Los tres últimos solo aparecen en Retas.
 
 **Barra inferior:** solo se muestran los botones útiles en cada momento, para que los visibles sean más grandes.
 

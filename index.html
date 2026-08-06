@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <!-- Sube en cada publicacion: la app la compara contra la red para saber si esta al dia -->
-    <meta name="app-version" content="5.11">
+    <meta name="app-version" content="5.12">
     <title>Padel Scoreboard</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -941,6 +941,214 @@
             margin-bottom: 3px;
         }
 
+        .winner-card.live-history-modal-card {
+            background: linear-gradient(145deg, #25384c, #15162b);
+            border: 1px solid rgba(126, 200, 227, 0.28);
+            border-radius: 18px;
+            padding: 16px;
+            max-width: 430px;
+            max-height: min(84vh, 680px);
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+        }
+
+        .live-history-modal-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        .live-history-kicker {
+            color: #7ec8e3;
+            font-size: 0.68rem;
+            font-weight: 800;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        .live-history-title {
+            font-size: 1.18rem;
+            font-weight: 800;
+            line-height: 1.15;
+            margin: 2px 0 0;
+        }
+
+        .live-history-close {
+            width: 32px;
+            height: 32px;
+            border: 0;
+            border-radius: 8px;
+            background: #e94560;
+            color: #fff;
+            font-size: 1rem;
+            font-weight: 800;
+            line-height: 1;
+            flex-shrink: 0;
+        }
+
+        .live-history-matchup {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+            align-items: center;
+            gap: 8px;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 9px 10px;
+            margin-bottom: 10px;
+        }
+
+        .live-history-team {
+            min-width: 0;
+            font-size: 0.78rem;
+            font-weight: 750;
+            line-height: 1.2;
+            overflow-wrap: anywhere;
+        }
+
+        .live-history-team.team-1 { color: #ff9eaa; }
+        .live-history-team.team-2 { color: #90caf9; text-align: right; }
+
+        .live-history-vs {
+            color: #75889a;
+            font-size: 0.65rem;
+            font-weight: 800;
+        }
+
+        .live-history-current-score {
+            grid-column: 1 / -1;
+            color: #ffc107;
+            font-size: 0.72rem;
+            font-weight: 800;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            padding-top: 6px;
+        }
+
+        .live-history-list {
+            min-height: 120px;
+            overflow-y: auto;
+            overscroll-behavior: contain;
+            padding-right: 3px;
+        }
+
+        .live-history-item {
+            display: grid;
+            grid-template-columns: 30px minmax(0, 1fr);
+            gap: 9px;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .live-history-item:last-child { border-bottom: 0; }
+
+        .live-history-sequence {
+            width: 28px;
+            height: 28px;
+            display: grid;
+            place-items: center;
+            border-radius: 50%;
+            color: #fff;
+            font-size: 0.72rem;
+            font-weight: 800;
+            background: #596275;
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.06);
+        }
+
+        .live-history-item.team-1 .live-history-sequence { background: #c6283c; }
+        .live-history-item.team-2 .live-history-sequence { background: #1565c0; }
+
+        .live-history-event-head {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        .live-history-event-head strong {
+            min-width: 0;
+            font-size: 0.86rem;
+            line-height: 1.25;
+        }
+
+        .live-history-event-head time {
+            color: #9fb3c8;
+            font-size: 0.67rem;
+            white-space: nowrap;
+        }
+
+        .live-history-outcome {
+            display: inline-block;
+            border-radius: 999px;
+            padding: 1px 7px;
+            margin-left: 4px;
+            font-size: 0.66rem;
+            font-weight: 800;
+            vertical-align: 1px;
+        }
+
+        .live-history-outcome.error {
+            background: rgba(233, 69, 96, 0.18);
+            color: #ff9eaa;
+            border: 1px solid rgba(233, 69, 96, 0.38);
+        }
+
+        .live-history-outcome.acierto {
+            background: rgba(25, 135, 84, 0.18);
+            color: #9be7a5;
+            border: 1px solid rgba(25, 135, 84, 0.42);
+        }
+
+        .live-history-award {
+            margin-top: 3px;
+            color: #dce6ef;
+            font-size: 0.75rem;
+            line-height: 1.3;
+        }
+
+        .live-history-scoreline {
+            display: flex;
+            justify-content: space-between;
+            gap: 8px;
+            margin-top: 4px;
+            color: #9fb3c8;
+            font-size: 0.68rem;
+        }
+
+        .live-history-scoreline strong {
+            color: #ffc107;
+            font-weight: 750;
+            text-align: right;
+        }
+
+        .live-history-empty {
+            display: grid;
+            place-items: center;
+            min-height: 150px;
+            padding: 20px;
+            color: #9fb3c8;
+            font-size: 0.82rem;
+            line-height: 1.4;
+            text-align: center;
+        }
+
+        .light-theme .winner-card.live-history-modal-card {
+            background: linear-gradient(145deg, #ffffff, #eef4f8);
+            color: #1a1a1a;
+            border-color: #b8d6e2;
+        }
+
+        .light-theme .live-history-matchup {
+            background: #f4f7fa;
+            border-color: #d5e0e7;
+        }
+
+        .light-theme .live-history-item { border-color: #dce3e8; }
+        .light-theme .live-history-award { color: #34495e; }
+
         /* ── Winner ── */
         .winner-overlay {
             position: fixed;
@@ -1160,6 +1368,7 @@
                 </div>
             </div>
             <button class="btn btn-outline-light btn-sm header-icon-btn" onclick="showQuickPanel()" id="btn-quick" title="Datos del partido y la reta"><i class="bi bi-info-circle"></i></button>
+            <button class="btn btn-outline-light btn-sm header-icon-btn" onclick="showLiveMatchHistory()" id="btn-live-history" title="Historial del partido" aria-label="Abrir historial del partido"><i class="bi bi-clock-history"></i></button>
             <!-- Espaciador: empuja el boton de cambio de lado al extremo derecho -->
             <div style="flex:1; min-width:0;"></div>
             <!-- El reloj se ancla al centro de la pantalla, no al hueco entre botones -->
@@ -1674,7 +1883,7 @@
             </a>
             <a href="https://github.com/prime-leads-app/padel-score-board" target="_blank" rel="noopener" class="card bg-dark border-secondary text-decoration-none flex-fill" style="cursor:pointer;">
                 <div class="card-body py-0 px-2 text-center">
-                    <small class="text-white">PadelApp v<span id="app-version-label">5.11</span></small>
+                    <small class="text-white">PadelApp v<span id="app-version-label">5.12</span></small>
                 </div>
             </a>
             <div class="card bg-dark border-secondary flex-fill">
@@ -1701,6 +1910,22 @@
                 <div id="history-list"></div>
             </div>
             <button class="btn btn-outline-light btn-sm mt-3" onclick="closeHistoryModal()">Cerrar</button>
+        </div>
+    </div>
+
+    <!-- Historial detallado del partido actual -->
+    <div class="winner-overlay d-none" id="live-match-history-modal" onclick="if(event.target===this)closeLiveMatchHistory()">
+        <div class="winner-card live-history-modal-card">
+            <div class="live-history-modal-header">
+                <div>
+                    <div class="live-history-kicker">Partido actual</div>
+                    <h4 class="live-history-title">Historial punto a punto</h4>
+                </div>
+                <button class="live-history-close" onclick="closeLiveMatchHistory()" aria-label="Cerrar historial">✕</button>
+            </div>
+            <div class="live-history-matchup" id="live-history-matchup"></div>
+            <div class="live-history-list" id="live-match-history-list"></div>
+            <button class="btn btn-outline-light btn-sm mt-3" onclick="closeLiveMatchHistory()">Cerrar</button>
         </div>
     </div>
 
@@ -2175,6 +2400,7 @@
 
         let playerStats = emptyPlayerStats();
         let matchLog = [];
+        let pointTimeline = [];
         let _pendingPointAttribution = null;
         let serve = 1;
         let history = [];
@@ -2870,6 +3096,12 @@
                         break;
                     }
                 }
+                for (let i = pointTimeline.length - 1; i >= 0; i--) {
+                    if (pointTimeline[i].playerId === pendingShotPlayer && pointTimeline[i].shot === null) {
+                        pointTimeline[i].shot = type;
+                        break;
+                    }
+                }
                 pendingShotPlayer = null;
             }
             closeShotTypeModal();
@@ -2879,6 +3111,7 @@
                 const matches = JSON.parse(localStorage.getItem('padel-matches') || '[]');
                 if (matches.length > 0) {
                     matches[0].history = matchLog.slice();
+                    matches[0].timeline = pointTimeline.slice();
                     const pNames = {
                         p1a: document.getElementById('cfg-name-p1a').value || 'Jugador 1',
                         p1b: document.getElementById('cfg-name-p1b').value || 'Jugador 2',
@@ -2922,6 +3155,7 @@
             ensureRetaStarted();
             startTimer();
             saveState();
+            const timelineGame = attribution && attribution.game ? attribution.game : currentGameNumber();
             applyPointAttribution(attribution);
             const prevGames = games[0] + games[1];
             const prevSets = setsWon[0] + setsWon[1];
@@ -2949,6 +3183,7 @@
                     playSound('point', player);
                 }
             }
+            recordPointTimeline(player, attribution, timelineGame);
             render();
             return true;
         }
@@ -3098,6 +3333,7 @@
                 setsWon: [...setsWon], tiebreak, advantage, deuceCount, serve,
                 matchOver, freePoints: [...freePoints], mode, deuceMode,
                 playerStats: clonePlayerStats(), matchLogLength: matchLog.length,
+                pointTimelineLength: pointTimeline.length,
                 historyItemCount: document.querySelectorAll('#history-list .history-item').length
             });
         }
@@ -3133,6 +3369,8 @@
             }
             if (Number.isInteger(s.matchLogLength)) matchLog.length = s.matchLogLength;
             else if (matchLog.length) matchLog.pop();
+            if (Number.isInteger(s.pointTimelineLength)) pointTimeline.length = s.pointTimelineLength;
+            else if (pointTimeline.length) pointTimeline.pop();
             _pendingPointAttribution = null;
             _lastShotSlot = null;
             lastPointTime = 0;
@@ -3357,6 +3595,124 @@
                 _pendingPointAttribution = null; // solo el registro generado por este punto
             }
             matchLog.push({ time: t, text, player: playerName, playerId, outcome, game, shot: null });
+        }
+
+        function timelineTeamPlayers(team) {
+            if (nameMode === 'teams') {
+                const input = document.getElementById('cfg-name-team' + team);
+                return [input && input.value ? input.value : 'Equipo ' + team];
+            }
+            const names = currentSlotNames();
+            return team === 1 ? [names.p1a, names.p1b] : [names.p2a, names.p2b];
+        }
+
+        function currentTimelineScore() {
+            if (mode === 'free') {
+                return { mode: 'free', points: [...freePoints] };
+            }
+            return {
+                mode: 'padel',
+                points: [getPointDisplay(0), getPointDisplay(1)],
+                games: [...games],
+                setsWon: [...setsWon]
+            };
+        }
+
+        function syncSavedPointTimeline() {
+            if (!_matchSaved || !_lastSavedMatchId) return;
+            try {
+                const matches = JSON.parse(localStorage.getItem('padel-matches') || '[]');
+                const saved = matches.find(match => match.id === _lastSavedMatchId);
+                if (!saved) return;
+                saved.timeline = pointTimeline.slice();
+                localStorage.setItem('padel-matches', JSON.stringify(matches));
+            } catch(e) {}
+        }
+
+        function recordPointTimeline(scoringTeam, attribution, game) {
+            const playerId = attribution && RETA_SLOTS.includes(attribution.playerId) ? attribution.playerId : null;
+            const playerEl = playerId ? document.getElementById('name-' + playerId) : null;
+            pointTimeline.push({
+                time: new Date().toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit' }),
+                scoringTeam,
+                playerId,
+                player: playerEl ? playerEl.textContent : null,
+                outcome: attribution && (attribution.outcome === 'error' || attribution.outcome === 'acierto') ? attribution.outcome : null,
+                game,
+                shot: null,
+                teams: [timelineTeamPlayers(1), timelineTeamPlayers(2)],
+                score: currentTimelineScore()
+            });
+            syncSavedPointTimeline();
+        }
+
+        function timelineTeamLabel(entry, team) {
+            const savedTeam = entry && Array.isArray(entry.teams) ? entry.teams[team - 1] : null;
+            if (Array.isArray(savedTeam) && savedTeam.length) return savedTeam.join(' / ');
+            return getName(team);
+        }
+
+        function timelineScoreLabel(score) {
+            if (!score) return '';
+            if (score.mode === 'free') return `Puntos ${score.points[0]} - ${score.points[1]}`;
+            const parts = [`Puntos ${score.points[0]} - ${score.points[1]}`, `Juegos ${score.games[0]} - ${score.games[1]}`];
+            if (score.setsWon && (score.setsWon[0] || score.setsWon[1])) {
+                parts.push(`Sets ${score.setsWon[0]} - ${score.setsWon[1]}`);
+            }
+            return parts.join(' · ');
+        }
+
+        function legacyLiveHistoryEntries() {
+            return matchLog.filter(entry => entry && typeof entry === 'object' && entry.player).map(entry => {
+                const actorTeam = entry.playerId && entry.playerId.startsWith('p2') ? 2 : 1;
+                const scoringTeam = entry.outcome === 'error' ? (actorTeam === 1 ? 2 : 1) : actorTeam;
+                return { ...entry, scoringTeam, legacy: true };
+            });
+        }
+
+        function renderLiveHistoryEntry(entry, sequence) {
+            const scoringTeam = entry.scoringTeam === 2 ? 2 : 1;
+            const beneficiary = timelineTeamLabel(entry, scoringTeam);
+            let action = 'Punto registrado desde la tarjeta del equipo';
+            let outcome = '';
+            if (entry.player) {
+                action = esc(entry.player);
+                if (entry.outcome === 'error') outcome = ' <span class="live-history-outcome error">Error</span>';
+                else if (entry.outcome === 'acierto') outcome = ' <span class="live-history-outcome acierto">Acierto</span>';
+                else action += ' consiguió el punto';
+            } else if (entry.legacy && entry.text) {
+                action = esc(entry.text);
+            }
+            const shot = entry.shot ? ` · Golpe: ${esc(SHOT_LABELS[entry.shot] || entry.shot)}` : '';
+            const score = timelineScoreLabel(entry.score);
+            return `<article class="live-history-item team-${scoringTeam}">
+                <div class="live-history-sequence">${sequence}</div>
+                <div>
+                    <div class="live-history-event-head"><strong>${action}${outcome}</strong><time>${esc(entry.time || '')}</time></div>
+                    <div class="live-history-award">Punto para <strong>${esc(beneficiary)}</strong>${shot}</div>
+                    <div class="live-history-scoreline"><span>Juego ${esc(entry.game || 1)}</span>${score ? `<strong>Marcador: ${esc(score)}</strong>` : '<strong>Marcador anterior no disponible</strong>'}</div>
+                </div>
+            </article>`;
+        }
+
+        function showLiveMatchHistory() {
+            const events = pointTimeline.length ? pointTimeline : legacyLiveHistoryEntries();
+            const latestFirst = events.slice().reverse();
+            const matchup = document.getElementById('live-history-matchup');
+            const list = document.getElementById('live-match-history-list');
+            matchup.innerHTML = `<div class="live-history-team team-1">${esc(getName(1))}</div>
+                <div class="live-history-vs">VS</div>
+                <div class="live-history-team team-2">${esc(getName(2))}</div>
+                <div class="live-history-current-score">${esc(timelineScoreLabel(currentTimelineScore()))}</div>`;
+            list.innerHTML = latestFirst.length
+                ? latestFirst.map((entry, index) => renderLiveHistoryEntry(entry, events.length - index)).join('')
+                : '<div class="live-history-empty">Aún no hay puntos registrados en este partido.</div>';
+            document.getElementById('live-match-history-modal').classList.remove('d-none');
+            requestAnimationFrame(() => { list.scrollTop = 0; });
+        }
+
+        function closeLiveMatchHistory() {
+            document.getElementById('live-match-history-modal').classList.add('d-none');
         }
 
         function toggleAllConfig() {
@@ -3639,6 +3995,7 @@
             });
             // Guardar historial estructurado de puntos
             match.history = matchLog.slice();
+            match.timeline = pointTimeline.slice();
             // Identificador para poder relacionarlo con el partido de la reta
             match.id = 'm' + Date.now() + '-' + Math.random().toString(36).slice(2, 6);
             _lastSavedMatchId = match.id;
@@ -3843,6 +4200,12 @@
                     (saved.history || []).forEach(entry => {
                         if (entry.player === oldName) entry.player = newName;
                     });
+                    (saved.timeline || []).forEach(entry => {
+                        if (entry.player === oldName) entry.player = newName;
+                        if (Array.isArray(entry.teams)) {
+                            entry.teams = entry.teams.map(team => Array.isArray(team) ? team.map(name => name === oldName ? newName : name) : team);
+                        }
+                    });
                     changed = true;
                 });
                 if (changed) localStorage.setItem('padel-matches', JSON.stringify(savedMatches));
@@ -3858,6 +4221,12 @@
             retaRoster[index] = newName;
             matchLog.forEach(entry => {
                 if (entry.player === oldName) entry.player = newName;
+            });
+            pointTimeline.forEach(entry => {
+                if (entry.player === oldName) entry.player = newName;
+                if (Array.isArray(entry.teams)) {
+                    entry.teams = entry.teams.map(team => Array.isArray(team) ? team.map(name => name === oldName ? newName : name) : team);
+                }
             });
             if (retaSession) {
                 retaSession.roster = (retaSession.roster || []).map(name => name === oldName ? newName : name);
@@ -4963,7 +5332,7 @@
                 // Marca absoluta de arranque: al recargar, el reloj sigue donde iba
                 timerStart, timerElapsed, timerRunning: !!timerInterval, retaTimeUp,
                 points, games, sets, setsWon, tiebreak, advantage, deuceCount,
-                freePoints, playerStats, matchLog,
+                freePoints, playerStats, matchLog, pointTimeline,
                 namesPadel: mode === 'padel' ? getCurrentNames() : (prev.namesPadel || ['Jugador 1','Jugador 2','Jugador 3','Jugador 4']),
                 namesFree: mode === 'free' ? getCurrentNames() : (prev.namesFree || ['Jugador 1','Jugador 2','Jugador 3','Jugador 4']),
                 teamNames: [
@@ -5008,6 +5377,7 @@
                     playerStats = emptyPlayerStats();
                 }
                 matchLog = d.matchLog || [];
+                pointTimeline = Array.isArray(d.pointTimeline) ? d.pointTimeline : [];
                 // Cronometro: se reanuda desde la hora real de arranque, no desde cero
                 retaTimeUp = d.retaTimeUp || false;
                 timerElapsed = d.timerElapsed || 0;
@@ -5092,6 +5462,7 @@
             }
             playerStats = emptyPlayerStats();
             matchLog = [];
+            pointTimeline = [];
             _pendingPointAttribution = null;
             _lastShotSlot = null;
             history = []; serve = 1;
@@ -5139,6 +5510,7 @@
             document.getElementById('cfg-name-team2').value = 'Equipo 2';
             playerStats = emptyPlayerStats();
             matchLog = [];
+            pointTimeline = [];
             _pendingPointAttribution = null;
             _lastShotSlot = null;
             // En retas los nombres vienen del roster: hay que soltar tambien las parejas

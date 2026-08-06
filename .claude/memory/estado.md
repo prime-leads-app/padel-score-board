@@ -10,5 +10,4 @@ metadata:
   modified: 2026-07-31T13:35:51.259Z
 ---
 
-**Ahora:** v5.11 solicita confirmacion antes de eliminar participantes y conserva el centrado vertical corregido cuando Error/Acierto esta en Sin detalle.
-**Proximo paso:** Validar ambos comportamientos en el dispositivo usado durante la reta.
+Ahora: v5.12 incorpora el historial punto a punto en vivo, persistente y compatible con Deshacer, con los eventos mas recientes primero. Proximo paso: Validar el nuevo modal en el dispositivo usado durante la reta.

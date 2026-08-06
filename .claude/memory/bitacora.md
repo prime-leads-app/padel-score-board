@@ -29,3 +29,4 @@ metadata:
 - 2026-08-06-16-57-24-05: v5.9 agrega Editar junto a Eliminar y propaga el nombre a parejas, clasificacion y estadisticas de la reta activa
 - 2026-08-06-17-10-13-06: v5.10 centra verticalmente los nombres cuando Error/Acierto esta sin detalle y conserva el desplazamiento del modo detallado
 - 2026-08-06-17-17-42-07: v5.11 confirma antes de eliminar participantes, libera su pareja solo al aceptar y conserva el centrado vertical sin detalle
+- 2026-08-06-17-46-05-08: v5.12 agrega historial en vivo del partido con Error/Acierto, beneficiario y marcador por punto, mostrando primero lo mas reciente.

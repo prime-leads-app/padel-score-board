@@ -50,3 +50,6 @@ En las tarjetas divididas de Retas, Error y Acierto van centrados dentro de cada
 
 ## 2026-08-06-16-19-33-03
 Los nombres usan 24.18 px a 390 px mediante clamp(1.3rem, 6.2vw, 1.55rem), con padding 12px 2px 0; la tarjeta conserva 172.33 x 62 px y quedan 4.57 px entre las etiquetas Error/Acierto y el nombre.
+
+## 2026-08-06-17-46-05-08
+El encabezado incluye un acceso directo al historial del partido actual. La lista conserva un evento por punto con jugador, Error/Acierto, equipo beneficiado y marcador resultante; los eventos se muestran del mas reciente al mas antiguo y Deshacer elimina tambien el ultimo registro.
