@@ -10,5 +10,5 @@ metadata:
   modified: 2026-07-31T13:35:51.259Z
 ---
 
-**Ahora:** v5.5 implementada y verificada en navegador movil: captura Error/Acierto por jugador en Retas, desglose por juego/partido/jornada y Deshacer integral.
-**Proximo paso:** validar el flujo durante una reta real en cancha.
+**Ahora:** v5.6 implementada y verificada a 390 px: Error/Acierto centrados y nombres de jugadores mas grandes sin cambiar las tarjetas.
+**Proximo paso:** validar la legibilidad durante una reta real en cancha.

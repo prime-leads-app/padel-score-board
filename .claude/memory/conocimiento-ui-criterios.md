@@ -4,7 +4,7 @@ description: Criterios de interfaz que fijo el usuario y que ya costaron correcc
 metadata: 
   node_type: memory
   type: reference
-  updated: 2026-07-31
+  updated: 2026-08-06
   review_by: 2027-01-31
   originSessionId: 3f0c74ee-036b-4a00-a437-ba79ac59d1c9
   modified: 2026-07-31T13:35:15.106Z
@@ -44,3 +44,6 @@ y modal de jugadores, porque la jornada dejo de existir.
 El truco que funciona: cargar la app en un **iframe de 390px** dentro de la pagina de pruebas; ahi las
 media queries se evaluan contra el ancho del iframe. Medir con `offsetWidth`/`offsetTop` (no con
 `getBoundingClientRect` si el iframe tiene `transform: scale`, que las distorsiona).
+
+## 2026-08-06-16-06-57-02
+En las tarjetas divididas de Retas, Error y Acierto van centrados dentro de cada mitad; el nombre usa 18.88 px y peso 700 a 390 px, conservando una tarjeta medida de 172.33 x 62 px.
