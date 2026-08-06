@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <!-- Sube en cada publicacion: la app la compara contra la red para saber si esta al dia -->
-    <meta name="app-version" content="5.9">
+    <meta name="app-version" content="5.10">
     <title>Padel Scoreboard</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -222,7 +222,7 @@
             line-height: 1;
             color: #fff;
             text-align: center;
-            padding: 12px 2px 0;
+            padding: 0 2px;
             cursor: pointer;
             pointer-events: auto;
             white-space: nowrap;
@@ -263,6 +263,7 @@
 
         .player-control.outcome-detail-active .player-name {
             pointer-events: none;
+            padding: 12px 2px 0;
         }
 
         .player-control.outcome-detail-active .player-outcome-btn:active {
@@ -1673,7 +1674,7 @@
             </a>
             <a href="https://github.com/prime-leads-app/padel-score-board" target="_blank" rel="noopener" class="card bg-dark border-secondary text-decoration-none flex-fill" style="cursor:pointer;">
                 <div class="card-body py-0 px-2 text-center">
-                    <small class="text-white">PadelApp v<span id="app-version-label">5.9</span></small>
+                    <small class="text-white">PadelApp v<span id="app-version-label">5.10</span></small>
                 </div>
             </a>
             <div class="card bg-dark border-secondary flex-fill">

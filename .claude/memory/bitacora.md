@@ -27,3 +27,4 @@ metadata:
 - 2026-08-06-16-19-33-03: v5.7 amplía los nombres de jugadores sin cambiar las tarjetas
 - 2026-08-06-16-41-52-04: v5.8 reubica Error/Acierto en Reta y separa participantes en listado y alta compactos, verificados a 320 y 390 px
 - 2026-08-06-16-57-24-05: v5.9 agrega Editar junto a Eliminar y propaga el nombre a parejas, clasificacion y estadisticas de la reta activa
+- 2026-08-06-17-10-13-06: v5.10 centra verticalmente los nombres cuando Error/Acierto esta sin detalle y conserva el desplazamiento del modo detallado

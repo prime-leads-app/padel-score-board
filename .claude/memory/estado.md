@@ -10,5 +10,5 @@ metadata:
   modified: 2026-07-31T13:35:51.259Z
 ---
 
-**Ahora:** v5.9 agrega Editar junto a Eliminar en la lista de participantes y conserva parejas, clasificacion y estadisticas al renombrar.
-**Proximo paso:** Validar en una reta real la edicion de un nombre despues de varios partidos.
+**Ahora:** v5.10 centra verticalmente los nombres de participantes cuando Error/Acierto esta en Sin detalle, sin alterar la composicion del modo Con detalle.
+**Proximo paso:** Validar la alineacion en el dispositivo usado durante la reta.
