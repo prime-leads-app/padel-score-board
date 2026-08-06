@@ -10,5 +10,5 @@ metadata:
   modified: 2026-07-31T13:35:51.259Z
 ---
 
-**Ahora:** v5.10 centra verticalmente los nombres de participantes cuando Error/Acierto esta en Sin detalle, sin alterar la composicion del modo Con detalle.
-**Proximo paso:** Validar la alineacion en el dispositivo usado durante la reta.
+**Ahora:** v5.11 solicita confirmacion antes de eliminar participantes y conserva el centrado vertical corregido cuando Error/Acierto esta en Sin detalle.
+**Proximo paso:** Validar ambos comportamientos en el dispositivo usado durante la reta.

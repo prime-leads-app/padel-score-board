@@ -28,3 +28,4 @@ metadata:
 - 2026-08-06-16-41-52-04: v5.8 reubica Error/Acierto en Reta y separa participantes en listado y alta compactos, verificados a 320 y 390 px
 - 2026-08-06-16-57-24-05: v5.9 agrega Editar junto a Eliminar y propaga el nombre a parejas, clasificacion y estadisticas de la reta activa
 - 2026-08-06-17-10-13-06: v5.10 centra verticalmente los nombres cuando Error/Acierto esta sin detalle y conserva el desplazamiento del modo detallado
+- 2026-08-06-17-17-42-07: v5.11 confirma antes de eliminar participantes, libera su pareja solo al aceptar y conserva el centrado vertical sin detalle

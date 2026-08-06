@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <!-- Sube en cada publicacion: la app la compara contra la red para saber si esta al dia -->
-    <meta name="app-version" content="5.10">
+    <meta name="app-version" content="5.11">
     <title>Padel Scoreboard</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1329,7 +1329,7 @@
             <div style="margin:8px 0;">
                 <b style="color:#FFD54F;">Participantes y parejas</b> (solo en Retas)<br>
                 Se administran en la pantalla <b>Reta</b>: desde el menu ☰ → <b>Reta</b>, o con el boton amarillo de Configuracion.<br>
-                <b>Ver participantes</b> abre la lista donde puedes editar o quitar jugadores y <b>Agregar</b> abre la captura de un nombre nuevo. Antes de cada partido eliges de las listas desplegables quienes forman cada equipo. La lista se guarda en el telefono para la proxima reta.<br>
+                <b>Ver participantes</b> abre la lista donde puedes editar o quitar jugadores; antes de eliminar se solicita confirmacion. <b>Agregar</b> abre la captura de un nombre nuevo. Antes de cada partido eliges de las listas desplegables quienes forman cada equipo. La lista se guarda en el telefono para la proxima reta.<br>
                 <span style="opacity:0.7;">Si eliges a alguien que ya estaba en el otro equipo, los dos se intercambian: nadie queda repetido.</span>
             </div>
 
@@ -1674,7 +1674,7 @@
             </a>
             <a href="https://github.com/prime-leads-app/padel-score-board" target="_blank" rel="noopener" class="card bg-dark border-secondary text-decoration-none flex-fill" style="cursor:pointer;">
                 <div class="card-body py-0 px-2 text-center">
-                    <small class="text-white">PadelApp v<span id="app-version-label">5.10</span></small>
+                    <small class="text-white">PadelApp v<span id="app-version-label">5.11</span></small>
                 </div>
             </a>
             <div class="card bg-dark border-secondary flex-fill">
@@ -1808,6 +1808,19 @@
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:7px; margin-top:6px;">
                 <button type="button" class="btn btn-outline-light btn-sm" onclick="closeAddRetaPlayerModal()">Cancelar</button>
                 <button type="button" class="btn btn-warning btn-sm" id="reta-player-submit" style="font-weight:700;" onclick="saveRosterPlayer()">Agregar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmación de baja: permanece encima del listado para evitar eliminaciones accidentales -->
+    <div class="winner-overlay d-none" id="confirm-delete-roster-player-overlay" style="z-index:1250;">
+        <div class="winner-card" style="background: linear-gradient(135deg, #c0392b, #2c3e50); max-width:360px; padding:22px 18px;">
+            <h4 class="mb-3">Eliminar participante?</h4>
+            <p class="mb-2">Se eliminará a <strong id="delete-roster-player-name"></strong> de la lista.</p>
+            <p class="mb-4" style="opacity:0.78; font-size:0.82rem;">También se liberará de la pareja actual. Los resultados ya jugados se conservarán.</p>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                <button type="button" class="btn btn-outline-light" onclick="cancelRemoveRosterPlayer()">Cancelar</button>
+                <button type="button" class="btn btn-danger" onclick="applyRemoveRosterPlayer()">Eliminar</button>
             </div>
         </div>
     </div>
@@ -3746,6 +3759,7 @@
         }
 
         let _editingRosterIndex = null;
+        let _pendingRosterDeleteIndex = null;
 
         function showRetaParticipantsModal() {
             renderRoster();
@@ -3783,6 +3797,25 @@
             document.getElementById('reta-add-player-modal').classList.add('d-none');
             _editingRosterIndex = null;
             clearRetaPlayerFeedback();
+        }
+
+        function confirmRemoveRosterPlayer(index) {
+            const name = retaRoster[index];
+            if (name === undefined) return;
+            _pendingRosterDeleteIndex = index;
+            document.getElementById('delete-roster-player-name').textContent = name;
+            document.getElementById('confirm-delete-roster-player-overlay').classList.remove('d-none');
+        }
+
+        function cancelRemoveRosterPlayer() {
+            _pendingRosterDeleteIndex = null;
+            document.getElementById('confirm-delete-roster-player-overlay').classList.add('d-none');
+        }
+
+        function applyRemoveRosterPlayer() {
+            const index = _pendingRosterDeleteIndex;
+            cancelRemoveRosterPlayer();
+            if (index !== null && retaRoster[index] !== undefined) removeRosterPlayer(index);
         }
 
         function renameObjectKey(obj, oldName, newName) {
@@ -3896,7 +3929,7 @@
                     <div class="reta-roster-name"><span class="reta-roster-index">${i + 1}</span><span>${esc(n)}</span></div>
                     <div class="reta-roster-actions">
                         <button type="button" class="btn btn-outline-warning reta-roster-edit" onclick="showEditRetaPlayerModal(${i})" aria-label="Editar a ${esc(n)}"><i class="bi bi-pencil" aria-hidden="true"></i> Editar</button>
-                        <button type="button" class="btn btn-outline-danger reta-roster-delete" onclick="removeRosterPlayer(${i})" aria-label="Eliminar a ${esc(n)}"><i class="bi bi-trash" aria-hidden="true"></i> Eliminar</button>
+                        <button type="button" class="btn btn-outline-danger reta-roster-delete" onclick="confirmRemoveRosterPlayer(${i})" aria-label="Eliminar a ${esc(n)}"><i class="bi bi-trash" aria-hidden="true"></i> Eliminar</button>
                     </div>
                 </div>`).join('')
                 : '<div style="opacity:0.6; font-size:0.82rem; text-align:center; padding:18px 8px;">Aún no hay participantes.</div>';
@@ -4007,6 +4040,7 @@
         function closeRetaModal() {
             closeRetaParticipantsModal();
             closeAddRetaPlayerModal();
+            cancelRemoveRosterPlayer();
             document.getElementById('reta-modal').classList.add('d-none');
         }
 
