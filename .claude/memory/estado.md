@@ -10,4 +10,4 @@ metadata:
   modified: 2026-07-31T13:35:51.259Z
 ---
 
-Ahora: v5.27 permite borrar una reta archivada o todo el archivo con confirmación; limpia clasificación, estadísticas y sólo los partidos vinculados por matchId, protegiendo registros antiguos y la reta activa. Próximo paso: la unidad cierra aquí.
+Ahora: v5.28 controla el sacador individual con borde amarillo y rotación automática al terminar cada juego; doble clic corrige el jugador y un clic corrige el equipo. Deshacer, cambio de lado, tie-break y persistencia integran el nuevo estado. Próximo paso: la unidad cierra aquí.

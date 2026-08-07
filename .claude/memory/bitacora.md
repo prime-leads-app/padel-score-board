@@ -46,3 +46,4 @@ metadata:
 - 2026-08-06-22-14-30-22: v5.25 renombra el modo de seguimiento a Registrar Error/Acierto y Sólo sumar puntos; ajusta proporción y tipografía para una sola línea sin desbordar el modal. Ayuda y README actualizados; verificado a 320 y 390 px.
 - 2026-08-06-22-21-15-23: v5.26 cambia el modo a Registrar Errores/Aciertos en botón, ayuda y README; conserva una sola línea a 320 px sin reducir más la tipografía.
 - 2026-08-06-22-35-41-24: v5.27 agrega borrado individual de retas anteriores con confirmación y limpieza de sus partidos vinculados por matchId; Borrar todo aplica la misma regla.
+- 2026-08-06-22-55-52-25: v5.28 agrega sacador individual: un clic cambia equipo, doble clic cambia jugador y cada juego alterna automáticamente equipo y compañero; Deshacer, cambio de lado y recarga conservan el orden.

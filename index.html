@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <!-- Sube en cada publicacion: la app la compara contra la red para saber si esta al dia -->
-    <meta name="app-version" content="5.27">
+    <meta name="app-version" content="5.28">
     <title>Padel Scoreboard</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -233,6 +233,21 @@
 
         .player-control:active {
             background: rgba(255,255,255,0.3);
+        }
+
+        /* Marca al sacador sin cambiar la altura ni el ancho de su tarjeta. */
+        .player-control.serving-player::after {
+            content: '';
+            position: absolute;
+            left: 7px;
+            right: 7px;
+            bottom: 0;
+            height: 4px;
+            border-radius: 4px 4px 0 0;
+            background: #FFD54F;
+            box-shadow: 0 -1px 5px rgba(255, 213, 79, 0.65);
+            pointer-events: none;
+            z-index: 4;
         }
 
         /* La misma tarjeta representa media cancha: Error a la izquierda,
@@ -2040,7 +2055,7 @@
                 <b style="color:#FFD54F;">Botones de abajo</b><br>
                 Solo se muestran los que sirven en ese momento, para que los visibles sean mas grandes:<br>
                 <b>Iniciar:</b> arranca el partido y el cronometro. Parpadea en verde y amarillo mientras no lo tocas, y desaparece al arrancar <span style="opacity:0.7;">(solo en Retas)</span>.<br>
-                <b>Saque:</b> alterna que equipo saca. Sirve para corregir el indicador si se desfasa.<br>
+                <b>Saque:</b> un clic cambia el equipo que saca; dos clics seguidos cambian al sacador entre los dos jugadores de ese equipo. El borde amarillo bajo el nombre identifica al sacador. Al terminar cada juego, la app alterna automáticamente equipo y jugador.<br>
                 <b>Deshacer:</b> quita el ultimo punto. Aparece cuando el partido ya empezo.<br>
                 <b>Reiniciar:</b> marcador a cero con los mismos jugadores.<br>
                 <b>Limpiar:</b> ademas suelta a los jugadores. En Retas vacia los desplegables de parejas, sin tocar la lista de participantes ni la clasificacion.<br>
@@ -2297,7 +2312,7 @@
         <!-- Orden segun el flujo del partido: se arranca, se juega, se corrige, se cierra -->
         <div class="controls-bar">
             <button class="btn btn-success btn-sm d-none" id="btn-start-match" onclick="startMatchNow()" title="Iniciar el partido y el cronometro">Iniciar</button>
-            <button class="btn btn-outline-info btn-sm" onclick="toggleServe()">Saque</button>
+            <button class="btn btn-outline-info btn-sm" id="btn-serve" onclick="handleServeButtonClick(event)" title="Un clic: cambiar equipo. Doble clic: cambiar jugador" aria-label="Saque: un clic cambia equipo; doble clic cambia jugador" style="touch-action:manipulation;">Saque</button>
             <button class="btn btn-outline-warning btn-sm d-none" id="btn-undo" onclick="confirmUndo()">Deshacer</button>
             <button class="btn btn-outline-danger btn-sm" onclick="confirmReset()">Reiniciar</button>
             <button class="btn btn-outline-secondary btn-sm" id="btn-clear-all" onclick="confirmClear()">Limpiar</button>
@@ -2313,7 +2328,7 @@
             </a>
             <a href="https://github.com/prime-leads-app/padel-score-board" target="_blank" rel="noopener" class="card bg-dark border-secondary text-decoration-none flex-fill" style="cursor:pointer;">
                 <div class="card-body py-0 px-2 text-center">
-                    <small class="text-white">PadelApp v<span id="app-version-label">5.27</span></small>
+                    <small class="text-white">PadelApp v<span id="app-version-label">5.28</span></small>
                 </div>
             </a>
             <div class="card bg-dark border-secondary flex-fill">
@@ -2907,6 +2922,8 @@
         let pointTimeline = [];
         let _pendingPointAttribution = null;
         let serve = 1;
+        // Jugador que saca en el turno actual de cada equipo: a = izquierda, b = derecha.
+        let servePlayers = { 1: 'a', 2: 'a' };
         let history = [];
         let matchOver = false;
         let timerStart = 0;
@@ -3780,7 +3797,7 @@
                     winGame(player);
                     return;
                 }
-                if (total % 2 === 1) { serve = serve === 1 ? 2 : 1; updateServeUI(); }
+                if (total % 2 === 1) advanceServeTurn();
                 addHistory(`${getName(player)} punto TB (${points[0]}-${points[1]})`);
                 return;
             }
@@ -3847,7 +3864,7 @@
             const p = player - 1, o = 1 - p;
             games[p]++; points = [0, 0]; advantage = 0; deuceCount = 0;
             const wasTB = tiebreak; tiebreak = false;
-            serve = serve === 1 ? 2 : 1; updateServeUI();
+            advanceServeTurn();
 
             if (padelFormat === 'retas') {
                 if (retasGames === 0) {
@@ -3928,6 +3945,7 @@
                 points: [...points], games: [...games],
                 sets: [sets[0].slice(), sets[1].slice()],
                 setsWon: [...setsWon], tiebreak, advantage, deuceCount, serve,
+                servePlayers: { ...servePlayers },
                 matchOver, freePoints: [...freePoints], mode, deuceMode,
                 playerStats: clonePlayerStats(), matchLogLength: matchLog.length,
                 pointTimelineLength: pointTimeline.length,
@@ -3941,6 +3959,7 @@
             points = s.points; games = s.games; sets = s.sets;
             setsWon = s.setsWon; tiebreak = s.tiebreak;
             advantage = s.advantage; deuceCount = s.deuceCount || 0; serve = s.serve;
+            servePlayers = normalizeServePlayers(s.servePlayers);
             matchOver = s.matchOver; freePoints = s.freePoints;
             if (s.playerStats) playerStats = clonePlayerStats(s.playerStats);
             // Si se deshace el punto que cerró el partido, se revierte tambien el registro
@@ -3980,7 +3999,48 @@
             document.getElementById('winner-badge-p2').classList.remove('show');
         }
 
-        function toggleServe() { serve = serve === 1 ? 2 : 1; updateServeUI(); }
+        function normalizeServePlayers(value) {
+            return {
+                1: value && value[1] === 'b' ? 'b' : 'a',
+                2: value && value[2] === 'b' ? 'b' : 'a'
+            };
+        }
+
+        function toggleServe() {
+            serve = serve === 1 ? 2 : 1;
+            updateServeUI();
+            saveToStorage();
+        }
+
+        function toggleServePlayer() {
+            servePlayers[serve] = servePlayers[serve] === 'a' ? 'b' : 'a';
+            updateServeUI();
+            saveToStorage();
+        }
+
+        // Al terminar un turno de saque, queda preparado el compañero para la
+        // próxima vez que ese equipo saque y el turno pasa al equipo contrario.
+        function advanceServeTurn() {
+            servePlayers[serve] = servePlayers[serve] === 'a' ? 'b' : 'a';
+            serve = serve === 1 ? 2 : 1;
+            updateServeUI();
+        }
+
+        let _serveTapTimer = null;
+
+        function handleServeButtonClick(e) {
+            if (e) e.preventDefault();
+            if (_serveTapTimer) {
+                clearTimeout(_serveTapTimer);
+                _serveTapTimer = null;
+                toggleServePlayer();
+                return;
+            }
+            _serveTapTimer = setTimeout(() => {
+                _serveTapTimer = null;
+                toggleServe();
+            }, 320);
+        }
 
         // Los equipos cambian de lado de la cancha: se llevan consigo su marcador,
         // sus estadisticas y el saque. Solo cambia el color, no el resultado.
@@ -4014,6 +4074,7 @@
             sets = [sets[1], sets[0]];
             if (advantage) advantage = advantage === 1 ? 2 : 1;
             serve = serve === 1 ? 2 : 1;
+            servePlayers = { 1: servePlayers[2], 2: servePlayers[1] };
             // Estadisticas individuales
             const st = playerStats;
             [st.p1a, st.p2a] = [st.p2a, st.p1a];
@@ -4071,6 +4132,11 @@
         function updateServeUI() {
             document.getElementById('card-p1').classList.toggle('serving', serve === 1);
             document.getElementById('card-p2').classList.toggle('serving', serve === 2);
+            const activePlayer = `p${serve}${servePlayers[serve]}`;
+            RETA_SLOTS.forEach(slot => {
+                const control = document.querySelector(`.player-control[data-player="${slot}"]`);
+                if (control) control.classList.toggle('serving-player', mode === 'padel' && slot === activePlayer);
+            });
         }
 
         function render() {
@@ -6257,7 +6323,7 @@
         function saveToStorage() {
             const prev = JSON.parse(localStorage.getItem('padel-state') || '{}');
             const data = {
-                mode, nameMode, padelFormat, setsToWin, gamesPerSet, retasGames, retasEarlyWin, retaTimeLimit, retaPointsCap, freeMaxPoints, deuceMode, trackShots, trackOutcomes, serve, matchOver,
+                mode, nameMode, padelFormat, setsToWin, gamesPerSet, retasGames, retasEarlyWin, retaTimeLimit, retaPointsCap, freeMaxPoints, deuceMode, trackShots, trackOutcomes, serve, servePlayers, matchOver,
                 // Marca absoluta de arranque: al recargar, el reloj sigue donde iba
                 timerStart, timerElapsed, timerRunning: !!timerInterval, retaTimeUp,
                 points, games, sets, setsWon, tiebreak, advantage, deuceCount,
@@ -6295,6 +6361,7 @@
                 trackShots = d.trackShots !== undefined ? d.trackShots : true;
                 trackOutcomes = d.trackOutcomes !== undefined ? d.trackOutcomes : true;
                 serve = d.serve || 1;
+                servePlayers = normalizeServePlayers(d.servePlayers);
                 matchOver = d.matchOver || false;
                 points = d.points || [0, 0];
                 games = d.games || [0, 0];
@@ -6400,7 +6467,7 @@
             pointTimeline = [];
             _pendingPointAttribution = null;
             _lastShotSlot = null;
-            history = []; serve = 1;
+            history = []; serve = 1; servePlayers = { 1: 'a', 2: 'a' };
             _matchSaved = false;
             _retaFinishReason = null;
             _dupWarned = false;
@@ -6429,7 +6496,7 @@
             } else {
                 freePoints = [0, 0]; matchOver = false;
             }
-            history = []; serve = 1;
+            history = []; serve = 1; servePlayers = { 1: 'a', 2: 'a' };
             _matchSaved = false;
             _retaFinishReason = null;
             updateServeUI();
