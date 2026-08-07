@@ -53,3 +53,4 @@ metadata:
 - 2026-08-06-23-43-21-29: v5.32 restaura en el encabezado el botón para cambiar equipos de lado con su marcador, estadísticas y saque, conservando los tres controles independientes.
 - 2026-08-06-23-57-22-30: v5.33 coloca el botón amarillo de jugador sacador en la cuarta posición del encabezado, después del control de posiciones.
 - 2026-08-07-00-03-08-01: v5.34 mueve Participantes junto al menú y traslada el intercambio de posiciones al grupo derecho, conservando ambos comportamientos.
+- 2026-08-07-00-15-05-02: v5.35 usa flechas verticales para intercambiar equipos y horizontales para posiciones internas, en ese orden a la derecha del reloj.
