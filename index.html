@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <!-- Sube en cada publicacion: la app la compara contra la red para saber si esta al dia -->
-    <meta name="app-version" content="5.13">
+    <meta name="app-version" content="5.14">
     <title>Padel Scoreboard</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -737,6 +737,220 @@
         }
         .reta-table td { padding: 6px; border-top: 1px solid rgba(255,255,255,0.08); }
         .light-theme .reta-table td { border-top-color: rgba(0,0,0,0.1); }
+        .reta-view-tabs {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 4px;
+            width: 100%;
+            margin: 2px 0 10px;
+            padding: 3px;
+            border: 1px solid rgba(126,200,227,0.35);
+            border-radius: 10px;
+            background: rgba(7,18,38,0.38);
+        }
+        .reta-view-tab {
+            min-height: 36px;
+            border: 0;
+            border-radius: 7px;
+            background: transparent;
+            color: #aebbc8;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .reta-view-tab.active {
+            background: #ffc107;
+            color: #171929;
+            box-shadow: 0 3px 10px rgba(255,193,7,0.2);
+        }
+        .reta-view-tab:focus-visible {
+            outline: 2px solid #7ec8e3;
+            outline-offset: 2px;
+        }
+        .reta-stats-live {
+            margin-bottom: 8px;
+            padding: 6px 9px;
+            border: 1px solid rgba(126,200,227,0.35);
+            border-radius: 8px;
+            background: rgba(126,200,227,0.09);
+            color: #a9e4f5;
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-align: center;
+        }
+        .reta-stats-overview {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 6px;
+            margin-bottom: 9px;
+        }
+        .reta-stat-kpi {
+            min-width: 0;
+            padding: 7px 4px;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.06);
+            text-align: center;
+        }
+        .reta-stat-kpi strong {
+            display: block;
+            overflow: hidden;
+            color: #fff;
+            font-size: 0.92rem;
+            line-height: 1.1;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .reta-stat-kpi span {
+            display: block;
+            margin-top: 3px;
+            color: #91a0b0;
+            font-size: 0.62rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+        .reta-stat-leaders {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(92px, 1fr));
+            gap: 6px;
+            margin-bottom: 10px;
+        }
+        .reta-stat-leader {
+            min-width: 0;
+            padding: 7px 8px;
+            border-left: 3px solid #ffc107;
+            border-radius: 7px;
+            background: rgba(255,193,7,0.08);
+        }
+        .reta-stat-leader-label {
+            color: #d6ba55;
+            font-size: 0.58rem;
+            font-weight: 800;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+        .reta-stat-leader-name {
+            overflow: hidden;
+            margin-top: 2px;
+            color: #fff;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .reta-stat-leader-value { color: #b6c2ce; font-size: 0.65rem; }
+        .reta-stats-heading {
+            margin: 10px 0 6px;
+            color: #7ec8e3;
+            font-size: 0.72rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+        .reta-player-stat-card {
+            margin-bottom: 7px;
+            padding: 9px 10px;
+            border: 1px solid rgba(255,255,255,0.09);
+            border-radius: 10px;
+            background: rgba(44,44,84,0.72);
+        }
+        .reta-player-stat-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+        .reta-player-stat-name {
+            overflow: hidden;
+            color: #fff;
+            font-size: 0.9rem;
+            font-weight: 800;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .reta-player-efficiency {
+            flex: 0 0 auto;
+            padding: 2px 7px;
+            border-radius: 999px;
+            background: rgba(126,200,227,0.15);
+            color: #b8e9f5;
+            font-size: 0.66rem;
+            font-weight: 800;
+        }
+        .reta-performance-track {
+            display: flex;
+            overflow: hidden;
+            height: 5px;
+            margin: 7px 0;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.08);
+        }
+        .reta-performance-success { background: #35b66a; }
+        .reta-performance-error { background: #e94560; }
+        .reta-player-counts {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 4px;
+            color: #aeb9c5;
+            font-size: 0.65rem;
+            text-align: center;
+        }
+        .reta-player-counts strong { display: block; color: #fff; font-size: 0.78rem; }
+        .reta-player-counts .success strong { color: #80dda3; }
+        .reta-player-counts .error strong { color: #ff93a1; }
+        .reta-player-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px 10px;
+            margin-top: 7px;
+            color: #9eabb8;
+            font-size: 0.65rem;
+        }
+        .reta-form-mark {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 17px;
+            height: 17px;
+            margin-left: 2px;
+            border-radius: 50%;
+            color: #fff;
+            font-size: 0.57rem;
+            font-weight: 800;
+        }
+        .reta-form-mark.win { background: #198754; }
+        .reta-form-mark.loss { background: #b33b4f; }
+        .reta-stat-details { margin-top: 6px; color: #9fb3c8; font-size: 0.65rem; }
+        .reta-stat-details summary { color: #7ec8e3; cursor: pointer; font-weight: 700; }
+        .reta-stat-details div { margin-top: 4px; line-height: 1.35; }
+        .reta-stats-note,
+        .reta-stats-empty {
+            padding: 9px 10px;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.05);
+            color: #9faab6;
+            font-size: 0.68rem;
+            line-height: 1.35;
+            text-align: center;
+        }
+        .reta-stats-note { margin-bottom: 8px; }
+        .light-theme .reta-view-tabs { background: #eef3f7; border-color: #b8d6e2; }
+        .light-theme .reta-view-tab { color: #52616f; }
+        .light-theme .reta-view-tab.active { color: #1a1a1a; }
+        .light-theme .reta-stat-kpi,
+        .light-theme .reta-player-stat-card,
+        .light-theme .reta-stats-note,
+        .light-theme .reta-stats-empty { background: #f3f6f9; border-color: #dce3e8; }
+        .light-theme .reta-stat-kpi strong,
+        .light-theme .reta-stat-leader-name,
+        .light-theme .reta-player-stat-name,
+        .light-theme .reta-player-counts strong { color: #1f2d3a; }
+        .light-theme .reta-stat-kpi span,
+        .light-theme .reta-player-meta,
+        .light-theme .reta-stats-note,
+        .light-theme .reta-stats-empty { color: #647381; }
+        .light-theme .reta-stat-leader { background: #fff8df; }
+        .light-theme .reta-performance-track { background: #dfe6eb; }
         .reta-pts-input {
             width: 54px;
             text-align: center;
@@ -1646,8 +1860,8 @@
             <div style="margin:8px 0;">
                 <b style="color:#FFD54F;">Menu ☰</b><br>
                 <b>Reta:</b> participantes, parejas, fecha y tiempo por partido.<br>
-                <b>Clasificacion:</b> tabla de la reta en curso, con sus partidos.<br>
-                <b>Retas anteriores:</b> jornadas ya cerradas.<br>
+                <b>Clasificacion:</b> tabla, estadisticas de rendimiento y partidos de la reta en curso.<br>
+                <b>Retas anteriores:</b> jornadas cerradas con su clasificacion y estadisticas finales.<br>
                 <b>Partidos:</b> historial de partidos, con opcion de borrar uno por uno.<br>
                 <b>Historial:</b> registro de puntos del partido actual.<br>
                 <b>Buscar actualizacion:</b> revisa si hay una version nueva publicada y la instala.
@@ -1908,7 +2122,7 @@
             </a>
             <a href="https://github.com/prime-leads-app/padel-score-board" target="_blank" rel="noopener" class="card bg-dark border-secondary text-decoration-none flex-fill" style="cursor:pointer;">
                 <div class="card-body py-0 px-2 text-center">
-                    <small class="text-white">PadelApp v<span id="app-version-label">5.13</span></small>
+                    <small class="text-white">PadelApp v<span id="app-version-label">5.14</span></small>
                 </div>
             </a>
             <div class="card bg-dark border-secondary flex-fill">
@@ -2113,9 +2327,13 @@
     <!-- Reta Standings Modal -->
     <div class="winner-overlay d-none" id="reta-standings-modal" onclick="if(event.target===this)closeRetaStandings()">
         <div class="winner-card" style="background: linear-gradient(135deg, #2c3e50, #1a1a2e); max-height:82vh; display:flex; flex-direction:column; max-width:420px;">
-            <h4 class="mb-1">🏆 Clasificación de la reta</h4>
+            <h4 class="mb-1" id="reta-standings-title">🏆 Clasificación de la reta</h4>
             <div id="reta-standings-meta" style="font-size:0.75rem; color:#aaa; margin-bottom:8px;"></div>
-            <div style="overflow-y:auto; flex:1; text-align:left;" id="reta-standings-content"></div>
+            <div class="reta-view-tabs" id="reta-view-tabs" role="tablist" aria-label="Vista de la reta">
+                <button type="button" class="reta-view-tab active" id="reta-tab-standings" role="tab" aria-selected="true" aria-controls="reta-standings-content" onclick="setRetaStandingsView('standings')">Clasificación</button>
+                <button type="button" class="reta-view-tab" id="reta-tab-stats" role="tab" aria-selected="false" aria-controls="reta-standings-content" onclick="setRetaStandingsView('stats')">Estadísticas</button>
+            </div>
+            <div style="overflow-y:auto; flex:1; text-align:left;" id="reta-standings-content" role="tabpanel"></div>
             <div style="display:flex; gap:8px; justify-content:center; margin-top:12px; flex-wrap:wrap;">
                 <button class="btn btn-outline-warning btn-sm" id="btn-goto-matches" onclick="scrollToRetaMatches()">📋 Partidos</button>
                 <!-- Compartir: en pausa hasta rehacer el formato del texto -->
@@ -5108,20 +5326,238 @@
             assignFromRoster(null);
         }
 
-        // ── Clasificación ──
+        // ── Clasificación y estadísticas de la reta ──
+        let retaStandingsView = 'standings';
+
+        function parseClockSeconds(value) {
+            const parts = String(value || '').split(':').map(Number);
+            if (parts.length !== 2 || parts.some(n => !Number.isFinite(n))) return 0;
+            return Math.max(0, parts[0] * 60 + parts[1]);
+        }
+
+        function retaStatsPlayers(session, includeCurrent) {
+            if (!session) return [];
+            const playerMap = new Map();
+            const getPlayer = name => {
+                if (!name) return null;
+                if (!playerMap.has(name)) {
+                    const storedStanding = (session.standings || []).find(row => row.name === name) || {};
+                    playerMap.set(name, {
+                        name,
+                        classificationPoints: Number((session.points || {})[name] ?? storedStanding.points) || 0,
+                        played: Number((session.played || {})[name] ?? storedStanding.played) || 0,
+                        won: Number((session.won || {})[name] ?? storedStanding.won) || 0,
+                        attributedPoints: 0,
+                        aciertos: 0,
+                        errors: 0,
+                        shots: Object.fromEntries(SHOT_TYPES.map(type => [type, 0])),
+                        gamesFor: 0,
+                        gamesAgainst: 0,
+                        partners: new Set(),
+                        opponents: new Set(),
+                        recent: []
+                    });
+                }
+                return playerMap.get(name);
+            };
+            const addStat = (player, rawStat) => {
+                if (!player) return;
+                const stat = normalizePlayerStat(rawStat);
+                player.attributedPoints += stat.points;
+                player.aciertos += stat.aciertos;
+                player.errors += stat.errors;
+                SHOT_TYPES.forEach(type => player.shots[type] += stat.shots[type]);
+            };
+
+            (session.roster || []).forEach(getPlayer);
+            Object.keys(session.points || {}).forEach(getPlayer);
+            Object.keys(session.stats || {}).forEach(name => addStat(getPlayer(name), session.stats[name]));
+
+            (session.matches || []).forEach(match => {
+                const teams = [Array.isArray(match.team1) ? match.team1 : [], Array.isArray(match.team2) ? match.team2 : []];
+                const matchGames = Array.isArray(match.games) ? match.games.map(value => Number(value) || 0) : [0, 0];
+                teams.forEach((team, teamIndex) => {
+                    const rivals = teams[1 - teamIndex];
+                    team.forEach(name => {
+                        const player = getPlayer(name);
+                        if (!player) return;
+                        player.gamesFor += matchGames[teamIndex] || 0;
+                        player.gamesAgainst += matchGames[1 - teamIndex] || 0;
+                        team.filter(partner => partner !== name).forEach(partner => player.partners.add(partner));
+                        rivals.forEach(rival => player.opponents.add(rival));
+                        player.recent.push(match.winner === teamIndex + 1);
+                    });
+                });
+            });
+
+            if (includeCurrent) {
+                const currentNames = currentSlotNames();
+                RETA_SLOTS.forEach(slot => addStat(getPlayer(currentNames[slot]), playerStats[slot]));
+            }
+
+            return Array.from(playerMap.values()).map(player => {
+                const tracked = player.aciertos + player.errors;
+                const shotTotal = SHOT_TYPES.reduce((total, type) => total + player.shots[type], 0);
+                const topShot = SHOT_TYPES
+                    .filter(type => player.shots[type] > 0)
+                    .sort((a, b) => player.shots[b] - player.shots[a])[0] || null;
+                return {
+                    ...player,
+                    tracked,
+                    efficiency: tracked ? Math.round((player.aciertos / tracked) * 100) : null,
+                    net: player.aciertos - player.errors,
+                    winPercent: player.played ? Math.round((player.won / player.played) * 100) : null,
+                    unclassified: Math.max(0, player.attributedPoints - player.aciertos),
+                    shotTotal,
+                    topShot,
+                    recent: player.recent.slice(-3)
+                };
+            }).sort((a, b) => b.classificationPoints - a.classificationPoints || b.won - a.won || a.played - b.played || a.name.localeCompare(b.name));
+        }
+
+        function retaBestPair(session) {
+            const pairs = new Map();
+            (session && session.matches || []).forEach(match => {
+                [match.team1, match.team2].forEach((team, teamIndex) => {
+                    if (!Array.isArray(team) || team.length < 2) return;
+                    const names = team.slice(0, 2).sort((a, b) => a.localeCompare(b));
+                    const key = names.join(' ~ ');
+                    if (!pairs.has(key)) pairs.set(key, { names, played: 0, won: 0 });
+                    const pair = pairs.get(key);
+                    pair.played++;
+                    if (match.winner === teamIndex + 1) pair.won++;
+                });
+            });
+            const eligible = Array.from(pairs.values()).filter(pair => pair.played >= 2);
+            eligible.forEach(pair => pair.percent = Math.round((pair.won / pair.played) * 100));
+            return eligible.sort((a, b) => b.percent - a.percent || b.won - a.won || b.played - a.played || a.names.join('/').localeCompare(b.names.join('/')))[0] || null;
+        }
+
+        function retaStatLeaderHTML(label, name, value) {
+            return `<div class="reta-stat-leader">
+                <div class="reta-stat-leader-label">${esc(label)}</div>
+                <div class="reta-stat-leader-name" title="${esc(name)}">${esc(name)}</div>
+                <div class="reta-stat-leader-value">${esc(value)}</div>
+            </div>`;
+        }
+
+        function retaPlayerStatsCardHTML(player) {
+            const efficiencyLabel = player.efficiency === null ? 'Sin detalle' : `${player.efficiency}% · ${player.tracked} ${player.tracked === 1 ? 'evento' : 'eventos'}`;
+            const successWidth = player.efficiency === null ? 0 : player.efficiency;
+            const errorWidth = player.efficiency === null ? 0 : 100 - player.efficiency;
+            const netLabel = player.net > 0 ? `+${player.net}` : String(player.net);
+            const form = player.recent.length
+                ? `<span>Últimos: ${player.recent.map(won => `<span class="reta-form-mark ${won ? 'win' : 'loss'}" title="${won ? 'Ganó' : 'Perdió'}">${won ? 'G' : 'P'}</span>`).join('')}</span>`
+                : '';
+            const shots = SHOT_TYPES.filter(type => player.shots[type] > 0).map(type => `${SHOT_LABELS[type]}: ${player.shots[type]}`).join(' · ');
+            const detailLines = [];
+            if (shots) detailLines.push(`Golpes registrados: ${shots}`);
+            if (player.partners.size || player.opponents.size) detailLines.push(`Parejas distintas: ${player.partners.size} · Rivales distintos: ${player.opponents.size}`);
+            if (player.unclassified > 0) detailLines.push(`Puntos atribuidos sin Error/Acierto: ${player.unclassified}`);
+            const details = detailLines.length
+                ? `<details class="reta-stat-details"><summary>Más detalle</summary><div>${detailLines.map(esc).join('<br>')}</div></details>`
+                : '';
+            return `<article class="reta-player-stat-card">
+                <div class="reta-player-stat-head">
+                    <div class="reta-player-stat-name" title="${esc(player.name)}">${esc(player.name)}</div>
+                    <div class="reta-player-efficiency">${esc(efficiencyLabel)}</div>
+                </div>
+                <div class="reta-performance-track" role="img" aria-label="${player.efficiency === null ? 'Sin eventos de Error/Acierto' : `${player.efficiency}% de eficiencia`}">
+                    <span class="reta-performance-success" style="width:${successWidth}%"></span>
+                    <span class="reta-performance-error" style="width:${errorWidth}%"></span>
+                </div>
+                <div class="reta-player-counts">
+                    <span class="success"><strong>${player.aciertos}</strong>Aciertos</span>
+                    <span class="error"><strong>${player.errors}</strong>Errores</span>
+                    <span><strong>${netLabel}</strong>Balance</span>
+                </div>
+                <div class="reta-player-meta">
+                    <span>${player.won}/${player.played} victorias${player.winPercent === null ? '' : ` · ${player.winPercent}%`}</span>
+                    <span>Juegos ${player.gamesFor}-${player.gamesAgainst}</span>
+                    ${form}
+                </div>
+                ${details}
+            </article>`;
+        }
+
+        function retaStatisticsHTML(session, includeCurrent = false) {
+            const players = retaStatsPlayers(session, includeCurrent);
+            const completedMatches = session && Array.isArray(session.matches) ? session.matches : [];
+            const totalSeconds = completedMatches.reduce((total, match) => total + parseClockSeconds(match.duration), 0);
+            const averageSeconds = completedMatches.length ? Math.round(totalSeconds / completedMatches.length) : 0;
+            const trackedTotal = players.reduce((total, player) => total + player.tracked, 0);
+            const unclassifiedTotal = players.reduce((total, player) => total + player.unclassified, 0);
+            const playersWithActivity = players.filter(player => player.played > 0 || player.tracked > 0 || player.attributedPoints > 0);
+            const mostAciertos = players.filter(player => player.aciertos > 0).sort((a, b) => b.aciertos - a.aciertos || b.efficiency - a.efficiency || a.name.localeCompare(b.name))[0];
+            const bestEfficiency = players.filter(player => player.tracked >= 5).sort((a, b) => b.efficiency - a.efficiency || b.tracked - a.tracked || b.aciertos - a.aciertos)[0];
+            const bestPair = retaBestPair(session);
+            const leaders = [];
+            if (mostAciertos) leaders.push(retaStatLeaderHTML('Más aciertos', mostAciertos.name, `${mostAciertos.aciertos} aciertos`));
+            if (bestEfficiency) leaders.push(retaStatLeaderHTML('Mejor eficiencia', bestEfficiency.name, `${bestEfficiency.efficiency}% en ${bestEfficiency.tracked} eventos`));
+            if (bestPair) leaders.push(retaStatLeaderHTML('Mejor pareja', bestPair.names.join(' / '), `${bestPair.won}/${bestPair.played} victorias · ${bestPair.percent}%`));
+
+            let html = '';
+            if (includeCurrent) html += '<div class="reta-stats-live">Incluye los eventos del partido en curso</div>';
+            html += `<div class="reta-stats-overview">
+                <div class="reta-stat-kpi"><strong>${completedMatches.length}</strong><span>Partidos</span></div>
+                <div class="reta-stat-kpi"><strong>${trackedTotal || '—'}</strong><span>Eventos</span></div>
+                <div class="reta-stat-kpi"><strong>${averageSeconds ? fmtClock(averageSeconds) : '—'}</strong><span>Promedio</span></div>
+            </div>`;
+            if (leaders.length) html += `<div class="reta-stat-leaders">${leaders.join('')}</div>`;
+            if (!trackedTotal) {
+                html += '<div class="reta-stats-note">Todavía no hay eventos de Error/Acierto. La participación y los resultados aparecerán con los partidos terminados; activa el detalle para calcular la eficiencia.</div>';
+            } else if (unclassifiedTotal > 0) {
+                html += `<div class="reta-stats-note">La eficiencia utiliza ${trackedTotal} eventos marcados como Error/Acierto. Hay ${unclassifiedTotal} ${unclassifiedTotal === 1 ? 'punto atribuido' : 'puntos atribuidos'} sin ese detalle.</div>`;
+            }
+            if (!playersWithActivity.length) {
+                html += '<div class="reta-stats-empty">Las estadísticas aparecerán cuando inicie el primer partido.</div>';
+                return html;
+            }
+            html += '<div class="reta-stats-heading">Rendimiento por participante</div>';
+            html += playersWithActivity.map(retaPlayerStatsCardHTML).join('');
+            return html;
+        }
+
+        function setRetaStandingsView(view) {
+            retaStandingsView = view === 'stats' ? 'stats' : 'standings';
+            showRetaStandings();
+        }
+
         function showRetaStandings() {
             const meta = document.getElementById('reta-standings-meta');
             const cont = document.getElementById('reta-standings-content');
             const closeBtn = document.getElementById('btn-close-reta');
+            const matchesBtn = document.getElementById('btn-goto-matches');
+            const tabs = document.getElementById('reta-view-tabs');
+            const standingsTab = document.getElementById('reta-tab-standings');
+            const statsTab = document.getElementById('reta-tab-stats');
+            const title = document.getElementById('reta-standings-title');
             document.getElementById('reta-standings-modal').classList.remove('d-none');
             if (!retaActive || !retaSession) {
+                title.textContent = '🏆 Clasificación de la reta';
                 meta.textContent = '';
                 cont.innerHTML = '<div style="opacity:0.6; text-align:center; padding:16px;">No hay una reta en curso.<br>Configura los participantes y toca <strong>Iniciar reta</strong>.</div>';
                 closeBtn.classList.add('d-none');
+                matchesBtn.classList.add('d-none');
+                tabs.classList.add('d-none');
                 return;
             }
+            tabs.classList.remove('d-none');
             closeBtn.classList.remove('d-none');
             meta.innerHTML = `${esc(fmtRetaDate(retaSession.date))} · inicio ${esc(retaSession.time)} · ${retaSession.matches.length} ${retaSession.matches.length === 1 ? 'partido' : 'partidos'}`;
+            const showingStats = retaStandingsView === 'stats';
+            standingsTab.classList.toggle('active', !showingStats);
+            statsTab.classList.toggle('active', showingStats);
+            standingsTab.setAttribute('aria-selected', String(!showingStats));
+            statsTab.setAttribute('aria-selected', String(showingStats));
+            matchesBtn.classList.toggle('d-none', showingStats || retaSession.matches.length === 0);
+            title.textContent = showingStats ? '📊 Estadísticas de la reta' : '🏆 Clasificación de la reta';
+            if (showingStats) {
+                const includeCurrent = matchStarted() && !matchOver;
+                cont.innerHTML = retaStatisticsHTML(retaSession, includeCurrent);
+                cont.scrollTop = 0;
+                return;
+            }
             const rows = retaStandings();
             let html = '';
             if (rows.length === 0) {
@@ -5167,21 +5603,6 @@
                         ${performanceHTML ? `<button type="button" onclick="document.getElementById('${performanceId}').classList.toggle('d-none')" style="background:none; border:0; color:#7ec8e3; padding:4px 0 0; font-size:0.72rem; font-weight:600; cursor:pointer;">▶ Ver Error/Acierto por juego</button><div id="${performanceId}" class="d-none" style="margin-top:3px;">${performanceHTML}</div>` : ''}
                     </div>`;
                 });
-            }
-            // Rendimiento y golpes acumulados de la reta
-            const withStats = Object.keys(retaSession.stats).filter(n => playerHasStats(retaSession.stats[n]));
-            if (withStats.length > 0) {
-                const uid = 'rs-' + Math.random().toString(36).substr(2, 6);
-                html += `<div style="background:#2c2c54; border-radius:8px; padding:8px 10px; margin-top:10px;">
-                    <div onclick="document.getElementById('${uid}').classList.toggle('d-none')" style="font-size:0.78rem; color:#7ec8e3; cursor:pointer; font-weight:600;">▶ Estadísticas individuales de la reta</div>
-                    <div id="${uid}" class="d-none" style="margin-top:6px; font-size:0.75rem; color:#ddd;">`;
-                withStats.sort((a, b) => retaSession.stats[b].points - retaSession.stats[a].points).forEach(n => {
-                    const st = retaSession.stats[n];
-                    const performance = performanceSummary(st);
-                    const shots = shotSummary(st);
-                    html += `<div style="padding:3px 0;">⚡ ${esc(n)}: <strong>${esc([performance, shots].filter(Boolean).join(' · '))}</strong></div>`;
-                });
-                html += '</div></div>';
             }
             cont.innerHTML = html;
         }
@@ -5245,7 +5666,7 @@
                         const performance = matchPerformanceHTML(m.stats);
                         return `<div style="padding:4px 0; border-bottom:1px solid rgba(255,255,255,0.05);">P${m.n} · ${t1} vs ${t2} — ${m.games[0]}-${m.games[1]} · <span style="color:#ffc107;">${win}</span> (${esc(m.duration)})${performance}</div>`;
                     }).join('');
-                    const retaPerformance = matchPerformanceHTML(r.stats);
+                    const retaPerformance = retaStatisticsHTML(r, false);
                     const statsUid = 'rhs-' + Math.random().toString(36).substr(2, 6);
                     return `<div style="background:#2c2c54; border-radius:8px; padding:8px 10px; margin-bottom:6px; font-size:0.8rem;">
                         <div style="display:flex; justify-content:space-between; color:#aaa; font-size:0.7rem;">
@@ -5254,7 +5675,7 @@
                         </div>
                         <div style="margin-top:4px; color:#bbb; font-size:0.72rem;">Participantes: ${(r.roster || []).map(esc).join(', ')}</div>
                         <div style="margin-top:6px;">${standings}</div>
-                        ${retaPerformance ? `<div style="margin-top:6px;"><div onclick="document.getElementById('${statsUid}').classList.toggle('d-none')" style="font-size:0.72rem; color:#7ec8e3; cursor:pointer; font-weight:600;">▶ Ver Error/Acierto de la reta</div><div id="${statsUid}" class="d-none" style="margin-top:4px;">${retaPerformance}</div></div>` : ''}
+                        ${retaPerformance ? `<div style="margin-top:6px;"><div onclick="document.getElementById('${statsUid}').classList.toggle('d-none')" style="font-size:0.72rem; color:#7ec8e3; cursor:pointer; font-weight:600;">▶ Ver estadísticas finales</div><div id="${statsUid}" class="d-none" style="margin-top:6px;">${retaPerformance}</div></div>` : ''}
                         ${matchesHTML ? `<div style="margin-top:6px; padding-top:4px; border-top:1px solid rgba(255,255,255,0.1);">
                             <div onclick="document.getElementById('${uid}').classList.toggle('d-none')" style="font-size:0.72rem; color:#7ec8e3; cursor:pointer; font-weight:600;">▶ Ver partidos</div>
                             <div id="${uid}" class="d-none" style="font-size:0.7rem; color:#999; margin-top:4px;">${matchesHTML}</div>
