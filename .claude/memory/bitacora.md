@@ -43,3 +43,4 @@ metadata:
 - 2026-08-06-20-32-34-19: v5.22 compacta la cabecera de Reta en dos accesos, Tiempo y Máx. pts, que muestran el valor actual y abren selectores propios; al reabrir, la pantalla vuelve al inicio.
 - 2026-08-06-21-52-32-20: v5.23 alinea Fecha, Tiempo y Máx. pts en una sola fila de la pantalla Reta; Fecha muestra el horario como dato secundario y abre un editor propio. Verificado a 320 y 390 px.
 - 2026-08-06-22-00-50-21: v5.24 iguala el ancho de Fecha, Tiempo y Máx. pts y elimina los encabezados visuales Error/Acierto, Participantes y Parejas de este partido; conserva sus etiquetas accesibles. Verificado a 320 y 390 px.
+- 2026-08-06-22-14-30-22: v5.25 renombra el modo de seguimiento a Registrar Error/Acierto y Sólo sumar puntos; ajusta proporción y tipografía para una sola línea sin desbordar el modal. Ayuda y README actualizados; verificado a 320 y 390 px.

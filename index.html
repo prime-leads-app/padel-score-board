@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <!-- Sube en cada publicacion: la app la compara contra la red para saber si esta al dia -->
-    <meta name="app-version" content="5.24">
+    <meta name="app-version" content="5.25">
     <title>Padel Scoreboard</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -500,6 +500,22 @@
         .reta-compact-toggle .btn {
             width: 100%;
         }
+        #outcome-detail-config .reta-compact-toggle {
+            grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.95fr);
+            min-width: 0;
+        }
+        #outcome-detail-config .mode-btn {
+            min-width: 0;
+            overflow: hidden;
+            padding-left: 3px !important;
+            padding-right: 3px !important;
+            font-size: clamp(0.66rem, 3.1vw, 0.76rem) !important;
+            letter-spacing: -0.02em;
+            white-space: nowrap;
+        }
+        #reta-modal-scroll {
+            overflow-x: hidden !important;
+        }
         .reta-participant-action {
             display: inline-flex;
             align-items: center;
@@ -762,6 +778,15 @@
             .reta-setting-shortcut-value { font-size: 0.72rem; }
             .reta-setting-shortcut-date .reta-setting-shortcut-value { font-size: 0.69rem; }
             .reta-setting-shortcut-meta { font-size: 0.55rem; }
+            #outcome-detail-config {
+                padding-left: 5px;
+                padding-right: 5px;
+            }
+            #outcome-detail-config .reta-compact-toggle { gap: 4px; }
+            #outcome-detail-config .mode-btn {
+                font-size: 0.58rem !important;
+                letter-spacing: -0.035em;
+            }
             .reta-participant-action {
                 gap: 4px;
                 padding: 4px !important;
@@ -1994,10 +2019,10 @@
             </div>
 
             <div style="margin:8px 0;">
-                <b style="color:#FFD54F;">Detalle de Error/Acierto</b> (solo en Retas)<br>
+                <b style="color:#FFD54F;">Registro de Error/Acierto</b> (solo en Retas)<br>
                 Se activa o desactiva desde la pantalla <b>Reta</b>.<br>
-                <b>Con detalle:</b> La tarjeta de cada jugador se divide en <b>Error</b> a la izquierda y <b>Acierto</b> a la derecha. Error da el punto al equipo contrario; Acierto lo da al equipo del jugador. Ambos quedan en sus estadisticas por juego, partido y reta.<br>
-                <b>Sin detalle:</b> La tarjeta vuelve a funcionar como antes y atribuye el punto al jugador sin clasificarlo como Error o Acierto.<br>
+                <b>Registrar Error/Acierto:</b> La tarjeta de cada jugador se divide en <b>Error</b> a la izquierda y <b>Acierto</b> a la derecha. Error da el punto al equipo contrario; Acierto lo da al equipo del jugador. Ambos quedan en sus estadisticas por juego, partido y reta.<br>
+                <b>Sólo sumar puntos:</b> La tarjeta vuelve a funcionar como antes y atribuye el punto al jugador sin clasificarlo como Error o Acierto.<br>
                 <span style="opacity:0.7;">La zona grande del equipo siempre permite sumar un punto rapido sin atribuirlo. Deshacer revierte tambien Error/Acierto y el detalle de golpe.</span>
             </div>
 
@@ -2287,7 +2312,7 @@
             </a>
             <a href="https://github.com/prime-leads-app/padel-score-board" target="_blank" rel="noopener" class="card bg-dark border-secondary text-decoration-none flex-fill" style="cursor:pointer;">
                 <div class="card-body py-0 px-2 text-center">
-                    <small class="text-white">PadelApp v<span id="app-version-label">5.24</span></small>
+                    <small class="text-white">PadelApp v<span id="app-version-label">5.25</span></small>
                 </div>
             </a>
             <div class="card bg-dark border-secondary flex-fill">
@@ -2372,11 +2397,11 @@
                     </div>
                 </div>
 
-                <!-- 2. Detalle de Error/Acierto -->
+                <!-- 2. Modo de registro de Error/Acierto -->
                 <div class="reta-section reta-compact-section" id="outcome-detail-config" role="region" aria-label="Error/Acierto">
-                    <div class="reta-compact-toggle" role="group" aria-label="Detalle de Error/Acierto">
-                        <button class="btn btn-outline-light mode-btn active" onclick="setTrackOutcomes(true)" id="btn-outcomes-on">Con detalle</button>
-                        <button class="btn btn-outline-light mode-btn" onclick="setTrackOutcomes(false)" id="btn-outcomes-off">Sin detalle</button>
+                    <div class="reta-compact-toggle" role="group" aria-label="Modo de puntuación">
+                        <button class="btn btn-outline-light mode-btn active" onclick="setTrackOutcomes(true)" id="btn-outcomes-on">Registrar Error/Acierto</button>
+                        <button class="btn btn-outline-light mode-btn" onclick="setTrackOutcomes(false)" id="btn-outcomes-off">Sólo sumar puntos</button>
                     </div>
                 </div>
 
