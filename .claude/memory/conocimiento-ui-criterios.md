@@ -33,6 +33,8 @@ y modal de jugadores, porque la jornada dejo de existir.
 ## Otros criterios ya fijados
 - El reloj se ancla al **centro de la pantalla** (`position:absolute; left:50%`), no al hueco entre
   botones: con 2 botones a la izquierda y 3 a la derecha, ese hueco queda ~20px corrido.
+- Después de publicar un cambio, **actualizar la aplicación se da por entendido**. No sugerirlo como
+  siguiente paso ni esperar confirmación del usuario para continuar con una solicitud posterior.
 - Los avisos del boton Iniciar parpadean **verde ↔ amarillo trafico** con corte nitido
   (`steps(1,end)`); el fundido de opacidad anterior no se notaba en el telefono.
 - No meter la gestion de la reta dentro de Configuracion: son dos cosas distintas y amontonarlas

@@ -36,3 +36,4 @@ metadata:
 - 2026-08-06-19-13-16-12: v5.16 mueve el acceso superior de Historial al extremo derecho; se verificaron dos cambios de juego y Deshacer sincronizado con historial y estadísticas.
 - 2026-08-06-19-19-18-13: v5.17 equilibra la cabecera móvil en grupos de tres, conserva Historial al final y elimina traslapes con el reloj entre 320 y 430 px.
 - 2026-08-06-19-29-17-14: v5.18 elimina el acceso superior redundante de Historial y deja la copa como centro de Clasificación, Estadísticas e Historial; la cabecera conserva cinco botones sin traslapes.
+- 2026-08-06-19-32-26-15: Se registra que actualizar la aplicación después de publicar un cambio se da por entendido y no debe proponerse como siguiente paso ni requerir confirmación.
