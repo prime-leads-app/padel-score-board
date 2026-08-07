@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <!-- Sube en cada publicacion: la app la compara contra la red para saber si esta al dia -->
-    <meta name="app-version" content="5.23">
+    <meta name="app-version" content="5.24">
     <title>Padel Scoreboard</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -538,7 +538,7 @@
         }
         .reta-setting-shortcuts {
             display: grid;
-            grid-template-columns: minmax(0, 1.5fr) minmax(0, 1.1fr) minmax(0, 0.9fr);
+            grid-template-columns: repeat(3, minmax(0, 1fr));
             gap: 6px;
         }
         .reta-setting-shortcut {
@@ -751,7 +751,7 @@
         }
         @media (max-width: 350px) {
             .reta-setting-shortcuts {
-                grid-template-columns: minmax(0, 1.5fr) minmax(0, 1.1fr) minmax(0, 0.9fr);
+                grid-template-columns: repeat(3, minmax(0, 1fr));
                 gap: 5px;
             }
             .reta-setting-shortcut {
@@ -2287,7 +2287,7 @@
             </a>
             <a href="https://github.com/prime-leads-app/padel-score-board" target="_blank" rel="noopener" class="card bg-dark border-secondary text-decoration-none flex-fill" style="cursor:pointer;">
                 <div class="card-body py-0 px-2 text-center">
-                    <small class="text-white">PadelApp v<span id="app-version-label">5.23</span></small>
+                    <small class="text-white">PadelApp v<span id="app-version-label">5.24</span></small>
                 </div>
             </a>
             <div class="card bg-dark border-secondary flex-fill">
@@ -2373,8 +2373,7 @@
                 </div>
 
                 <!-- 2. Detalle de Error/Acierto -->
-                <div class="reta-section reta-compact-section" id="outcome-detail-config">
-                    <div class="reta-section-title">Error/Acierto</div>
+                <div class="reta-section reta-compact-section" id="outcome-detail-config" role="region" aria-label="Error/Acierto">
                     <div class="reta-compact-toggle" role="group" aria-label="Detalle de Error/Acierto">
                         <button class="btn btn-outline-light mode-btn active" onclick="setTrackOutcomes(true)" id="btn-outcomes-on">Con detalle</button>
                         <button class="btn btn-outline-light mode-btn" onclick="setTrackOutcomes(false)" id="btn-outcomes-off">Sin detalle</button>
@@ -2382,8 +2381,7 @@
                 </div>
 
                 <!-- 3. Participantes -->
-                <div class="reta-section reta-compact-section">
-                    <div class="reta-section-title">Participantes</div>
+                <div class="reta-section reta-compact-section" role="region" aria-label="Participantes">
                     <div class="reta-participant-actions">
                         <button type="button" class="btn btn-outline-info reta-participant-action" onclick="showRetaParticipantsModal()">
                             <i class="bi bi-people-fill" aria-hidden="true"></i>
@@ -2515,8 +2513,7 @@
 
     <!-- Bloque de parejas: vive aqui y se mueve al modal que lo pida -->
     <div id="reta-pairs-parking" class="d-none">
-                <div class="reta-section" id="reta-pairs-section">
-                    <div class="reta-section-title">Parejas de este partido</div>
+                <div class="reta-section" id="reta-pairs-section" role="region" aria-label="Parejas de este partido">
                     <div class="reta-team-box t1">
                         <div class="reta-team-title">🔴 Equipo 1</div>
                         <div style="display:flex; gap:8px;">
