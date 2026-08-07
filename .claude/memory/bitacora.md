@@ -32,3 +32,4 @@ metadata:
 - 2026-08-06-17-46-05-08: v5.12 agrega historial en vivo del partido con Error/Acierto, beneficiario y marcador por punto, mostrando primero lo mas reciente.
 - 2026-08-06-18-05-46-09: v5.13 agrega Star Point como cuarta regla de 40-40, conserva las otras tres y mantiene los cuatro botones en una fila.
 - 2026-08-06-18-33-36-10: v5.14 agrega Estadísticas a la clasificación, incluye el partido en curso sin duplicarlo y conserva el resumen en Retas anteriores.
+- 2026-08-06-19-06-03-11: v5.15 agrega Historial como tercera pestaña de la clasificación y reutiliza el detalle punto a punto del partido actual.

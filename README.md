@@ -43,7 +43,7 @@ Formato informal popular en México. Una reta es una **jornada con varios partid
 
 **Rendimiento por jugador:** desde la pantalla Reta puedes activar o desactivar el detalle de **Error/Acierto**. Al activarlo, cada tarjeta de participante se divide en **Error** y **Acierto**. Error concede el punto al equipo contrario; Acierto lo concede al equipo del jugador. La app guarda ambos por juego y partido, calcula el porcentaje de rendimiento y los acumula durante toda la reta. La zona grande del equipo sigue disponible para anotar un punto rápido sin atribución.
 
-La ventana de clasificación de la reta separa **Clasificación** y **Estadísticas** en dos pestañas. Estadísticas muestra aciertos, errores, eficiencia, balance, victorias, juegos a favor/en contra, forma reciente, golpes registrados y participantes destacados. Durante un partido incluye sus eventos en curso sin contarlo todavía como terminado; al cerrar la reta conserva el mismo resumen dentro de **Retas anteriores**. La eficiencia solo utiliza eventos marcados expresamente como Error/Acierto y exige cinco eventos para aparecer como reconocimiento de mejor eficiencia.
+La ventana de clasificación de la reta separa **Clasificación**, **Estadísticas** e **Historial** en tres pestañas. Estadísticas muestra aciertos, errores, eficiencia, balance, victorias, juegos a favor/en contra, forma reciente, golpes registrados y participantes destacados. Historial reutiliza el detalle punto a punto del partido actual, con jugador, Error/Acierto, equipo beneficiado, tipo de golpe y marcador resultante, ordenado del evento más reciente al más antiguo. Durante un partido, Estadísticas incluye sus eventos en curso sin contarlo todavía como terminado; al cerrar la reta conserva el mismo resumen dentro de **Retas anteriores**. La eficiencia solo utiliza eventos marcados expresamente como Error/Acierto y exige cinco eventos para aparecer como reconocimiento de mejor eficiencia.
 
 **Rotación de la reta:** la pareja que gana se queda en la cancha pero **se separa**, uno de cada lado; los que pierden salen y entran dos de los que esperan, uno como compañero de cada ganador. Entran primero los que menos partidos llevan jugados. Con solo cuatro participantes (sin banca) se cruzan las parejas entre ellos. La app propone la rotación correcta y avisa si las parejas elegidas no la respetan.
 
@@ -106,7 +106,7 @@ Toda la app se controla desde el menú hamburguesa (icono ☰) en la parte super
 - **Ayuda opciones** - Explica qué significa cada opción de configuración
 - **Cómo jugar pádel/retas/libre** - Reglas y ejemplos de cada modo
 - **Reta** - Participantes, parejas, fecha y tiempo por partido
-- **Clasificación** - Tabla, estadísticas de rendimiento, partidos y cierre de la reta en curso
+- **Clasificación** - Tabla, estadísticas de rendimiento, historial punto a punto, partidos y cierre de la reta en curso
 - **Retas anteriores** - Historial de retas cerradas con tabla final, participantes y estadísticas acumuladas
 - **Partidos** - Historial de partidos terminados, con opción de borrar uno por uno
 - **Buscar actualización** - Comprueba contra la red si hay una versión nueva publicada

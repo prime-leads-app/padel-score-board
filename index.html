@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <!-- Sube en cada publicacion: la app la compara contra la red para saber si esta al dia -->
-    <meta name="app-version" content="5.14">
+    <meta name="app-version" content="5.15">
     <title>Padel Scoreboard</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -739,7 +739,7 @@
         .light-theme .reta-table td { border-top-color: rgba(0,0,0,0.1); }
         .reta-view-tabs {
             display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
+            grid-template-columns: repeat(3, minmax(0, 1fr));
             gap: 4px;
             width: 100%;
             margin: 2px 0 10px;
@@ -750,11 +750,12 @@
         }
         .reta-view-tab {
             min-height: 36px;
+            padding: 0 3px;
             border: 0;
             border-radius: 7px;
             background: transparent;
             color: #aebbc8;
-            font-size: 0.8rem;
+            font-size: clamp(0.66rem, 3vw, 0.78rem);
             font-weight: 700;
             cursor: pointer;
         }
@@ -766,6 +767,20 @@
         .reta-view-tab:focus-visible {
             outline: 2px solid #7ec8e3;
             outline-offset: 2px;
+        }
+        .reta-history-pane .live-history-list {
+            min-height: 150px;
+            overflow: visible;
+            padding-right: 0;
+        }
+        .reta-history-context {
+            margin-bottom: 7px;
+            color: #7ec8e3;
+            font-size: 0.66rem;
+            font-weight: 800;
+            letter-spacing: 0.09em;
+            text-align: center;
+            text-transform: uppercase;
         }
         .reta-stats-live {
             margin-bottom: 8px;
@@ -1860,7 +1875,7 @@
             <div style="margin:8px 0;">
                 <b style="color:#FFD54F;">Menu ☰</b><br>
                 <b>Reta:</b> participantes, parejas, fecha y tiempo por partido.<br>
-                <b>Clasificacion:</b> tabla, estadisticas de rendimiento y partidos de la reta en curso.<br>
+                <b>Clasificacion:</b> tabla, estadisticas de rendimiento, historial punto a punto y partidos de la reta en curso.<br>
                 <b>Retas anteriores:</b> jornadas cerradas con su clasificacion y estadisticas finales.<br>
                 <b>Partidos:</b> historial de partidos, con opcion de borrar uno por uno.<br>
                 <b>Historial:</b> registro de puntos del partido actual.<br>
@@ -2122,7 +2137,7 @@
             </a>
             <a href="https://github.com/prime-leads-app/padel-score-board" target="_blank" rel="noopener" class="card bg-dark border-secondary text-decoration-none flex-fill" style="cursor:pointer;">
                 <div class="card-body py-0 px-2 text-center">
-                    <small class="text-white">PadelApp v<span id="app-version-label">5.14</span></small>
+                    <small class="text-white">PadelApp v<span id="app-version-label">5.15</span></small>
                 </div>
             </a>
             <div class="card bg-dark border-secondary flex-fill">
@@ -2332,6 +2347,7 @@
             <div class="reta-view-tabs" id="reta-view-tabs" role="tablist" aria-label="Vista de la reta">
                 <button type="button" class="reta-view-tab active" id="reta-tab-standings" role="tab" aria-selected="true" aria-controls="reta-standings-content" onclick="setRetaStandingsView('standings')">Clasificación</button>
                 <button type="button" class="reta-view-tab" id="reta-tab-stats" role="tab" aria-selected="false" aria-controls="reta-standings-content" onclick="setRetaStandingsView('stats')">Estadísticas</button>
+                <button type="button" class="reta-view-tab" id="reta-tab-history" role="tab" aria-selected="false" aria-controls="reta-standings-content" onclick="setRetaStandingsView('history')">Historial</button>
             </div>
             <div style="overflow-y:auto; flex:1; text-align:left;" id="reta-standings-content" role="tabpanel"></div>
             <div style="display:flex; gap:8px; justify-content:center; margin-top:12px; flex-wrap:wrap;">
@@ -3968,18 +3984,35 @@
             </article>`;
         }
 
-        function showLiveMatchHistory() {
+        function liveMatchHistoryContent() {
             const events = pointTimeline.length ? pointTimeline : legacyLiveHistoryEntries();
             const latestFirst = events.slice().reverse();
+            return {
+                matchup: `<div class="live-history-team team-1">${esc(getName(1))}</div>
+                    <div class="live-history-vs">VS</div>
+                    <div class="live-history-team team-2">${esc(getName(2))}</div>
+                    <div class="live-history-current-score">${esc(timelineScoreLabel(currentTimelineScore()))}</div>`,
+                entries: latestFirst.length
+                    ? latestFirst.map((entry, index) => renderLiveHistoryEntry(entry, events.length - index)).join('')
+                    : '<div class="live-history-empty">Aún no hay puntos registrados en este partido.</div>'
+            };
+        }
+
+        function retaLiveMatchHistoryHTML() {
+            const content = liveMatchHistoryContent();
+            return `<section class="reta-history-pane">
+                <div class="reta-history-context">Partido actual · Más recientes primero</div>
+                <div class="live-history-matchup">${content.matchup}</div>
+                <div class="live-history-list">${content.entries}</div>
+            </section>`;
+        }
+
+        function showLiveMatchHistory() {
+            const content = liveMatchHistoryContent();
             const matchup = document.getElementById('live-history-matchup');
             const list = document.getElementById('live-match-history-list');
-            matchup.innerHTML = `<div class="live-history-team team-1">${esc(getName(1))}</div>
-                <div class="live-history-vs">VS</div>
-                <div class="live-history-team team-2">${esc(getName(2))}</div>
-                <div class="live-history-current-score">${esc(timelineScoreLabel(currentTimelineScore()))}</div>`;
-            list.innerHTML = latestFirst.length
-                ? latestFirst.map((entry, index) => renderLiveHistoryEntry(entry, events.length - index)).join('')
-                : '<div class="live-history-empty">Aún no hay puntos registrados en este partido.</div>';
+            matchup.innerHTML = content.matchup;
+            list.innerHTML = content.entries;
             document.getElementById('live-match-history-modal').classList.remove('d-none');
             requestAnimationFrame(() => { list.scrollTop = 0; });
         }
@@ -5519,7 +5552,7 @@
         }
 
         function setRetaStandingsView(view) {
-            retaStandingsView = view === 'stats' ? 'stats' : 'standings';
+            retaStandingsView = ['standings', 'stats', 'history'].includes(view) ? view : 'standings';
             showRetaStandings();
         }
 
@@ -5531,6 +5564,7 @@
             const tabs = document.getElementById('reta-view-tabs');
             const standingsTab = document.getElementById('reta-tab-standings');
             const statsTab = document.getElementById('reta-tab-stats');
+            const historyTab = document.getElementById('reta-tab-history');
             const title = document.getElementById('reta-standings-title');
             document.getElementById('reta-standings-modal').classList.remove('d-none');
             if (!retaActive || !retaSession) {
@@ -5546,15 +5580,26 @@
             closeBtn.classList.remove('d-none');
             meta.innerHTML = `${esc(fmtRetaDate(retaSession.date))} · inicio ${esc(retaSession.time)} · ${retaSession.matches.length} ${retaSession.matches.length === 1 ? 'partido' : 'partidos'}`;
             const showingStats = retaStandingsView === 'stats';
-            standingsTab.classList.toggle('active', !showingStats);
+            const showingHistory = retaStandingsView === 'history';
+            const showingStandings = !showingStats && !showingHistory;
+            standingsTab.classList.toggle('active', showingStandings);
             statsTab.classList.toggle('active', showingStats);
-            standingsTab.setAttribute('aria-selected', String(!showingStats));
+            historyTab.classList.toggle('active', showingHistory);
+            standingsTab.setAttribute('aria-selected', String(showingStandings));
             statsTab.setAttribute('aria-selected', String(showingStats));
-            matchesBtn.classList.toggle('d-none', showingStats || retaSession.matches.length === 0);
-            title.textContent = showingStats ? '📊 Estadísticas de la reta' : '🏆 Clasificación de la reta';
+            historyTab.setAttribute('aria-selected', String(showingHistory));
+            matchesBtn.classList.toggle('d-none', !showingStandings || retaSession.matches.length === 0);
+            title.textContent = showingStats
+                ? '📊 Estadísticas de la reta'
+                : showingHistory ? '🕘 Historial punto a punto' : '🏆 Clasificación de la reta';
             if (showingStats) {
                 const includeCurrent = matchStarted() && !matchOver;
                 cont.innerHTML = retaStatisticsHTML(retaSession, includeCurrent);
+                cont.scrollTop = 0;
+                return;
+            }
+            if (showingHistory) {
+                cont.innerHTML = retaLiveMatchHistoryHTML();
                 cont.scrollTop = 0;
                 return;
             }
