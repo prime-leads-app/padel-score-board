@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <!-- Sube en cada publicacion: la app la compara contra la red para saber si esta al dia -->
-    <meta name="app-version" content="5.19">
+    <meta name="app-version" content="5.20">
     <title>Padel Scoreboard</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1883,7 +1883,7 @@
                 <b>Reloj (al centro):</b> en Retas va en cuenta regresiva y se pone rojo en los ultimos 2 minutos. En los demas modos cuenta hacia arriba.<br>
                 <b>👥</b> Jugadores del partido: cambia los integrantes de cada equipo sin salir del marcador <span style="opacity:0.7;">(solo en Retas)</span>.<br>
                 <b>⇄</b> Cambia los equipos de lado: los del rojo pasan al azul y viceversa, con su marcador y estadisticas <span style="opacity:0.7;">(solo en Retas)</span>.<br>
-                <b>🏆</b> Resumen de la reta con Clasificacion, Estadisticas e Historial punto a punto <span style="opacity:0.7;">(solo en Retas)</span>.
+                <b>🏆</b> Resumen de la reta con Clasificacion, Historial punto a punto y Estadisticas <span style="opacity:0.7;">(solo en Retas)</span>.
             </div>
 
             <div style="margin:8px 0;">
@@ -2162,7 +2162,7 @@
             </a>
             <a href="https://github.com/prime-leads-app/padel-score-board" target="_blank" rel="noopener" class="card bg-dark border-secondary text-decoration-none flex-fill" style="cursor:pointer;">
                 <div class="card-body py-0 px-2 text-center">
-                    <small class="text-white">PadelApp v<span id="app-version-label">5.19</span></small>
+                    <small class="text-white">PadelApp v<span id="app-version-label">5.20</span></small>
                 </div>
             </a>
             <div class="card bg-dark border-secondary flex-fill">
@@ -2371,8 +2371,8 @@
             <div id="reta-standings-meta" style="font-size:0.75rem; color:#aaa; margin-bottom:8px;"></div>
             <div class="reta-view-tabs" id="reta-view-tabs" role="tablist" aria-label="Vista de la reta">
                 <button type="button" class="reta-view-tab active" id="reta-tab-standings" role="tab" aria-selected="true" aria-controls="reta-standings-content" onclick="setRetaStandingsView('standings')">Clasificación</button>
-                <button type="button" class="reta-view-tab" id="reta-tab-stats" role="tab" aria-selected="false" aria-controls="reta-standings-content" onclick="setRetaStandingsView('stats')">Estadísticas</button>
                 <button type="button" class="reta-view-tab" id="reta-tab-history" role="tab" aria-selected="false" aria-controls="reta-standings-content" onclick="setRetaStandingsView('history')">Historial</button>
+                <button type="button" class="reta-view-tab" id="reta-tab-stats" role="tab" aria-selected="false" aria-controls="reta-standings-content" onclick="setRetaStandingsView('stats')">Estadísticas</button>
             </div>
             <div class="reta-standings-scroll" id="reta-standings-content" role="tabpanel"></div>
             <div style="display:flex; gap:8px; justify-content:center; margin-top:12px; flex-wrap:wrap;">

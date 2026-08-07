@@ -38,3 +38,4 @@ metadata:
 - 2026-08-06-19-29-17-14: v5.18 elimina el acceso superior redundante de Historial y deja la copa como centro de Clasificación, Estadísticas e Historial; la cabecera conserva cinco botones sin traslapes.
 - 2026-08-06-19-32-26-15: Se registra que actualizar la aplicación después de publicar un cambio se da por entendido y no debe proponerse como siguiente paso ni requerir confirmación.
 - 2026-08-06-19-40-39-16: v5.19 fija la altura del modal de Clasificación, Estadísticas e Historial durante una reta; el contenido central desplaza internamente y el estado sin reta sigue compacto.
+- 2026-08-06-19-44-52-17: v5.20 restablece el orden acordado de las pestañas del resumen: Clasificación, Historial y Estadísticas; conserva la altura estable del modal.
