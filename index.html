@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <!-- Sube en cada publicacion: la app la compara contra la red para saber si esta al dia -->
-    <meta name="app-version" content="5.28">
+    <meta name="app-version" content="5.29">
     <title>Padel Scoreboard</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -2055,7 +2055,7 @@
                 <b style="color:#FFD54F;">Botones de abajo</b><br>
                 Solo se muestran los que sirven en ese momento, para que los visibles sean mas grandes:<br>
                 <b>Iniciar:</b> arranca el partido y el cronometro. Parpadea en verde y amarillo mientras no lo tocas, y desaparece al arrancar <span style="opacity:0.7;">(solo en Retas)</span>.<br>
-                <b>Saque:</b> un clic cambia el equipo que saca; dos clics seguidos cambian al sacador entre los dos jugadores de ese equipo. El borde amarillo bajo el nombre identifica al sacador. Al terminar cada juego, la app alterna automáticamente equipo y jugador.<br>
+                <b>Saque:</b> un toque cambia el equipo que saca; dos toques cambian al sacador entre los dos jugadores del equipo; tres toques intercambian sus posiciones izquierda/derecha y conservan el borde amarillo en la posición de saque. Al terminar cada juego, la app alterna automáticamente equipo y jugador.<br>
                 <b>Deshacer:</b> quita el ultimo punto. Aparece cuando el partido ya empezo.<br>
                 <b>Reiniciar:</b> marcador a cero con los mismos jugadores.<br>
                 <b>Limpiar:</b> ademas suelta a los jugadores. En Retas vacia los desplegables de parejas, sin tocar la lista de participantes ni la clasificacion.<br>
@@ -2312,7 +2312,7 @@
         <!-- Orden segun el flujo del partido: se arranca, se juega, se corrige, se cierra -->
         <div class="controls-bar">
             <button class="btn btn-success btn-sm d-none" id="btn-start-match" onclick="startMatchNow()" title="Iniciar el partido y el cronometro">Iniciar</button>
-            <button class="btn btn-outline-info btn-sm" id="btn-serve" onclick="handleServeButtonClick(event)" title="Un clic: cambiar equipo. Doble clic: cambiar jugador" aria-label="Saque: un clic cambia equipo; doble clic cambia jugador" style="touch-action:manipulation;">Saque</button>
+            <button class="btn btn-outline-info btn-sm" id="btn-serve" onclick="handleServeButtonClick(event)" title="1 toque: equipo. 2: jugador. 3: posición" aria-label="Saque: un toque cambia equipo; dos cambian jugador; tres intercambian posiciones" style="touch-action:manipulation;">Saque</button>
             <button class="btn btn-outline-warning btn-sm d-none" id="btn-undo" onclick="confirmUndo()">Deshacer</button>
             <button class="btn btn-outline-danger btn-sm" onclick="confirmReset()">Reiniciar</button>
             <button class="btn btn-outline-secondary btn-sm" id="btn-clear-all" onclick="confirmClear()">Limpiar</button>
@@ -2328,7 +2328,7 @@
             </a>
             <a href="https://github.com/prime-leads-app/padel-score-board" target="_blank" rel="noopener" class="card bg-dark border-secondary text-decoration-none flex-fill" style="cursor:pointer;">
                 <div class="card-body py-0 px-2 text-center">
-                    <small class="text-white">PadelApp v<span id="app-version-label">5.28</span></small>
+                    <small class="text-white">PadelApp v<span id="app-version-label">5.29</span></small>
                 </div>
             </a>
             <div class="card bg-dark border-secondary flex-fill">
@@ -4027,19 +4027,70 @@
         }
 
         let _serveTapTimer = null;
+        let _serveTapCount = 0;
+
+        function resetServeTapGesture() {
+            if (_serveTapTimer) clearTimeout(_serveTapTimer);
+            _serveTapTimer = null;
+            _serveTapCount = 0;
+        }
+
+        function swapStatSlots(stats, leftSlot, rightSlot) {
+            if (!stats || typeof stats !== 'object') return;
+            [stats[leftSlot], stats[rightSlot]] = [stats[rightSlot], stats[leftSlot]];
+        }
+
+        // Intercambia izquierda/derecha dentro del equipo que saca. El indicador
+        // queda en la misma posición física, por lo que cambia la persona marcada.
+        function swapServingTeamPlayers() {
+            if (mode !== 'padel' || matchOver) return;
+            const leftSlot = `p${serve}a`;
+            const rightSlot = `p${serve}b`;
+            const leftInput = document.getElementById('cfg-name-' + leftSlot);
+            const rightInput = document.getElementById('cfg-name-' + rightSlot);
+            if (!leftInput || !rightInput) return;
+
+            [leftInput.value, rightInput.value] = [rightInput.value, leftInput.value];
+
+            const leftSelect = document.getElementById('sel-' + leftSlot);
+            const rightSelect = document.getElementById('sel-' + rightSlot);
+            if (padelFormat === 'retas' && leftSelect && rightSelect) {
+                [leftSelect.value, rightSelect.value] = [rightSelect.value, leftSelect.value];
+                leftSelect.dataset.prev = leftSelect.value;
+                rightSelect.dataset.prev = rightSelect.value;
+            }
+
+            // Las estadísticas siguen a la persona, no a la posición del card.
+            swapStatSlots(playerStats, leftSlot, rightSlot);
+            history.forEach(snapshot => swapStatSlots(snapshot.playerStats, leftSlot, rightSlot));
+            if (_lastShotSlot === leftSlot) _lastShotSlot = rightSlot;
+            else if (_lastShotSlot === rightSlot) _lastShotSlot = leftSlot;
+
+            syncNamesToCards();
+            updateServeUI();
+            render();
+            renderMatchupHint();
+            saveRetaState();
+            saveToStorage();
+        }
+
+        function resolveServeTapGesture() {
+            const taps = _serveTapCount;
+            resetServeTapGesture();
+            if (taps >= 3) swapServingTeamPlayers();
+            else if (taps === 2) toggleServePlayer();
+            else if (taps === 1) toggleServe();
+        }
 
         function handleServeButtonClick(e) {
             if (e) e.preventDefault();
-            if (_serveTapTimer) {
-                clearTimeout(_serveTapTimer);
-                _serveTapTimer = null;
-                toggleServePlayer();
+            _serveTapCount++;
+            if (_serveTapTimer) clearTimeout(_serveTapTimer);
+            if (_serveTapCount >= 3) {
+                resolveServeTapGesture();
                 return;
             }
-            _serveTapTimer = setTimeout(() => {
-                _serveTapTimer = null;
-                toggleServe();
-            }, 320);
+            _serveTapTimer = setTimeout(resolveServeTapGesture, 360);
         }
 
         // Los equipos cambian de lado de la cancha: se llevan consigo su marcador,
@@ -6455,6 +6506,7 @@
         }
 
         function resetMatch() {
+            resetServeTapGesture();
             document.getElementById('confirm-overlay').classList.add('d-none');
             if (mode === 'padel') {
                 points = [0, 0]; games = [0, 0]; sets = [[], []]; setsWon = [0, 0];
@@ -6489,6 +6541,7 @@
         }
 
         function clearAll() {
+            resetServeTapGesture();
             document.getElementById('confirm-clear-overlay').classList.add('d-none');
             if (mode === 'padel') {
                 points = [0, 0]; games = [0, 0]; sets = [[], []]; setsWon = [0, 0];

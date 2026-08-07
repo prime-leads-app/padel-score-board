@@ -10,4 +10,4 @@ metadata:
   modified: 2026-07-31T13:35:51.259Z
 ---
 
-Ahora: v5.28 controla el sacador individual con borde amarillo y rotación automática al terminar cada juego; doble clic corrige el jugador y un clic corrige el equipo. Deshacer, cambio de lado, tie-break y persistencia integran el nuevo estado. Próximo paso: la unidad cierra aquí.
+Ahora: v5.29 distingue uno, dos y tres toques en Saque; el tercero intercambia las posiciones del equipo sacador y conserva el indicador amarillo en la posición, cambiando a la persona marcada. Estadísticas, selección de reta, Deshacer y persistencia conservan la identidad de cada jugador. Próximo paso: la unidad cierra aquí.
