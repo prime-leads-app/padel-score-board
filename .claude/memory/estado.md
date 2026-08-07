@@ -10,4 +10,4 @@ metadata:
   modified: 2026-07-31T13:35:51.259Z
 ---
 
-Ahora: v5.12 incorpora el historial punto a punto en vivo, persistente y compatible con Deshacer, con los eventos mas recientes primero. Proximo paso: Validar el nuevo modal en el dispositivo usado durante la reta.
+Ahora: v5.13 incorpora Star Point como cuarta modalidad independiente y mantiene los cuatro botones de 40-40 en una sola fila. Proximo paso: Validar la secuencia completa en el dispositivo usado durante la reta.

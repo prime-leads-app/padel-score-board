@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <!-- Sube en cada publicacion: la app la compara contra la red para saber si esta al dia -->
-    <meta name="app-version" content="5.12">
+    <meta name="app-version" content="5.13">
     <title>Padel Scoreboard</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -343,6 +343,22 @@
 
         .cfg-card .btn-group-sm .btn {
             height: 38px;
+        }
+
+        /* Las cuatro reglas de 40-40 siempre comparten una sola fila. */
+        .deuce-mode-group {
+            display: flex;
+            flex-wrap: nowrap;
+            width: 100%;
+        }
+
+        .config-modal-card .deuce-mode-group .btn {
+            flex: 1 1 0;
+            min-width: 0;
+            padding-left: 3px !important;
+            padding-right: 3px !important;
+            font-size: clamp(0.61rem, 2.55vw, 0.76rem) !important;
+            white-space: nowrap;
         }
         .config-row-wrap > span {
             display: contents;
@@ -774,6 +790,11 @@
             .config-modal-card .btn {
                 font-size: 1.05rem;
                 padding: 8px 16px;
+            }
+            .config-modal-card .deuce-mode-group .btn {
+                font-size: 0.82rem !important;
+                padding-left: 6px !important;
+                padding-right: 6px !important;
             }
             .cfg-sq-btn {
                 width: 48px !important;
@@ -1460,10 +1481,11 @@
                 </span>
                 <div class="cfg-card cfg-card-tight">
                     <small style="color:#FFD54F; font-weight:600; display:block; margin-bottom:4px;">40-40</small>
-                    <div class="btn-group btn-group-sm">
+                    <div class="btn-group btn-group-sm deuce-mode-group">
                         <button class="btn btn-outline-light py-1 px-2 active" onclick="setDeuceMode('golden')" id="deuce-golden">Oro</button>
                         <button class="btn btn-outline-light py-1 px-2" onclick="setDeuceMode('1adv')" id="deuce-1adv">1 Vent.</button>
                         <button class="btn btn-outline-light py-1 px-2" onclick="setDeuceMode('2adv')" id="deuce-2adv">2 Vent.</button>
+                        <button class="btn btn-outline-light py-1 px-2" onclick="setDeuceMode('star')" id="deuce-star">Star</button>
                     </div>
                 </div>
             </div>
@@ -1574,14 +1596,16 @@
             </div>
 
             <div style="margin:8px 0;">
-                <b style="color:#FFD54F;">40-40: Oro, 1 Ventaja o 2 Ventajas</b><br>
+                <b style="color:#FFD54F;">40-40: Oro, 1 Ventaja, 2 Ventajas o Star</b><br>
                 Que pasa cuando los dos equipos llegan a 40-40 en un juego.<br>
                 <b>Oro (Punto de Oro):</b> Un solo punto decide quien gana el juego. Es mas rapido y se usa en torneos profesionales de padel (World Padel Tour).<br>
                 <span style="opacity:0.7;">Ej: Van 40-40, tu anotas = ganas el juego. Listo, sin vueltas.</span><br>
                 <b>1 Ventaja:</b> Se juega una ventaja. Si el equipo con ventaja anota, gana. Si no, regresan a iguales pero ahora es punto de oro (el siguiente punto decide).<br>
                 <span style="opacity:0.7;">Ej: Van 40-40, anotas = ventaja. Si anotas de nuevo = ganas. Si el otro anota = iguales, y ahora el siguiente punto gana directo.</span><br>
                 <b>2 Ventajas:</b> Ventaja clasica sin limite. Tienes que anotar 2 puntos seguidos para ganar. Si regresan a iguales, se repite sin limite.<br>
-                <span style="opacity:0.7;">Ej: Van 40-40, anotas = ventaja. Si anotas = ganas. Si el otro anota = iguales. Pueden ir y venir muchas veces.</span>
+                <span style="opacity:0.7;">Ej: Van 40-40, anotas = ventaja. Si anotas = ganas. Si el otro anota = iguales. Pueden ir y venir muchas veces.</span><br>
+                <b>Star Point:</b> Se juegan hasta dos ventajas. Si la segunda ventaja vuelve a 40-40, el siguiente punto decide el juego.<br>
+                <span style="opacity:0.7;">Ej: Primera ventaja, segundo 40-40, segunda ventaja y, si vuelven a iguales, Star Point.</span>
             </div>
 
             <div style="margin:8px 0;">
@@ -1647,7 +1671,8 @@
                 <b style="color:#FFD54F;">2. Empate a 40 (Deuce)</b><br>
                 <b>Punto de Oro:</b> Un solo punto decide.<br>
                 <b>1 Ventaja:</b> Se juega una ventaja. Si vuelve a iguales, punto de oro.<br>
-                <b>2 Ventajas:</b> Ventaja clasica ilimitada, pueden ir y venir sin limite.
+                <b>2 Ventajas:</b> Ventaja clasica ilimitada, pueden ir y venir sin limite.<br>
+                <b>Star Point:</b> Hasta dos ventajas; si vuelven a iguales despues de la segunda, el siguiente punto decide.
             </div>
 
             <div style="margin:8px 0;">
@@ -1883,7 +1908,7 @@
             </a>
             <a href="https://github.com/prime-leads-app/padel-score-board" target="_blank" rel="noopener" class="card bg-dark border-secondary text-decoration-none flex-fill" style="cursor:pointer;">
                 <div class="card-body py-0 px-2 text-center">
-                    <small class="text-white">PadelApp v<span id="app-version-label">5.12</span></small>
+                    <small class="text-white">PadelApp v<span id="app-version-label">5.13</span></small>
                 </div>
             </a>
             <div class="card bg-dark border-secondary flex-fill">
@@ -2294,7 +2319,7 @@
         let _lastSavedMatchId = null;    // vincula el partido guardado con el de la reta
         const RETA_SLOTS = ['p1a', 'p1b', 'p2a', 'p2b'];
         let freeMaxPoints = 30;
-        let deuceMode = 'golden'; // 'golden' = punto de oro, '1adv' = 1 ventaja, '2adv' = 2 ventajas
+        let deuceMode = 'golden'; // 'golden' = punto de oro, '1adv' = 1 ventaja, '2adv' = clasica, 'star' = dos ventajas y punto decisivo
         let trackShots = true; // true = mostrar modal de tipo de golpe, false = solo atribuir punto
         let trackOutcomes = true; // true = dividir cada jugador en Error / Acierto
         const SHOT_TYPES = ['smash', 'bandeja', 'globo', 'remate', 'volea', 'otro'];
@@ -2582,8 +2607,16 @@
                 document.getElementById('deuce-golden').classList.toggle('active', m === 'golden');
                 document.getElementById('deuce-1adv').classList.toggle('active', m === '1adv');
                 document.getElementById('deuce-2adv').classList.toggle('active', m === '2adv');
+                document.getElementById('deuce-star').classList.toggle('active', m === 'star');
                 resetMatch();
             });
+        }
+
+        function deuceModeLabel(full) {
+            if (deuceMode === 'golden') return full ? 'Punto de oro' : 'Oro';
+            if (deuceMode === '1adv') return '1 Ventaja';
+            if (deuceMode === '2adv') return '2 Ventajas';
+            return full ? 'Star Point' : 'Star';
         }
 
         function setTrackShots(v) {
@@ -2627,10 +2660,10 @@
             if (mode === 'free') {
                 txt = 'Libre · ' + freeMaxPoints + ' pts';
             } else if (padelFormat === 'normal') {
-                const deuceLabel = deuceMode === 'golden' ? 'Oro' : deuceMode === '1adv' ? '1 Ventaja' : '2 Ventajas';
+                const deuceLabel = deuceModeLabel(false);
                 txt = 'Normal · Sets: ' + setsToWin + ' · Juegos: ' + gamesPerSet + ' · 40-40: ' + deuceLabel;
             } else {
-                const deuceLabel = deuceMode === 'golden' ? 'Oro' : deuceMode === '1adv' ? '1 Ventaja' : '2 Ventajas';
+                const deuceLabel = deuceModeLabel(false);
                 const gamesLabel = retasGames === 0 ? '∞' : retasGames;
                 const timeLabel = retaTimeLimit > 0 ? retaTimeLimit + ' min' : '∞';
                 txt = 'Retas · Juegos: ' + gamesLabel + ' · Tiempo: ' + timeLabel + ' · Fin: ' + (retasEarlyWin ? 'Anticipado' : 'Todos') + ' · 40-40: ' + deuceLabel;
@@ -3225,6 +3258,22 @@
                         deuceCount++;
                         addHistory('Iguales → siguiente es Punto de Oro');
                     }
+                } else if (deuceMode === 'star') {
+                    // Star Point: dos ventajas como maximo; si vuelve a iguales, un punto decide
+                    if (deuceCount >= 2 && advantage === 0) {
+                        addHistory(`STAR POINT - ${getName(player)} gana juego`);
+                        winGame(player);
+                    } else if (advantage === 0) {
+                        advantage = player;
+                        addHistory(`${getName(player)} ${deuceCount === 0 ? 'primera' : 'segunda'} ventaja`);
+                    } else if (advantage === player) {
+                        addHistory(`${getName(player)} gana juego`);
+                        winGame(player);
+                    } else {
+                        advantage = 0;
+                        deuceCount++;
+                        addHistory(deuceCount >= 2 ? '40-40 → siguiente es Star Point' : 'Segundo 40-40 → segunda ventaja');
+                    }
                 } else {
                     // 2 Ventajas: ventaja clasica ilimitada
                     if (advantage === 0) { advantage = player; addHistory(`${getName(player)} ventaja`); }
@@ -3444,7 +3493,7 @@
         function refreshQuickPanel() {
             const det = document.getElementById('quick-details');
             if (!det) return;
-            const deuceLabel = deuceMode === 'golden' ? 'Punto de oro' : deuceMode === '1adv' ? '1 Ventaja' : '2 Ventajas';
+            const deuceLabel = deuceModeLabel(true);
             let filas = [];
             if (mode === 'free') {
                 filas.push(['Modo', 'Libre']);
@@ -3499,19 +3548,21 @@
             // Indicador de punto de oro / ventaja / iguales
             const badge = document.getElementById('golden-badge');
             if (mode === 'padel' && !tiebreak && points[0] === 3 && points[1] === 3) {
-                if (deuceMode === 'golden' || (deuceMode === '1adv' && deuceCount > 0 && advantage === 0)) {
-                    badge.textContent = 'PUNTO DE ORO';
+                const starPointActive = deuceMode === 'star' && deuceCount >= 2 && advantage === 0;
+                if (deuceMode === 'golden' || (deuceMode === '1adv' && deuceCount > 0 && advantage === 0) || starPointActive) {
+                    badge.textContent = starPointActive ? 'STAR POINT' : 'PUNTO DE ORO';
                     if (badge.classList.contains('d-none')) playSound('golden');
                     badge.classList.remove('d-none');
                     badge.style.background = '#FFD700';
                     badge.style.color = '#000';
                 } else if (advantage > 0) {
-                    badge.textContent = 'VENTAJA ' + getName(advantage).toUpperCase();
+                    const advantageStage = deuceMode === 'star' ? (deuceCount === 0 ? 'PRIMERA VENTAJA ' : 'SEGUNDA VENTAJA ') : 'VENTAJA ';
+                    badge.textContent = advantageStage + getName(advantage).toUpperCase();
                     badge.classList.remove('d-none');
                     badge.style.background = '#e94560';
                     badge.style.color = '#fff';
                 } else {
-                    badge.textContent = 'IGUALES';
+                    badge.textContent = deuceMode === 'star' && deuceCount === 1 ? 'SEGUNDO 40-40' : 'IGUALES';
                     badge.classList.remove('d-none');
                     badge.style.background = '#e94560';
                     badge.style.color = '#fff';
@@ -3614,7 +3665,10 @@
                 mode: 'padel',
                 points: [getPointDisplay(0), getPointDisplay(1)],
                 games: [...games],
-                setsWon: [...setsWon]
+                setsWon: [...setsWon],
+                phase: deuceMode === 'star' && !tiebreak && points[0] === 3 && points[1] === 3
+                    ? (advantage > 0 ? (deuceCount === 0 ? 'Primera ventaja' : 'Segunda ventaja') : (deuceCount >= 2 ? 'Star Point' : (deuceCount === 1 ? 'Segundo 40-40' : '40-40')))
+                    : null
             };
         }
 
@@ -3659,6 +3713,7 @@
             if (score.setsWon && (score.setsWon[0] || score.setsWon[1])) {
                 parts.push(`Sets ${score.setsWon[0]} - ${score.setsWon[1]}`);
             }
+            if (score.phase) parts.push(score.phase);
             return parts.join(' · ');
         }
 
@@ -5358,7 +5413,8 @@
                 retasEarlyWin = d.retasEarlyWin || false;
                 retaTimeLimit = d.retaTimeLimit !== undefined ? d.retaTimeLimit : 20;
                 freeMaxPoints = d.freeMaxPoints || 30;
-                deuceMode = d.deuceMode === 'advantage' ? '2adv' : (d.deuceMode || 'golden');
+                const savedDeuceMode = d.deuceMode === 'advantage' ? '2adv' : d.deuceMode;
+                deuceMode = ['golden', '1adv', '2adv', 'star'].includes(savedDeuceMode) ? savedDeuceMode : 'golden';
                 trackShots = d.trackShots !== undefined ? d.trackShots : true;
                 trackOutcomes = d.trackOutcomes !== undefined ? d.trackOutcomes : true;
                 serve = d.serve || 1;
@@ -5427,6 +5483,7 @@
                 document.getElementById('deuce-golden').classList.toggle('active', deuceMode === 'golden');
                 document.getElementById('deuce-1adv').classList.toggle('active', deuceMode === '1adv');
                 document.getElementById('deuce-2adv').classList.toggle('active', deuceMode === '2adv');
+                document.getElementById('deuce-star').classList.toggle('active', deuceMode === 'star');
                 document.getElementById('btn-shots-on').classList.toggle('active', trackShots);
                 document.getElementById('btn-shots-off').classList.toggle('active', !trackShots);
                 document.getElementById('btn-outcomes-on').classList.toggle('active', trackOutcomes);

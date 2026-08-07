@@ -4,7 +4,7 @@ description: "ADR de las reglas de negocio de las retas, dictadas por el usuario
 metadata: 
   node_type: memory
   type: project
-  updated: 2026-07-31
+  updated: 2026-08-06
   originSessionId: 3f0c74ee-036b-4a00-a437-ba79ac59d1c9
   modified: 2026-07-31T13:34:10.302Z
 ---
@@ -53,3 +53,6 @@ fecha y hora de ese momento y, si la lista esta vacia, a los cuatro que esten en
 **Por que:** se jugo un partido completo que no conto para ninguna clasificacion. Se descarto
 bloquear el marcador con una capa: mete friccion en la cancha. Para un partido suelto esta el
 formato Normal.
+
+## 2026-08-06-18-05-46-09
+Se conserva Oro, 1 Ventaja y 2 Ventajas, y se agrega Star como cuarta modalidad independiente. Los cuatro botones deben permanecer siempre en una sola fila. Star permite dos ventajas como maximo y, si regresan a 40-40 despues de la segunda, el siguiente punto decide el juego.

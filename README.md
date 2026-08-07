@@ -13,7 +13,7 @@ Formato oficial de pádel con sets, juegos y puntos.
 - **Puntos:** 0 → 15 → 30 → 40 → gana juego
 - **Juegos por set:** 6 o 4 (configurable)
 - **Sets para ganar:** 1, 2 o 3 (configurable)
-- **Empate a 40:** Punto de Oro, 1 Ventaja o 2 Ventajas
+- **Empate a 40:** Punto de Oro, 1 Ventaja, 2 Ventajas o Star Point
 - **Tie-break:** Se activa automáticamente si empatan en juegos (6-6 o 4-4)
 
 ### Padel (Retas)
@@ -127,7 +127,7 @@ Las opciones generales se abren desde el menú hamburguesa > Configuración; las
 | Fin | Todos / Anticipado | Jugar todos los juegos o terminar con mayoría (solo Retas) |
 | Participantes | Ver participantes / Agregar | Consulta, edita, elimina o agrega jugadores desde la pantalla Reta |
 | Puntos | 5, 10, 15, 20, 25, 30 | Puntos para ganar (solo Libre) |
-| 40-40 | Oro / 1 Ventaja / 2 Ventajas | Qué pasa en empate a 40 |
+| 40-40 | Oro / 1 Ventaja / 2 Ventajas / Star | Qué pasa en empate a 40. Star permite hasta dos ventajas y, si regresan a iguales después de la segunda, activa un punto decisivo |
 | Error/Acierto | Con detalle / Sin detalle | Se configura en la pantalla Reta y divide la tarjeta de cada jugador para registrar quién cometió el Error o consiguió el Acierto |
 
 ## Instalar en el celular
