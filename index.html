@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <!-- Sube en cada publicacion: la app la compara contra la red para saber si esta al dia -->
-    <meta name="app-version" content="5.16">
+    <meta name="app-version" content="5.17">
     <title>Padel Scoreboard</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -41,6 +41,7 @@
         .header {
             text-align: center;
             flex-shrink: 0;
+            gap: 8px;
         }
 
         .header h1 { font-size: 1.1rem; margin: 0 0 6px; }
@@ -431,6 +432,11 @@
             background: #ffebee;
             border-color: #e94560;
             color: #c62828;
+        }
+
+        @media (max-width: 340px) {
+            .header { gap: 4px; }
+            .header-icon-btn { padding: 4px 7px; }
         }
 
         /* ── Retas: roster, parejas y clasificacion ── */
@@ -1599,7 +1605,7 @@
 <body>
     <div class="app-wrapper">
         <!-- Header -->
-        <div class="header" style="display:flex; align-items:center; justify-content:flex-start; gap:8px; position:relative;">
+        <div class="header" style="display:flex; align-items:center; justify-content:flex-start; position:relative;">
             <div style="position:relative; flex-shrink:0;">
                 <button class="btn btn-outline-light btn-sm" onclick="toggleHamburger()" id="hamburger-btn" style="font-size:1.2rem; line-height:1; padding:2px 6px;">☰</button>
                 <div class="d-none" id="hamburger-menu" style="position:absolute; left:0; top:100%; margin-top:4px; background:#2c2c54; border:1px solid #555; border-radius:8px; min-width:220px; z-index:999; overflow:hidden;">
@@ -1618,11 +1624,11 @@
                 </div>
             </div>
             <button class="btn btn-outline-light btn-sm header-icon-btn" onclick="showQuickPanel()" id="btn-quick" title="Datos del partido y la reta"><i class="bi bi-info-circle"></i></button>
-            <!-- Espaciador: empuja el boton de cambio de lado al extremo derecho -->
+            <button class="btn btn-outline-light btn-sm header-icon-btn d-none" onclick="showLineupModal()" id="btn-lineup" title="Cambiar los integrantes de los equipos"><i class="bi bi-people"></i></button>
+            <!-- Espaciador: separa los controles informativos de las acciones del partido -->
             <div style="flex:1; min-width:0;"></div>
             <!-- El reloj se ancla al centro de la pantalla, no al hueco entre botones -->
             <span id="match-timer" class="timer-card">00:00</span>
-            <button class="btn btn-outline-light btn-sm header-icon-btn d-none" onclick="showLineupModal()" id="btn-lineup" title="Cambiar los integrantes de los equipos"><i class="bi bi-people"></i></button>
             <button class="btn btn-outline-light btn-sm header-icon-btn" onclick="swapTeams()" id="btn-swap-header" title="Los equipos cambian de lado"><i class="bi bi-arrow-left-right"></i></button>
             <button class="btn btn-outline-light btn-sm header-icon-btn d-none" onclick="showRetaStandings()" id="btn-standings-header" title="Clasificación de la reta"><i class="bi bi-trophy"></i></button>
             <button class="btn btn-outline-light btn-sm header-icon-btn" onclick="showLiveMatchHistory()" id="btn-live-history" title="Historial del partido" aria-label="Abrir historial del partido"><i class="bi bi-clock-history"></i></button>
@@ -1855,8 +1861,8 @@
                 <b style="color:#FFD54F;">Botones del encabezado</b><br>
                 <b>☰</b> Menu.<br>
                 <b>ⓘ</b> Datos del partido: formato, juegos, tiempo, 40-40 y partidos jugados de la reta.<br>
-                <b>Reloj (al centro):</b> en Retas va en cuenta regresiva y se pone rojo en los ultimos 2 minutos. En los demas modos cuenta hacia arriba.<br>
                 <b>👥</b> Jugadores del partido: cambia los integrantes de cada equipo sin salir del marcador <span style="opacity:0.7;">(solo en Retas)</span>.<br>
+                <b>Reloj (al centro):</b> en Retas va en cuenta regresiva y se pone rojo en los ultimos 2 minutos. En los demas modos cuenta hacia arriba.<br>
                 <b>⇄</b> Cambia los equipos de lado: los del rojo pasan al azul y viceversa, con su marcador y estadisticas <span style="opacity:0.7;">(solo en Retas)</span>.<br>
                 <b>🏆</b> Clasificacion de la reta <span style="opacity:0.7;">(solo en Retas)</span>.<br>
                 <b>🕘</b> Historial punto a punto del partido actual.
@@ -2138,7 +2144,7 @@
             </a>
             <a href="https://github.com/prime-leads-app/padel-score-board" target="_blank" rel="noopener" class="card bg-dark border-secondary text-decoration-none flex-fill" style="cursor:pointer;">
                 <div class="card-body py-0 px-2 text-center">
-                    <small class="text-white">PadelApp v<span id="app-version-label">5.16</span></small>
+                    <small class="text-white">PadelApp v<span id="app-version-label">5.17</span></small>
                 </div>
             </a>
             <div class="card bg-dark border-secondary flex-fill">
