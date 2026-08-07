@@ -87,7 +87,7 @@ Modo libre para cualquier actividad. Cada toque suma 1 punto.
 
 ## Controles del marcador
 
-**Encabezado:** ☰ menú · cambiar equipo sacador · cambiar jugador sacador · intercambiar posiciones · reloj · 👥 jugadores del partido · 🏆 clasificación. Los dos últimos solo aparecen en Retas; Datos del partido está dentro del menú.
+**Encabezado:** ☰ menú · cambiar equipo sacador · cambiar jugador sacador · intercambiar posiciones · reloj · 👥 jugadores del partido · ⇄ cambiar los equipos de lado · 🏆 clasificación. Los tres últimos solo aparecen en Retas; Datos del partido está dentro del menú.
 
 **Barra inferior:** solo se muestran los botones útiles en cada momento, para que los visibles sean más grandes.
 

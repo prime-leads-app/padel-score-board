@@ -10,4 +10,4 @@ metadata:
   modified: 2026-07-31T13:35:51.259Z
 ---
 
-Ahora: v5.31 ofrece tres controles independientes de saque y retira el cambio de lado del encabezado, validado a 320 y 390 px. Próximo paso: la unidad cierra aquí.
+Ahora: v5.32 restaura el cambio de lado completo y mantiene en una fila los ocho controles, validado a 320 y 390 px. Próximo paso: la unidad cierra aquí.
