@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <!-- Sube en cada publicacion: la app la compara contra la red para saber si esta al dia -->
-    <meta name="app-version" content="5.22">
+    <meta name="app-version" content="5.23">
     <title>Padel Scoreboard</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -538,19 +538,17 @@
         }
         .reta-setting-shortcuts {
             display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 8px;
+            grid-template-columns: minmax(0, 1.5fr) minmax(0, 1.1fr) minmax(0, 0.9fr);
+            gap: 6px;
         }
         .reta-setting-shortcut {
-            display: grid;
-            grid-template-columns: minmax(0, 1fr) auto;
-            grid-template-areas:
-                "label arrow"
-                "value arrow";
-            align-items: center;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-start;
             min-width: 0;
-            min-height: 52px;
-            padding: 7px 10px;
+            min-height: 64px;
+            padding: 8px 9px;
             color: #fff;
             text-align: left;
             border: 1px solid rgba(126,200,227,0.42);
@@ -564,32 +562,42 @@
             outline: none;
         }
         .reta-setting-shortcut-label {
-            grid-area: label;
+            display: block;
+            width: 100%;
             overflow: hidden;
             color: #7ec8e3;
-            font-size: 0.66rem;
+            font-size: 0.61rem;
             font-weight: 800;
             line-height: 1.1;
-            letter-spacing: 0.08em;
+            letter-spacing: 0.07em;
             text-overflow: ellipsis;
             text-transform: uppercase;
             white-space: nowrap;
         }
         .reta-setting-shortcut-value {
-            grid-area: value;
+            display: block;
+            width: 100%;
             overflow: hidden;
-            margin-top: 3px;
+            margin-top: 5px;
             color: #FFD54F;
-            font-size: 0.9rem;
+            font-size: 0.82rem;
             line-height: 1.1;
             text-overflow: ellipsis;
             white-space: nowrap;
         }
-        .reta-setting-shortcut i {
-            grid-area: arrow;
-            margin-left: 7px;
+        .reta-setting-shortcut-meta {
+            display: block;
+            width: 100%;
+            overflow: hidden;
+            margin-top: 4px;
             color: #9fb3c8;
-            font-size: 0.8rem;
+            font-size: 0.61rem;
+            line-height: 1.05;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .reta-setting-shortcut-date .reta-setting-shortcut-value {
+            font-size: 0.78rem;
         }
         .winner-card.reta-setting-modal-card {
             max-width: 360px;
@@ -618,6 +626,17 @@
             height: 42px;
             min-width: 0;
             font-size: 0.78rem;
+        }
+        .reta-date-setting-fields {
+            display: grid;
+            grid-template-columns: minmax(0, 1.35fr) minmax(0, 0.85fr);
+            gap: 8px;
+        }
+        .reta-date-setting-field {
+            min-width: 0;
+        }
+        .reta-date-setting-field .reta-compact-input {
+            min-width: 0;
         }
         #confirm-config-overlay {
             z-index: 1200;
@@ -720,6 +739,7 @@
         }
         .light-theme .reta-setting-shortcut-label { color: #0d47a1; }
         .light-theme .reta-setting-shortcut-value { color: #8a6200; }
+        .light-theme .reta-setting-shortcut-meta { color: #607d8b; }
         .light-theme .reta-setting-modal-copy { color: #566573; }
         .light-theme .reta-roster-item {
             background: #f5f7fa;
@@ -730,10 +750,18 @@
             color: #0d47a1;
         }
         @media (max-width: 350px) {
-            .reta-setting-shortcuts { gap: 6px; }
-            .reta-setting-shortcut { padding: 7px 8px; }
-            .reta-setting-shortcut-label { font-size: 0.61rem; }
-            .reta-setting-shortcut-value { font-size: 0.84rem; }
+            .reta-setting-shortcuts {
+                grid-template-columns: minmax(0, 1.5fr) minmax(0, 1.1fr) minmax(0, 0.9fr);
+                gap: 5px;
+            }
+            .reta-setting-shortcut {
+                min-height: 60px;
+                padding: 7px 6px;
+            }
+            .reta-setting-shortcut-label { font-size: 0.55rem; }
+            .reta-setting-shortcut-value { font-size: 0.72rem; }
+            .reta-setting-shortcut-date .reta-setting-shortcut-value { font-size: 0.69rem; }
+            .reta-setting-shortcut-meta { font-size: 0.55rem; }
             .reta-participant-action {
                 gap: 4px;
                 padding: 4px !important;
@@ -2259,7 +2287,7 @@
             </a>
             <a href="https://github.com/prime-leads-app/padel-score-board" target="_blank" rel="noopener" class="card bg-dark border-secondary text-decoration-none flex-fill" style="cursor:pointer;">
                 <div class="card-body py-0 px-2 text-center">
-                    <small class="text-white">PadelApp v<span id="app-version-label">5.22</span></small>
+                    <small class="text-white">PadelApp v<span id="app-version-label">5.23</span></small>
                 </div>
             </a>
             <div class="card bg-dark border-secondary flex-fill">
@@ -2328,24 +2356,19 @@
                 <!-- 1. Jornada: resumen compacto; cada ajuste abre su selector -->
                 <div class="reta-section" style="padding:10px 12px;">
                     <div class="reta-setting-shortcuts">
+                        <button type="button" class="reta-setting-shortcut reta-setting-shortcut-date" onclick="showRetaDateSettingsModal()" aria-haspopup="dialog">
+                            <span class="reta-setting-shortcut-label">Fecha</span>
+                            <strong class="reta-setting-shortcut-value" id="reta-date-label"></strong>
+                            <span class="reta-setting-shortcut-meta">Inicio <span id="reta-time-label"></span></span>
+                        </button>
                         <button type="button" class="reta-setting-shortcut" onclick="showRetaTimeSettingsModal()" aria-haspopup="dialog">
                             <span class="reta-setting-shortcut-label">Tiempo</span>
                             <strong class="reta-setting-shortcut-value" id="reta-time-value">20 min</strong>
-                            <i class="bi bi-chevron-right" aria-hidden="true"></i>
                         </button>
                         <button type="button" class="reta-setting-shortcut" onclick="showRetaPointsCapSettingsModal()" aria-haspopup="dialog">
                             <span class="reta-setting-shortcut-label">Máx. pts</span>
                             <strong class="reta-setting-shortcut-value" id="reta-points-cap-value">6 pts</strong>
-                            <i class="bi bi-chevron-right" aria-hidden="true"></i>
                         </button>
-                    </div>
-                    <div style="margin-top:8px; font-size:0.74rem; color:#9fb3c8; display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
-                        <span>📅 <span id="reta-date-label"></span> · inicio <span id="reta-time-label"></span></span>
-                        <button onclick="toggleRetaDateEdit()" style="background:none; border:none; color:#7ec8e3; text-decoration:underline; font-size:0.74rem; padding:0; cursor:pointer;">cambiar</button>
-                    </div>
-                    <div id="reta-date-edit" class="d-none" style="gap:8px; margin-top:8px;">
-                        <input type="date" class="reta-compact-input" id="reta-date" onchange="saveRetaMeta()">
-                        <input type="time" class="reta-compact-input" id="reta-time" onchange="saveRetaMeta()">
                     </div>
                 </div>
 
@@ -2385,6 +2408,28 @@
                 <button class="btn btn-outline-danger btn-sm" id="btn-close-reta-footer" onclick="confirmCloseReta()">Cerrar reta</button>
                 <button class="btn btn-outline-light btn-sm" onclick="closeRetaModal()">Listo</button>
             </div>
+        </div>
+    </div>
+
+    <!-- Fecha e inicio de la reta: editor compacto encima de la configuración -->
+    <div class="winner-overlay d-none reta-submodal" id="reta-date-settings-modal" onclick="if(event.target===this)closeRetaDateSettingsModal()">
+        <div class="winner-card reta-submodal-card reta-setting-modal-card" role="dialog" aria-modal="true" aria-labelledby="reta-date-settings-title">
+            <div class="reta-submodal-header">
+                <h5 id="reta-date-settings-title">Fecha e inicio</h5>
+                <button type="button" class="btn btn-sm reta-modal-close" onclick="closeRetaDateSettingsModal()" aria-label="Cerrar">✕</button>
+            </div>
+            <p class="reta-setting-modal-copy">Define la fecha de la reta y la hora programada de inicio.</p>
+            <div class="reta-date-setting-fields">
+                <div class="reta-date-setting-field">
+                    <label class="cfg-label" for="reta-date">Fecha</label>
+                    <input type="date" class="reta-compact-input" id="reta-date" onchange="saveRetaMeta()">
+                </div>
+                <div class="reta-date-setting-field">
+                    <label class="cfg-label" for="reta-time">Inicio</label>
+                    <input type="time" class="reta-compact-input" id="reta-time" onchange="saveRetaMeta()">
+                </div>
+            </div>
+            <button type="button" class="btn btn-outline-light btn-sm w-100" style="margin-top:14px;" onclick="closeRetaDateSettingsModal()">Listo</button>
         </div>
     </div>
 
@@ -4953,6 +4998,7 @@
         }
 
         function closeRetaModal() {
+            closeRetaDateSettingsModal();
             closeRetaTimeSettingsModal();
             closeRetaPointsCapSettingsModal();
             closeRetaParticipantsModal();
@@ -4978,11 +5024,13 @@
             if (tl) tl.textContent = (t && t.value) || nowHM();
         }
 
-        function toggleRetaDateEdit() {
-            const box = document.getElementById('reta-date-edit');
-            const oculto = box.classList.contains('d-none');
-            box.classList.toggle('d-none', !oculto);
-            box.style.display = oculto ? 'flex' : '';
+        function showRetaDateSettingsModal() {
+            updateRetaDateLabels();
+            document.getElementById('reta-date-settings-modal').classList.remove('d-none');
+        }
+
+        function closeRetaDateSettingsModal() {
+            document.getElementById('reta-date-settings-modal').classList.add('d-none');
         }
 
         // ── Sesión de reta ──
