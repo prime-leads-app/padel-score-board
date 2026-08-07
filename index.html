@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <!-- Sube en cada publicacion: la app la compara contra la red para saber si esta al dia -->
-    <meta name="app-version" content="5.18">
+    <meta name="app-version" content="5.19">
     <title>Padel Scoreboard</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -773,6 +773,26 @@
         .reta-view-tab:focus-visible {
             outline: 2px solid #7ec8e3;
             outline-offset: 2px;
+        }
+        .reta-standings-card {
+            max-width: 420px;
+            max-height: 82vh;
+            max-height: 82dvh;
+            display: flex;
+            flex-direction: column;
+            background: linear-gradient(135deg, #2c3e50, #1a1a2e);
+        }
+        .reta-standings-card.stable-tab-height {
+            height: 82vh;
+            height: 82dvh;
+        }
+        .reta-standings-scroll {
+            min-height: 0;
+            overflow-y: auto;
+            overscroll-behavior: contain;
+            scrollbar-gutter: stable;
+            flex: 1 1 auto;
+            text-align: left;
         }
         .reta-history-pane .live-history-list {
             min-height: 150px;
@@ -2142,7 +2162,7 @@
             </a>
             <a href="https://github.com/prime-leads-app/padel-score-board" target="_blank" rel="noopener" class="card bg-dark border-secondary text-decoration-none flex-fill" style="cursor:pointer;">
                 <div class="card-body py-0 px-2 text-center">
-                    <small class="text-white">PadelApp v<span id="app-version-label">5.18</span></small>
+                    <small class="text-white">PadelApp v<span id="app-version-label">5.19</span></small>
                 </div>
             </a>
             <div class="card bg-dark border-secondary flex-fill">
@@ -2346,7 +2366,7 @@
 
     <!-- Reta Standings Modal -->
     <div class="winner-overlay d-none" id="reta-standings-modal" onclick="if(event.target===this)closeRetaStandings()">
-        <div class="winner-card" style="background: linear-gradient(135deg, #2c3e50, #1a1a2e); max-height:82vh; display:flex; flex-direction:column; max-width:420px;">
+        <div class="winner-card reta-standings-card" id="reta-standings-card">
             <h4 class="mb-1" id="reta-standings-title">🏆 Clasificación de la reta</h4>
             <div id="reta-standings-meta" style="font-size:0.75rem; color:#aaa; margin-bottom:8px;"></div>
             <div class="reta-view-tabs" id="reta-view-tabs" role="tablist" aria-label="Vista de la reta">
@@ -2354,7 +2374,7 @@
                 <button type="button" class="reta-view-tab" id="reta-tab-stats" role="tab" aria-selected="false" aria-controls="reta-standings-content" onclick="setRetaStandingsView('stats')">Estadísticas</button>
                 <button type="button" class="reta-view-tab" id="reta-tab-history" role="tab" aria-selected="false" aria-controls="reta-standings-content" onclick="setRetaStandingsView('history')">Historial</button>
             </div>
-            <div style="overflow-y:auto; flex:1; text-align:left;" id="reta-standings-content" role="tabpanel"></div>
+            <div class="reta-standings-scroll" id="reta-standings-content" role="tabpanel"></div>
             <div style="display:flex; gap:8px; justify-content:center; margin-top:12px; flex-wrap:wrap;">
                 <button class="btn btn-outline-warning btn-sm" id="btn-goto-matches" onclick="scrollToRetaMatches()">📋 Partidos</button>
                 <!-- Compartir: en pausa hasta rehacer el formato del texto -->
@@ -5571,8 +5591,11 @@
             const statsTab = document.getElementById('reta-tab-stats');
             const historyTab = document.getElementById('reta-tab-history');
             const title = document.getElementById('reta-standings-title');
+            const card = document.getElementById('reta-standings-card');
+            const hasActiveReta = !!(retaActive && retaSession);
+            card.classList.toggle('stable-tab-height', hasActiveReta);
             document.getElementById('reta-standings-modal').classList.remove('d-none');
-            if (!retaActive || !retaSession) {
+            if (!hasActiveReta) {
                 title.textContent = '🏆 Clasificación de la reta';
                 meta.textContent = '';
                 cont.innerHTML = '<div style="opacity:0.6; text-align:center; padding:16px;">No hay una reta en curso.<br>Configura los participantes y toca <strong>Iniciar reta</strong>.</div>';
