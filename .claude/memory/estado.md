@@ -10,4 +10,4 @@ metadata:
   modified: 2026-07-31T13:35:51.259Z
 ---
 
-Ahora: v5.29 distingue uno, dos y tres toques en Saque; el tercero intercambia las posiciones del equipo sacador y conserva el indicador amarillo en la posición, cambiando a la persona marcada. Estadísticas, selección de reta, Deshacer y persistencia conservan la identidad de cada jugador. Próximo paso: la unidad cierra aquí.
+Ahora: v5.30 separa en el encabezado el cambio de saque y el intercambio de posiciones, validado a 320 y 390 px. Próximo paso: la unidad cierra aquí.

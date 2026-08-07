@@ -48,3 +48,4 @@ metadata:
 - 2026-08-06-22-35-41-24: v5.27 agrega borrado individual de retas anteriores con confirmación y limpieza de sus partidos vinculados por matchId; Borrar todo aplica la misma regla.
 - 2026-08-06-22-55-52-25: v5.28 agrega sacador individual: un clic cambia equipo, doble clic cambia jugador y cada juego alterna automáticamente equipo y compañero; Deshacer, cambio de lado y recarga conservan el orden.
 - 2026-08-06-23-04-48-26: v5.29 añade triple toque en Saque para intercambiar izquierda/derecha del equipo sacador; el borde queda en la posición y estadísticas, selección y persistencia siguen a cada jugador.
+- 2026-08-06-23-17-06-27: v5.30 mueve Saque al encabezado, agrega un control separado para posiciones y elimina el gesto triple; Datos del partido pasa al menú.
