@@ -10,4 +10,4 @@ metadata:
   modified: 2026-07-31T13:35:51.259Z
 ---
 
-Ahora: v5.35 diferencia dirección y alcance de ambos intercambios con flechas verticales y horizontales, validado a 320 y 390 px. Próximo paso: la unidad cierra aquí.
+Ahora: v5.36 incorpora cronología persistente de puntos, saques y reinicios, además de advertencias para cambios manuales fuera de secuencia; se validó inicio, rotación, corrección, reinicio, cierre y recarga. Próximo paso: la unidad cierra aquí.

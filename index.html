@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <!-- Sube en cada publicacion: la app la compara contra la red para saber si esta al dia -->
-    <meta name="app-version" content="5.35">
+    <meta name="app-version" content="5.36">
     <title>Padel Scoreboard</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -977,6 +977,34 @@
             text-align: center;
             text-transform: uppercase;
         }
+        .reta-history-match {
+            margin-bottom: 10px;
+            border: 1px solid rgba(126, 200, 227, 0.2);
+            border-radius: 11px;
+            background: rgba(0, 0, 0, 0.12);
+            overflow: hidden;
+        }
+        .reta-history-match > summary {
+            cursor: pointer;
+            list-style: none;
+            padding: 10px 12px;
+            color: #dce6ef;
+            font-size: 0.76rem;
+            font-weight: 750;
+        }
+        .reta-history-match > summary::-webkit-details-marker { display: none; }
+        .reta-history-match > summary::before {
+            content: '›';
+            display: inline-block;
+            margin-right: 7px;
+            color: #7ec8e3;
+            transform: rotate(0deg);
+            transition: transform 0.18s ease;
+        }
+        .reta-history-match[open] > summary::before { transform: rotate(90deg); }
+        .reta-history-match-body { padding: 0 10px 8px; }
+        .light-theme .reta-history-match { background: #f4f7fa; border-color: #c9dbe5; }
+        .light-theme .reta-history-match > summary { color: #263746; }
         .reta-stats-live {
             margin-bottom: 8px;
             padding: 6px 9px;
@@ -1506,6 +1534,30 @@
         .live-history-item.team-1 .live-history-sequence { background: #c6283c; }
         .live-history-item.team-2 .live-history-sequence { background: #1565c0; }
 
+        .live-history-item.serve-event {
+            margin: 4px 0;
+            padding: 9px 8px;
+            border: 1px solid rgba(255, 193, 7, 0.28);
+            border-radius: 10px;
+            background: rgba(255, 193, 7, 0.07);
+        }
+
+        .live-history-item.serve-event .live-history-sequence {
+            background: #ffc107;
+            color: #1a1a2e;
+            box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.12);
+        }
+
+        .live-history-item.reset-event {
+            margin: 4px 0;
+            padding: 9px 8px;
+            border: 1px solid rgba(255, 152, 0, 0.3);
+            border-radius: 10px;
+            background: rgba(255, 152, 0, 0.08);
+        }
+
+        .live-history-item.reset-event .live-history-sequence { background: #e67e22; }
+
         .live-history-event-head {
             display: flex;
             align-items: baseline;
@@ -1545,6 +1597,12 @@
             background: rgba(25, 135, 84, 0.18);
             color: #9be7a5;
             border: 1px solid rgba(25, 135, 84, 0.42);
+        }
+
+        .live-history-outcome.serve {
+            background: rgba(255, 193, 7, 0.16);
+            color: #ffe082;
+            border: 1px solid rgba(255, 193, 7, 0.38);
         }
 
         .live-history-award {
@@ -1593,6 +1651,8 @@
 
         .light-theme .live-history-item { border-color: #dce3e8; }
         .light-theme .live-history-award { color: #34495e; }
+        .light-theme .live-history-item.serve-event { background: #fff9e6; border-color: #e6bd3f; }
+        .light-theme .live-history-item.reset-event { background: #fff3e6; border-color: #e9a45d; }
 
         /* ── Winner ── */
         .winner-overlay {
@@ -2064,7 +2124,7 @@
                 <b>Reloj (al centro):</b> en Retas va en cuenta regresiva y se pone rojo en los ultimos 2 minutos. En los demas modos cuenta hacia arriba.<br>
                 <b><i class="bi bi-arrow-down-up"></i></b> Intercambia arriba/abajo a los equipos completos, con su marcador, estadisticas y saque <span style="opacity:0.7;">(solo en Retas)</span>.<br>
                 <b><i class="bi bi-arrow-left-right"></i></b> Intercambia izquierda/derecha a los jugadores del equipo sacador; el borde amarillo permanece en la posición de saque.<br>
-                <b>🏆</b> Resumen de la reta con Clasificacion, Historial punto a punto y Estadisticas <span style="opacity:0.7;">(solo en Retas)</span>.
+                <b>🏆</b> Resumen de la reta con Clasificacion, Cronología y Estadisticas <span style="opacity:0.7;">(solo en Retas)</span>.
             </div>
 
             <div style="margin:8px 0;">
@@ -2080,10 +2140,10 @@
             <div style="margin:8px 0;">
                 <b style="color:#FFD54F;">Menu ☰</b><br>
                 <b>Reta:</b> participantes, parejas, fecha y tiempo por partido.<br>
-                <b>Clasificacion:</b> tabla, estadisticas de rendimiento, historial punto a punto y partidos de la reta en curso.<br>
+                <b>Clasificacion:</b> tabla, estadisticas de rendimiento, cronología de puntos y saques, y partidos de la reta en curso.<br>
                 <b>Retas anteriores:</b> jornadas cerradas con su clasificacion y estadisticas finales; permite borrar una reta o todo el archivo con confirmacion.<br>
                 <b>Partidos:</b> historial de partidos, con opcion de borrar uno por uno.<br>
-                <b>Historial:</b> registro de puntos del partido actual.<br>
+                <b>Historial:</b> registro de puntos, turnos de saque y reinicios del partido actual.<br>
                 <b>Buscar actualizacion:</b> revisa si hay una version nueva publicada y la instala.
             </div>
 
@@ -2342,7 +2402,7 @@
             </a>
             <a href="https://github.com/prime-leads-app/padel-score-board" target="_blank" rel="noopener" class="card bg-dark border-secondary text-decoration-none flex-fill" style="cursor:pointer;">
                 <div class="card-body py-0 px-2 text-center">
-                    <small class="text-white">PadelApp v<span id="app-version-label">5.35</span></small>
+                    <small class="text-white">PadelApp v<span id="app-version-label">5.36</span></small>
                 </div>
             </a>
             <div class="card bg-dark border-secondary flex-fill">
@@ -2378,7 +2438,7 @@
             <div class="live-history-modal-header">
                 <div>
                     <div class="live-history-kicker">Partido actual</div>
-                    <h4 class="live-history-title">Historial punto a punto</h4>
+                    <h4 class="live-history-title">Cronología del partido</h4>
                 </div>
                 <button class="live-history-close" onclick="closeLiveMatchHistory()" aria-label="Cerrar historial">✕</button>
             </div>
@@ -2655,6 +2715,18 @@
         </div>
     </div>
 
+    <!-- Advertencia de cambio manual fuera de la secuencia de saque -->
+    <div class="winner-overlay d-none" id="serve-sequence-warning-overlay" style="z-index:1250;">
+        <div class="winner-card" role="dialog" aria-modal="true" aria-labelledby="serve-sequence-warning-title" style="background: linear-gradient(135deg, #9a6700, #243447); max-width:390px; text-align:left;">
+            <h4 class="mb-3" id="serve-sequence-warning-title">Revisa el saque</h4>
+            <div class="mb-4" id="serve-sequence-warning-text" style="opacity:0.94; font-size:0.9rem; line-height:1.5;"></div>
+            <div class="d-flex gap-2 justify-content-center flex-wrap">
+                <button class="btn btn-outline-light" onclick="cancelServeSequenceChange()">Mantener turno</button>
+                <button class="btn btn-warning" style="font-weight:700;" onclick="confirmServeSequenceChange()">Cambiar de todos modos</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Reta Tie Overlay -->
     <div class="winner-overlay d-none" id="reta-tie-overlay">
         <div class="winner-card" style="background: linear-gradient(135deg, #b8860b, #2c3e50);">
@@ -2739,7 +2811,7 @@
     <div class="winner-overlay d-none" id="confirm-overlay">
         <div class="winner-card" style="background: linear-gradient(135deg, #c0392b, #2c3e50);">
             <h4 class="mb-3">Reiniciar partido?</h4>
-            <p class="mb-4" style="opacity:0.8;">Se va a perder todo el marcador actual.</p>
+            <p class="mb-4" style="opacity:0.8;">El marcador y las estadísticas actuales volverán a cero. En una reta iniciada, el reinicio quedará registrado en la cronología.</p>
             <div class="d-flex gap-3 justify-content-center">
                 <button class="btn btn-outline-light btn-lg" onclick="cancelReset()">Cancelar</button>
                 <button class="btn btn-danger btn-lg" onclick="resetMatch()">Reiniciar</button>
@@ -2938,6 +3010,9 @@
         let serve = 1;
         // Jugador que saca en el turno actual de cada equipo: a = izquierda, b = derecha.
         let servePlayers = { 1: 'a', 2: 'a' };
+        let expectedServePlayerName = null;
+        let _pendingServeTransition = null;
+        let _pendingManualServeChange = null;
         let history = [];
         let matchOver = false;
         let timerStart = 0;
@@ -3314,6 +3389,7 @@
             _pendingTimerResume = false;
             if (matchOver || !timerStart) return;
             timerInterval = setInterval(updateTimerDisplay, 1000);
+            ensureServeAuditStarted('Registro de saque reanudado');
             updateTimerDisplay();
             updateControlsBar();
         }
@@ -3367,6 +3443,7 @@
             if (matchOver || timerInterval) return;
             ensureRetaStarted();
             startTimer();
+            ensureServeAuditStarted('Inicio del partido');
             addHistory(isRetaTimed() ? `Partido iniciado - ${retaTimeLimit} min` : 'Partido iniciado');
             updateControlsBar();
             updateOutcomeControls();
@@ -3709,7 +3786,9 @@
                     }
                 }
                 for (let i = pointTimeline.length - 1; i >= 0; i--) {
-                    if (pointTimeline[i].playerId === pendingShotPlayer && pointTimeline[i].shot === null) {
+                    const entry = pointTimeline[i];
+                    const isPoint = !entry.eventType || entry.eventType === 'point';
+                    if (isPoint && entry.playerId === pendingShotPlayer && entry.shot === null) {
                         pointTimeline[i].shot = type;
                         break;
                     }
@@ -3752,6 +3831,7 @@
                         saveRetaState();
                     }
                 }
+                syncSavedPointTimeline();
             }
         }
 
@@ -3766,6 +3846,7 @@
             if (navigator.vibrate) navigator.vibrate(50);
             ensureRetaStarted();
             startTimer();
+            ensureServeAuditStarted('Inicio del partido');
             saveState();
             const timelineGame = attribution && attribution.game ? attribution.game : currentGameNumber();
             applyPointAttribution(attribution);
@@ -3796,6 +3877,7 @@
                 }
             }
             recordPointTimeline(player, attribution, timelineGame);
+            flushPendingServeTransition();
             render();
             return true;
         }
@@ -3811,7 +3893,7 @@
                     winGame(player);
                     return;
                 }
-                if (total % 2 === 1) advanceServeTurn();
+                if (total % 2 === 1) advanceServeTurn(`Tie-break: cambio después del punto ${total}`);
                 addHistory(`${getName(player)} punto TB (${points[0]}-${points[1]})`);
                 return;
             }
@@ -3876,9 +3958,10 @@
 
         function winGame(player) {
             const p = player - 1, o = 1 - p;
+            const finishedGame = currentGameNumber();
             games[p]++; points = [0, 0]; advantage = 0; deuceCount = 0;
             const wasTB = tiebreak; tiebreak = false;
-            advanceServeTurn();
+            advanceServeTurn(`Fin del juego ${finishedGame}`);
 
             if (padelFormat === 'retas') {
                 if (retasGames === 0) {
@@ -3955,6 +4038,7 @@
         }
 
         function saveState() {
+            const openServeIndex = latestOpenServeIndex();
             history.push({
                 points: [...points], games: [...games],
                 sets: [sets[0].slice(), sets[1].slice()],
@@ -3963,6 +4047,9 @@
                 matchOver, freePoints: [...freePoints], mode, deuceMode,
                 playerStats: clonePlayerStats(), matchLogLength: matchLog.length,
                 pointTimelineLength: pointTimeline.length,
+                openServeIndex,
+                openServeEvent: openServeIndex >= 0 ? JSON.parse(JSON.stringify(pointTimeline[openServeIndex])) : null,
+                expectedServePlayerName,
                 historyItemCount: document.querySelectorAll('#history-list .history-item').length
             });
         }
@@ -4001,6 +4088,11 @@
             else if (matchLog.length) matchLog.pop();
             if (Number.isInteger(s.pointTimelineLength)) pointTimeline.length = s.pointTimelineLength;
             else if (pointTimeline.length) pointTimeline.pop();
+            if (Number.isInteger(s.openServeIndex) && s.openServeIndex >= 0 && s.openServeEvent && pointTimeline[s.openServeIndex]) {
+                pointTimeline[s.openServeIndex] = JSON.parse(JSON.stringify(s.openServeEvent));
+            }
+            expectedServePlayerName = s.expectedServePlayerName || null;
+            _pendingServeTransition = null;
             _pendingPointAttribution = null;
             _lastShotSlot = null;
             lastPointTime = 0;
@@ -4020,23 +4112,177 @@
             };
         }
 
-        function toggleServe() {
-            serve = serve === 1 ? 2 : 1;
+        function serveAuditEnabled() {
+            return mode === 'padel' && padelFormat === 'retas';
+        }
+
+        function activeServeSlot() {
+            return `p${serve}${servePlayers[serve]}`;
+        }
+
+        function servePlayerName(slot = activeServeSlot()) {
+            const input = document.getElementById('cfg-name-' + slot);
+            return input && input.value ? input.value : slot;
+        }
+
+        function auditTime(timestamp = Date.now()) {
+            return new Date(timestamp).toLocaleTimeString('es-MX', {
+                hour: '2-digit', minute: '2-digit', hour12: false
+            });
+        }
+
+        function latestOpenServeIndex() {
+            for (let i = pointTimeline.length - 1; i >= 0; i--) {
+                const entry = pointTimeline[i];
+                if (entry && entry.eventType === 'serve' && !entry.endedTimestamp) return i;
+            }
+            return -1;
+        }
+
+        function startServeTurn(reason, timestamp = Date.now()) {
+            if (!serveAuditEnabled() || matchOver || !matchStarted()) return;
+            if (latestOpenServeIndex() >= 0) return;
+            const slot = activeServeSlot();
+            const player = servePlayerName(slot);
+            pointTimeline.push({
+                eventType: 'serve',
+                time: auditTime(timestamp),
+                timestamp,
+                endedAt: null,
+                endedTimestamp: null,
+                endReason: null,
+                playerId: slot,
+                player,
+                servingTeam: serve,
+                game: currentGameNumber(),
+                reason: reason || 'Inicio del turno de saque',
+                teams: [timelineTeamPlayers(1), timelineTeamPlayers(2)],
+                score: currentTimelineScore()
+            });
+            expectedServePlayerName = player;
+            syncSavedPointTimeline();
+        }
+
+        function ensureServeAuditStarted(reason) {
+            if (!serveAuditEnabled() || matchOver || !matchStarted()) return;
+            if (latestOpenServeIndex() < 0) startServeTurn(reason || 'Inicio del partido');
+            else if (!expectedServePlayerName) {
+                expectedServePlayerName = pointTimeline[latestOpenServeIndex()].player || servePlayerName();
+            }
+        }
+
+        function closeServeTurn(reason, timestamp = Date.now()) {
+            const index = latestOpenServeIndex();
+            if (index < 0) return;
+            const entry = pointTimeline[index];
+            entry.endedAt = auditTime(timestamp);
+            entry.endedTimestamp = timestamp;
+            entry.endReason = reason || 'Fin del turno de saque';
+            entry.endScore = currentTimelineScore();
+        }
+
+        function finalizeServeAudit(reason) {
+            if (!serveAuditEnabled()) return;
+            closeServeTurn(reason || 'Fin del partido');
+            expectedServePlayerName = null;
+            _pendingServeTransition = null;
+            syncSavedPointTimeline();
+        }
+
+        function flushPendingServeTransition() {
+            const transition = _pendingServeTransition;
+            _pendingServeTransition = null;
+            if (!transition || !serveAuditEnabled()) return;
+            closeServeTurn(matchOver ? 'Fin del partido' : transition.reason, transition.timestamp);
+            if (matchOver) {
+                expectedServePlayerName = null;
+            } else {
+                startServeTurn(transition.reason, transition.timestamp);
+            }
+            syncSavedPointTimeline();
+        }
+
+        function previousServeTurnCount(playerName) {
+            return pointTimeline.filter(entry => entry && entry.eventType === 'serve' && entry.player === playerName).length;
+        }
+
+        function executeManualServeChange(change) {
+            if (!change || typeof change.apply !== 'function') return;
+            const timestamp = Date.now();
+            const auditStarted = serveAuditEnabled() && matchStarted() && !matchOver;
+            if (auditStarted) {
+                ensureServeAuditStarted('Registro de saque retomado');
+                closeServeTurn(change.reason, timestamp);
+            }
+            change.apply();
             updateServeUI();
+            if (auditStarted) startServeTurn(change.reason, timestamp);
             saveToStorage();
         }
 
+        function requestManualServeChange(targetPlayer, apply, reason) {
+            const change = { targetPlayer, apply, reason };
+            if (!serveAuditEnabled() || !matchStarted() || matchOver) {
+                executeManualServeChange(change);
+                return;
+            }
+            ensureServeAuditStarted('Registro de saque retomado');
+            const expected = expectedServePlayerName || servePlayerName();
+            if (!targetPlayer || targetPlayer === expected) {
+                executeManualServeChange(change);
+                return;
+            }
+            const previousTurns = previousServeTurnCount(targetPlayer);
+            const priorText = previousTurns > 0
+                ? `<b>${esc(targetPlayer)}</b> ya tiene ${previousTurns} ${previousTurns === 1 ? 'turno de saque registrado' : 'turnos de saque registrados'}. `
+                : '';
+            document.getElementById('serve-sequence-warning-text').innerHTML =
+                `${priorText}Según la secuencia de la reta, ahora corresponde sacar a <b>${esc(expected)}</b>, no a <b>${esc(targetPlayer)}</b>.<br><br>` +
+                'Si estás corrigiendo una asignación real en la cancha, puedes continuar; el cambio quedará registrado en la cronología.';
+            _pendingManualServeChange = change;
+            document.getElementById('serve-sequence-warning-overlay').classList.remove('d-none');
+        }
+
+        function cancelServeSequenceChange() {
+            _pendingManualServeChange = null;
+            document.getElementById('serve-sequence-warning-overlay').classList.add('d-none');
+        }
+
+        function confirmServeSequenceChange() {
+            const change = _pendingManualServeChange;
+            cancelServeSequenceChange();
+            executeManualServeChange(change);
+        }
+
+        function toggleServe() {
+            const targetTeam = serve === 1 ? 2 : 1;
+            const targetSlot = `p${targetTeam}${servePlayers[targetTeam]}`;
+            requestManualServeChange(servePlayerName(targetSlot), () => {
+                serve = targetTeam;
+            }, 'Cambio manual de equipo al saque');
+        }
+
         function toggleServePlayer() {
-            servePlayers[serve] = servePlayers[serve] === 'a' ? 'b' : 'a';
-            updateServeUI();
-            saveToStorage();
+            const targetPosition = servePlayers[serve] === 'a' ? 'b' : 'a';
+            const targetSlot = `p${serve}${targetPosition}`;
+            requestManualServeChange(servePlayerName(targetSlot), () => {
+                servePlayers[serve] = targetPosition;
+            }, 'Cambio manual del jugador al saque');
         }
 
         // Al terminar un turno de saque, queda preparado el compañero para la
         // próxima vez que ese equipo saque y el turno pasa al equipo contrario.
-        function advanceServeTurn() {
+        function advanceServeTurn(reason) {
+            const timestamp = Date.now();
+            if (serveAuditEnabled() && matchStarted()) ensureServeAuditStarted('Registro de saque retomado');
             servePlayers[serve] = servePlayers[serve] === 'a' ? 'b' : 'a';
             serve = serve === 1 ? 2 : 1;
+            if (serveAuditEnabled() && matchStarted()) {
+                _pendingServeTransition = {
+                    timestamp,
+                    reason: reason || 'Cambio automático de saque'
+                };
+            }
             updateServeUI();
         }
 
@@ -4054,29 +4300,29 @@
             const leftInput = document.getElementById('cfg-name-' + leftSlot);
             const rightInput = document.getElementById('cfg-name-' + rightSlot);
             if (!leftInput || !rightInput) return;
+            const targetPlayer = servePlayers[serve] === 'a' ? rightInput.value : leftInput.value;
+            requestManualServeChange(targetPlayer, () => {
+                [leftInput.value, rightInput.value] = [rightInput.value, leftInput.value];
 
-            [leftInput.value, rightInput.value] = [rightInput.value, leftInput.value];
+                const leftSelect = document.getElementById('sel-' + leftSlot);
+                const rightSelect = document.getElementById('sel-' + rightSlot);
+                if (padelFormat === 'retas' && leftSelect && rightSelect) {
+                    [leftSelect.value, rightSelect.value] = [rightSelect.value, leftSelect.value];
+                    leftSelect.dataset.prev = leftSelect.value;
+                    rightSelect.dataset.prev = rightSelect.value;
+                }
 
-            const leftSelect = document.getElementById('sel-' + leftSlot);
-            const rightSelect = document.getElementById('sel-' + rightSlot);
-            if (padelFormat === 'retas' && leftSelect && rightSelect) {
-                [leftSelect.value, rightSelect.value] = [rightSelect.value, leftSelect.value];
-                leftSelect.dataset.prev = leftSelect.value;
-                rightSelect.dataset.prev = rightSelect.value;
-            }
+                // Las estadísticas siguen a la persona, no a la posición del card.
+                swapStatSlots(playerStats, leftSlot, rightSlot);
+                history.forEach(snapshot => swapStatSlots(snapshot.playerStats, leftSlot, rightSlot));
+                if (_lastShotSlot === leftSlot) _lastShotSlot = rightSlot;
+                else if (_lastShotSlot === rightSlot) _lastShotSlot = leftSlot;
 
-            // Las estadísticas siguen a la persona, no a la posición del card.
-            swapStatSlots(playerStats, leftSlot, rightSlot);
-            history.forEach(snapshot => swapStatSlots(snapshot.playerStats, leftSlot, rightSlot));
-            if (_lastShotSlot === leftSlot) _lastShotSlot = rightSlot;
-            else if (_lastShotSlot === rightSlot) _lastShotSlot = leftSlot;
-
-            syncNamesToCards();
-            updateServeUI();
-            render();
-            renderMatchupHint();
-            saveRetaState();
-            saveToStorage();
+                syncNamesToCards();
+                render();
+                renderMatchupHint();
+                saveRetaState();
+            }, 'Cambio manual de posición del equipo al saque');
         }
 
         // Los equipos cambian de lado de la cancha: se llevan consigo su marcador,
@@ -4329,17 +4575,27 @@
             try {
                 const matches = JSON.parse(localStorage.getItem('padel-matches') || '[]');
                 const saved = matches.find(match => match.id === _lastSavedMatchId);
-                if (!saved) return;
-                saved.timeline = pointTimeline.slice();
-                localStorage.setItem('padel-matches', JSON.stringify(matches));
+                if (saved) {
+                    saved.timeline = pointTimeline.slice();
+                    localStorage.setItem('padel-matches', JSON.stringify(matches));
+                }
             } catch(e) {}
+            if (retaActive && retaSession) {
+                const retaMatch = retaSession.matches.find(match => match.matchId === _lastSavedMatchId);
+                if (retaMatch) {
+                    retaMatch.timeline = pointTimeline.slice();
+                    saveRetaState();
+                }
+            }
         }
 
         function recordPointTimeline(scoringTeam, attribution, game) {
             const playerId = attribution && RETA_SLOTS.includes(attribution.playerId) ? attribution.playerId : null;
             const playerEl = playerId ? document.getElementById('name-' + playerId) : null;
             pointTimeline.push({
+                eventType: 'point',
                 time: new Date().toLocaleTimeString('es', { hour: '2-digit', minute: '2-digit' }),
+                timestamp: Date.now(),
                 scoringTeam,
                 playerId,
                 player: playerEl ? playerEl.textContent : null,
@@ -4402,27 +4658,99 @@
             </article>`;
         }
 
+        function renderServeTimelineEntry(entry, sequence) {
+            const servingTeam = entry.servingTeam === 2 ? 2 : 1;
+            const start = entry.time || (entry.timestamp ? auditTime(entry.timestamp) : 'Hora no disponible');
+            const end = entry.endedAt || (entry.endedTimestamp ? auditTime(entry.endedTimestamp) : 'En curso');
+            const score = timelineScoreLabel(entry.score);
+            const endScore = timelineScoreLabel(entry.endScore);
+            const displayedScore = endScore || score;
+            const scorePrefix = endScore ? 'Cierre: ' : 'Inicio: ';
+            const reason = entry.reason || 'Turno de saque';
+            const endReason = entry.endReason && entry.endReason !== reason ? ` · ${esc(entry.endReason)}` : '';
+            return `<article class="live-history-item serve-event team-${servingTeam}">
+                <div class="live-history-sequence"><i class="bi bi-person-badge" aria-hidden="true"></i></div>
+                <div>
+                    <div class="live-history-event-head"><strong>${esc(entry.player || 'Jugador')} <span class="live-history-outcome serve">Al saque</span></strong><time>${esc(start)}</time></div>
+                    <div class="live-history-award">Inicio <strong>${esc(start)}</strong> · Fin <strong>${esc(end)}</strong></div>
+                    <div class="live-history-scoreline"><span>Juego ${esc(entry.game || 1)} · ${esc(reason)}${endReason}</span>${displayedScore ? `<strong>${scorePrefix}${esc(displayedScore)}</strong>` : ''}</div>
+                </div>
+            </article>`;
+        }
+
+        function renderResetTimelineEntry(entry, sequence) {
+            const score = timelineScoreLabel(entry.score);
+            return `<article class="live-history-item reset-event">
+                <div class="live-history-sequence"><i class="bi bi-arrow-counterclockwise" aria-hidden="true"></i></div>
+                <div>
+                    <div class="live-history-event-head"><strong>Marcador reiniciado</strong><time>${esc(entry.time || '')}</time></div>
+                    <div class="live-history-award">${esc(entry.reason || 'Reinicio manual del partido')}</div>
+                    <div class="live-history-scoreline"><span>Después del juego ${esc(entry.game || 1)}</span>${score ? `<strong>Marcador anterior: ${esc(score)}</strong>` : ''}</div>
+                </div>
+            </article>`;
+        }
+
+        function renderTimelineEntry(entry, sequence) {
+            if (entry && entry.eventType === 'serve') return renderServeTimelineEntry(entry, sequence);
+            if (entry && entry.eventType === 'reset') return renderResetTimelineEntry(entry, sequence);
+            return renderLiveHistoryEntry(entry, sequence);
+        }
+
+        function timelineEntriesHTML(events) {
+            const list = Array.isArray(events) ? events : [];
+            return list.length
+                ? list.slice().reverse().map((entry, index) => renderTimelineEntry(entry, list.length - index)).join('')
+                : '<div class="live-history-empty">Aún no hay eventos registrados en este partido.</div>';
+        }
+
         function liveMatchHistoryContent() {
             const events = pointTimeline.length ? pointTimeline : legacyLiveHistoryEntries();
-            const latestFirst = events.slice().reverse();
             return {
                 matchup: `<div class="live-history-team team-1">${esc(getName(1))}</div>
                     <div class="live-history-vs">VS</div>
                     <div class="live-history-team team-2">${esc(getName(2))}</div>
                     <div class="live-history-current-score">${esc(timelineScoreLabel(currentTimelineScore()))}</div>`,
-                entries: latestFirst.length
-                    ? latestFirst.map((entry, index) => renderLiveHistoryEntry(entry, events.length - index)).join('')
-                    : '<div class="live-history-empty">Aún no hay puntos registrados en este partido.</div>'
+                entries: timelineEntriesHTML(events)
             };
         }
 
+        function savedMatchHistoryHTML(match, open) {
+            const team1 = Array.isArray(match.team1) ? match.team1.join(' / ') : (match.team1 || 'Equipo 1');
+            const team2 = Array.isArray(match.team2) ? match.team2.join(' / ') : (match.team2 || 'Equipo 2');
+            const events = Array.isArray(match.timeline) ? match.timeline : [];
+            const games = Array.isArray(match.games) ? `${match.games[0]} - ${match.games[1]}` : (match.score || 'Marcador no disponible');
+            return `<details class="reta-history-match"${open ? ' open' : ''}>
+                <summary>Partido ${esc(match.n || '')}: ${esc(team1)} vs ${esc(team2)} · ${esc(games)}</summary>
+                <div class="reta-history-match-body">
+                    <div class="live-history-matchup">
+                        <div class="live-history-team team-1">${esc(team1)}</div>
+                        <div class="live-history-vs">VS</div>
+                        <div class="live-history-team team-2">${esc(team2)}</div>
+                        <div class="live-history-current-score">Resultado: ${esc(games)} · ${events.length} ${events.length === 1 ? 'evento' : 'eventos'}</div>
+                    </div>
+                    <div class="live-history-list">${timelineEntriesHTML(events)}</div>
+                </div>
+            </details>`;
+        }
+
         function retaLiveMatchHistoryHTML() {
-            const content = liveMatchHistoryContent();
-            return `<section class="reta-history-pane">
-                <div class="reta-history-context">Partido actual · Más recientes primero</div>
-                <div class="live-history-matchup">${content.matchup}</div>
-                <div class="live-history-list">${content.entries}</div>
-            </section>`;
+            const sections = [];
+            const hasCurrent = !matchOver && !_matchSaved && (matchStarted() || pointTimeline.length > 0);
+            if (hasCurrent) {
+                const content = liveMatchHistoryContent();
+                sections.push(`<div class="reta-history-context">Partido actual · Más recientes primero</div>
+                    <div class="live-history-matchup">${content.matchup}</div>
+                    <div class="live-history-list">${content.entries}</div>`);
+            }
+            const completed = retaSession && Array.isArray(retaSession.matches)
+                ? retaSession.matches.slice().reverse().filter(match => Array.isArray(match.timeline))
+                : [];
+            if (completed.length) {
+                sections.push(`<div class="reta-history-context" style="margin-top:${hasCurrent ? '14px' : '0'};">Partidos terminados</div>` +
+                    completed.map((match, index) => savedMatchHistoryHTML(match, !hasCurrent && index === 0)).join(''));
+            }
+            if (!sections.length) sections.push('<div class="live-history-empty">La cronología aparecerá al iniciar el primer partido.</div>');
+            return `<section class="reta-history-pane">${sections.join('')}</section>`;
         }
 
         function showLiveMatchHistory() {
@@ -4654,6 +4982,7 @@
 
         function showWinner(p) {
             stopTimer();
+            finalizeServeAudit('Fin del partido');
             const timerText = elapsedText();
             let scoreText = '';
             if (mode === 'padel' && padelFormat === 'retas') {
@@ -4953,6 +5282,7 @@
                     entry.teams = entry.teams.map(team => Array.isArray(team) ? team.map(name => name === oldName ? newName : name) : team);
                 }
             });
+            if (expectedServePlayerName === oldName) expectedServePlayerName = newName;
             if (retaSession) {
                 retaSession.roster = (retaSession.roster || []).map(name => name === oldName ? newName : name);
                 ['points', 'played', 'won', 'stats'].forEach(key => renameObjectKey(retaSession[key], oldName, newName));
@@ -4960,6 +5290,12 @@
                     match.team1 = (match.team1 || []).map(name => name === oldName ? newName : name);
                     match.team2 = (match.team2 || []).map(name => name === oldName ? newName : name);
                     renameObjectKey(match.stats, oldName, newName);
+                    (match.timeline || []).forEach(entry => {
+                        if (entry.player === oldName) entry.player = newName;
+                        if (Array.isArray(entry.teams)) {
+                            entry.teams = entry.teams.map(team => Array.isArray(team) ? team.map(name => name === oldName ? newName : name) : team);
+                        }
+                    });
                 });
                 renameSavedRetaMatches(oldName, newName);
             }
@@ -5598,6 +5934,7 @@
                 pointsCap,
                 by: _retaFinishReason || 'juegos',
                 stats: aporte,
+                timeline: pointTimeline.slice(),
                 duration,
                 time: nowHM()
             });
@@ -5726,7 +6063,7 @@
         // Siguiente partido de la reta: limpia el marcador, coloca a los ganadores
         // separados y deja libres los dos lugares que hay que elegir.
         function nextRetaMatch() {
-            resetMatch();
+            resetMatch({ newMatch: true });
             prepareNextLineup();
             showRetaModal();
         }
@@ -6025,7 +6362,7 @@
             matchesBtn.classList.toggle('d-none', !showingStandings || retaSession.matches.length === 0);
             title.textContent = showingStats
                 ? '📊 Estadísticas de la reta'
-                : showingHistory ? '🕘 Historial punto a punto' : '🏆 Clasificación de la reta';
+                : showingHistory ? '🕘 Cronología de la reta' : '🏆 Clasificación de la reta';
             if (showingStats) {
                 const includeCurrent = matchStarted() && !matchOver;
                 cont.innerHTML = retaStatisticsHTML(retaSession, includeCurrent);
@@ -6148,7 +6485,10 @@
                         const performance = matchPerformanceHTML(m.stats);
                         const winnerGames = Number(m.games[m.winner - 1]) || 0;
                         const countedPoints = Number.isFinite(Number(m.pts)) ? Number(m.pts) : winnerGames;
-                        return `<div style="padding:4px 0; border-bottom:1px solid rgba(255,255,255,0.05);">P${m.n} · ${t1} vs ${t2} — ${m.games[0]}-${m.games[1]} · <span style="color:#ffc107;">${win}</span> · +${countedPoints} pts (${esc(m.duration)})${performance}</div>`;
+                        const chronology = Array.isArray(m.timeline) && m.timeline.length
+                            ? savedMatchHistoryHTML(m, false)
+                            : '<div style="margin-top:5px; color:#777;">Este partido es anterior al registro de cronología.</div>';
+                        return `<div style="padding:4px 0; border-bottom:1px solid rgba(255,255,255,0.05);">P${m.n} · ${t1} vs ${t2} — ${m.games[0]}-${m.games[1]} · <span style="color:#ffc107;">${win}</span> · +${countedPoints} pts (${esc(m.duration)})${performance}${chronology}</div>`;
                     }).join('');
                     const retaPerformance = retaStatisticsHTML(r, false);
                     const statsUid = 'rhs-' + Math.random().toString(36).substr(2, 6);
@@ -6362,7 +6702,7 @@
         function saveToStorage() {
             const prev = JSON.parse(localStorage.getItem('padel-state') || '{}');
             const data = {
-                mode, nameMode, padelFormat, setsToWin, gamesPerSet, retasGames, retasEarlyWin, retaTimeLimit, retaPointsCap, freeMaxPoints, deuceMode, trackShots, trackOutcomes, serve, servePlayers, matchOver,
+                mode, nameMode, padelFormat, setsToWin, gamesPerSet, retasGames, retasEarlyWin, retaTimeLimit, retaPointsCap, freeMaxPoints, deuceMode, trackShots, trackOutcomes, serve, servePlayers, expectedServePlayerName, matchOver,
                 // Marca absoluta de arranque: al recargar, el reloj sigue donde iba
                 timerStart, timerElapsed, timerRunning: !!timerInterval, retaTimeUp,
                 points, games, sets, setsWon, tiebreak, advantage, deuceCount,
@@ -6401,6 +6741,7 @@
                 trackOutcomes = d.trackOutcomes !== undefined ? d.trackOutcomes : true;
                 serve = d.serve || 1;
                 servePlayers = normalizeServePlayers(d.servePlayers);
+                expectedServePlayerName = typeof d.expectedServePlayerName === 'string' ? d.expectedServePlayerName : null;
                 matchOver = d.matchOver || false;
                 points = d.points || [0, 0];
                 games = d.games || [0, 0];
@@ -6493,8 +6834,28 @@
             document.getElementById('confirm-overlay').classList.add('d-none');
         }
 
-        function resetMatch() {
+        function resetMatch(options = {}) {
             document.getElementById('confirm-overlay').classList.add('d-none');
+            const wasStarted = matchStarted();
+            const preserveAudit = !options.newMatch && serveAuditEnabled() && !matchOver && !_matchSaved && (wasStarted || pointTimeline.length > 0);
+            let preservedTimeline = [];
+            if (preserveAudit) {
+                const timestamp = Date.now();
+                if (wasStarted) ensureServeAuditStarted('Registro de saque retomado');
+                closeServeTurn('Marcador reiniciado', timestamp);
+                pointTimeline.push({
+                    eventType: 'reset',
+                    time: auditTime(timestamp),
+                    timestamp,
+                    reason: options.reason || 'Reinicio manual del marcador',
+                    game: currentGameNumber(),
+                    player: servePlayerName(),
+                    playerId: activeServeSlot(),
+                    teams: [timelineTeamPlayers(1), timelineTeamPlayers(2)],
+                    score: currentTimelineScore()
+                });
+                preservedTimeline = pointTimeline;
+            }
             if (mode === 'padel') {
                 points = [0, 0]; games = [0, 0]; sets = [[], []]; setsWon = [0, 0];
                 tiebreak = false; advantage = 0; deuceCount = 0; matchOver = false;
@@ -6503,11 +6864,15 @@
             }
             playerStats = emptyPlayerStats();
             matchLog = [];
-            pointTimeline = [];
+            pointTimeline = preserveAudit ? preservedTimeline : [];
             _pendingPointAttribution = null;
             _lastShotSlot = null;
             history = []; serve = 1; servePlayers = { 1: 'a', 2: 'a' };
+            expectedServePlayerName = null;
+            _pendingServeTransition = null;
+            _pendingManualServeChange = null;
             _matchSaved = false;
+            _lastSavedMatchId = null;
             _retaFinishReason = null;
             _dupWarned = false;
             updateServeUI();
@@ -6517,6 +6882,7 @@
             resetTimer();
             render();
             updateConfigSummary();
+            saveToStorage();
         }
 
         function confirmClear() {
@@ -6536,7 +6902,11 @@
                 freePoints = [0, 0]; matchOver = false;
             }
             history = []; serve = 1; servePlayers = { 1: 'a', 2: 'a' };
+            expectedServePlayerName = null;
+            _pendingServeTransition = null;
+            _pendingManualServeChange = null;
             _matchSaved = false;
+            _lastSavedMatchId = null;
             _retaFinishReason = null;
             updateServeUI();
             document.getElementById('history-list').innerHTML = '';

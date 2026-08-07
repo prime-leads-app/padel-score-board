@@ -45,7 +45,9 @@ Formato informal popular en México. Una reta es una **jornada con varios partid
 
 **Orden de saque:** cada control tiene una sola acción. A la izquierda, las flechas circulares cambian el equipo sacador y el icono amarillo de persona cambia cuál de sus dos jugadores saca, moviendo el borde amarillo al otro nombre. A la derecha del reloj, las flechas verticales intercambian arriba/abajo a los equipos completos y las flechas horizontales intercambian izquierda/derecha a los jugadores del equipo sacador sin mover el indicador de su posición física. Al terminar cada juego, el saque pasa al equipo contrario y queda preparado el compañero del equipo anterior para su siguiente turno; la secuencia predeterminada es equipo 1 izquierda, equipo 2 izquierda, equipo 1 derecha y equipo 2 derecha. **Deshacer** también restaura el equipo y jugador que sacaban antes del punto.
 
-La ventana de clasificación de la reta separa **Clasificación**, **Historial** y **Estadísticas** en tres pestañas, en ese orden. El modal conserva la misma altura al cambiar de vista y desplaza únicamente su contenido central cuando hace falta. Historial reutiliza el detalle punto a punto del partido actual, con jugador, Error/Acierto, equipo beneficiado, tipo de golpe y marcador resultante, ordenado del evento más reciente al más antiguo. Estadísticas muestra aciertos, errores, eficiencia, balance, victorias, juegos a favor/en contra, forma reciente, golpes registrados y participantes destacados. Durante un partido, Estadísticas incluye sus eventos en curso sin contarlo todavía como terminado; al cerrar la reta conserva el mismo resumen dentro de **Retas anteriores**. La eficiencia solo utiliza eventos marcados expresamente como Error/Acierto y exige cinco eventos para aparecer como reconocimiento de mejor eficiencia.
+**Auditoría de saque:** al iniciar un partido de reta se abre un turno para el jugador marcado con el borde amarillo. La cronología guarda quién sacó, hora de inicio y fin, juego, marcador y motivo de cada cambio; el inicio del siguiente turno usa exactamente la hora de cierre del anterior. Los cambios manuales también quedan registrados. Si el jugador elegido no coincide con el siguiente esperado, la app indica a quién corresponde y cuántos turnos previos tiene la persona seleccionada, y permite cancelar o confirmar una corrección intencional. Reiniciar el marcador cierra el turno activo y agrega el reinicio a la cronología antes de llevar marcador y estadísticas a cero.
+
+La ventana de clasificación de la reta separa **Clasificación**, **Historial** y **Estadísticas** en tres pestañas, en ese orden. El modal conserva la misma altura al cambiar de vista y desplaza únicamente su contenido central cuando hace falta. Historial muestra la cronología del partido actual y de los partidos terminados: puntos, Error/Acierto, equipo beneficiado, tipo de golpe, marcador, turnos de saque y reinicios, del evento más reciente al más antiguo. Estadísticas muestra aciertos, errores, eficiencia, balance, victorias, juegos a favor/en contra, forma reciente, golpes registrados y participantes destacados. Durante un partido, Estadísticas incluye sus eventos en curso sin contarlo todavía como terminado; al cerrar la reta conserva el mismo resumen y las cronologías dentro de **Retas anteriores**. La eficiencia solo utiliza eventos marcados expresamente como Error/Acierto y exige cinco eventos para aparecer como reconocimiento de mejor eficiencia.
 
 **Rotación de la reta:** la pareja que gana se queda en la cancha pero **se separa**, uno de cada lado; los que pierden salen y entran dos de los que esperan, uno como compañero de cada ganador. Entran primero los que menos partidos llevan jugados. Con solo cuatro participantes (sin banca) se cruzan las parejas entre ellos. La app propone la rotación correcta y avisa si las parejas elegidas no la respetan.
 
@@ -75,11 +77,11 @@ Modo libre para cualquier actividad. Cada toque suma 1 punto.
 - **Estadísticas individuales:** Al tocar el nombre de un jugador, se le atribuye el punto. Luego se puede registrar el tipo de golpe (Volea, Bandeja, Globo, Smash, Remate, Otro). En Retas también se pueden clasificar los puntos como Error o Acierto y consultar el rendimiento por juego, partido y jornada
 - **Retas:** Roster de participantes, selección de parejas por partido, cronómetro con tiempo definido, tabla de clasificación individual editable e historial de retas anteriores
 - **Historial de puntos:** Registro de todos los puntos con hora, separado por modo
-- **Historial en vivo del partido:** Botón en el encabezado que muestra primero los eventos más recientes e indica quién consiguió o falló cada punto, el equipo beneficiado y el marcador resultante. También incluye los puntos rápidos anotados desde la tarjeta del equipo y respeta Deshacer
-- **Historial de partidos:** Registro de partidos terminados con fecha, resultado, duración, estadísticas individuales y detalle punto a punto con jugador y tipo de golpe
+- **Cronología en vivo del partido:** La pestaña Historial de la copa muestra primero los eventos más recientes e indica puntos, Error/Acierto, equipo beneficiado, marcador, turnos de saque con hora de inicio y fin, y reinicios. También incluye los puntos rápidos anotados desde la tarjeta del equipo y respeta Deshacer
+- **Historial de partidos:** Registro de partidos terminados con fecha, resultado, duración, estadísticas individuales y cronología de puntos y saques
 - **Tema claro/oscuro:** Toggle desde el menú para uso al aire libre
 - **Deshacer:** Permite revertir el último punto anotado
-- **Reiniciar:** Resetea solo los marcadores, mantiene nombres
+- **Reiniciar:** Resetea marcador y estadísticas, mantiene nombres y deja constancia del reinicio en la cronología de una reta iniciada
 - **Limpiar:** Resetea marcadores y nombres
 - **Persistencia:** Todo se guarda en localStorage, no se pierde al cerrar
 - **PWA:** Se puede instalar como app en el celular
@@ -108,8 +110,8 @@ Toda la app se controla desde el menú hamburguesa (icono ☰) en la parte super
 - **Ayuda opciones** - Explica qué significa cada opción de configuración
 - **Cómo jugar pádel/retas/libre** - Reglas y ejemplos de cada modo
 - **Reta** - Participantes, parejas, fecha y tiempo por partido
-- **Clasificación** - Tabla, estadísticas de rendimiento, historial punto a punto, partidos y cierre de la reta en curso
-- **Retas anteriores** - Historial de retas cerradas con tabla final, participantes y estadísticas acumuladas; permite borrar una reta o todo el archivo con confirmación
+- **Clasificación** - Tabla, estadísticas de rendimiento, cronología de puntos y saques, partidos y cierre de la reta en curso
+- **Retas anteriores** - Historial de retas cerradas con tabla final, participantes, estadísticas acumuladas y cronología por partido; permite borrar una reta o todo el archivo con confirmación
 - **Partidos** - Historial de partidos terminados, con opción de borrar uno por uno
 - **Buscar actualización** - Comprueba contra la red si hay una versión nueva publicada
 - **Historial** - Registro de puntos anotados
