@@ -35,3 +35,4 @@ metadata:
 - 2026-08-06-19-06-03-11: v5.15 agrega Historial como tercera pestaña de la clasificación y reutiliza el detalle punto a punto del partido actual.
 - 2026-08-06-19-13-16-12: v5.16 mueve el acceso superior de Historial al extremo derecho; se verificaron dos cambios de juego y Deshacer sincronizado con historial y estadísticas.
 - 2026-08-06-19-19-18-13: v5.17 equilibra la cabecera móvil en grupos de tres, conserva Historial al final y elimina traslapes con el reloj entre 320 y 430 px.
+- 2026-08-06-19-29-17-14: v5.18 elimina el acceso superior redundante de Historial y deja la copa como centro de Clasificación, Estadísticas e Historial; la cabecera conserva cinco botones sin traslapes.
