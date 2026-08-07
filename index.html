@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <!-- Sube en cada publicacion: la app la compara contra la red para saber si esta al dia -->
-    <meta name="app-version" content="5.20">
+    <meta name="app-version" content="5.21">
     <title>Padel Scoreboard</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -642,6 +642,18 @@
                 width: 46px;
                 height: 34px;
                 font-size: 0.74rem;
+            }
+            .reta-points-cap-row {
+                gap: 3px !important;
+            }
+            .reta-points-cap-row .cfg-label {
+                font-size: 0.72rem;
+            }
+            .reta-points-cap-row .cfg-sq-btn {
+                width: 31px;
+            }
+            .reta-points-cap-row .reta-num-input {
+                width: 40px;
             }
             .reta-participant-action {
                 gap: 4px;
@@ -1812,6 +1824,12 @@
             </div>
 
             <div style="margin:8px 0;">
+                <b style="color:#FFD54F;">Maximo de puntos por partido</b> (solo en Retas)<br>
+                Limita cuantos juegos ganados aporta cada ganador a la clasificacion, sin modificar el marcador real.<br>
+                <span style="opacity:0.7;">Ej: con maximo 6, un resultado 10-2 conserva ese marcador pero suma 6 pts a cada ganador. ∞ permite sumar todos los juegos ganados.</span>
+            </div>
+
+            <div style="margin:8px 0;">
                 <b style="color:#FFD54F;">Participantes y parejas</b> (solo en Retas)<br>
                 Se administran en la pantalla <b>Reta</b>: desde el menu ☰ → <b>Reta</b>, o con el boton amarillo de Configuracion.<br>
                 <b>Ver participantes</b> abre la lista donde puedes editar o quitar jugadores; antes de eliminar se solicita confirmacion. <b>Agregar</b> abre la captura de un nombre nuevo. Antes de cada partido eliges de las listas desplegables quienes forman cada equipo. La lista se guarda en el telefono para la proxima reta.<br>
@@ -1992,8 +2010,8 @@
 
             <div style="margin:8px 0;">
                 <b style="color:#FFD54F;">7. Como se suman los puntos</b><br>
-                Solo suma la <b>pareja que gana</b>, y cada uno de los dos ganadores suma los <b>juegos que gano su equipo</b>.<br>
-                <span style="opacity:0.7;">Ej: ganan 6-2 → cada ganador suma 6 pts; los perdedores no suman.</span><br>
+                Solo suma la <b>pareja que gana</b>, y cada uno de los dos ganadores suma los <b>juegos que gano su equipo</b>, hasta el maximo configurado.<br>
+                <span style="opacity:0.7;">Ej: con maximo 6, ganar 10-2 suma 6 pts a cada ganador; ganar 5-2 suma 5. Los perdedores no suman.</span><br>
                 Si el partido se definio con juegos empatados, cuentan los juegos completos (3-3 definido por puntos = 3 pts).<br>
                 En la <b>Clasificación</b> puedes corregir a mano los puntos de cualquier jugador.
             </div>
@@ -2162,7 +2180,7 @@
             </a>
             <a href="https://github.com/prime-leads-app/padel-score-board" target="_blank" rel="noopener" class="card bg-dark border-secondary text-decoration-none flex-fill" style="cursor:pointer;">
                 <div class="card-body py-0 px-2 text-center">
-                    <small class="text-white">PadelApp v<span id="app-version-label">5.20</span></small>
+                    <small class="text-white">PadelApp v<span id="app-version-label">5.21</span></small>
                 </div>
             </a>
             <div class="card bg-dark border-secondary flex-fill">
@@ -2237,6 +2255,17 @@
                         <button class="btn btn-outline-light cfg-sq-btn" onclick="setRetaTime(30)" id="rt-30">30</button>
                         <button class="btn btn-outline-light cfg-sq-btn" onclick="setRetaTime(0)" id="rt-0" title="Sin tiempo">∞</button>
                         <input type="number" class="reta-num-input" id="rt-custom" min="1" max="180" placeholder="otro" onchange="setRetaTimeCustom(this.value)">
+                    </div>
+                    <div class="reta-time-row reta-points-cap-row" style="display:flex; align-items:center; gap:8px; margin-top:8px;">
+                        <small class="cfg-label" style="margin:0; white-space:nowrap;">Máx. pts</small>
+                        <button class="btn btn-outline-light cfg-sq-btn" onclick="setRetaPointsCap(4)" id="rpc-4">4</button>
+                        <button class="btn btn-outline-light cfg-sq-btn active" onclick="setRetaPointsCap(6)" id="rpc-6">6</button>
+                        <button class="btn btn-outline-light cfg-sq-btn" onclick="setRetaPointsCap(8)" id="rpc-8">8</button>
+                        <button class="btn btn-outline-light cfg-sq-btn" onclick="setRetaPointsCap(0)" id="rpc-0" title="Sin máximo">∞</button>
+                        <input type="number" class="reta-num-input" id="rpc-custom" min="1" max="99" placeholder="otro" aria-label="Otro máximo de puntos" oninput="setRetaPointsCapCustom(this.value)">
+                    </div>
+                    <div style="margin-top:6px; font-size:0.68rem; color:#9fb3c8; line-height:1.3;">
+                        Tope de juegos ganados que suma cada ganador. El marcador real no cambia y los partidos ya terminados conservan su aporte.
                     </div>
                     <div style="margin-top:8px; font-size:0.74rem; color:#9fb3c8; display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
                         <span>📅 <span id="reta-date-label"></span> · inicio <span id="reta-time-label"></span></span>
@@ -2567,6 +2596,7 @@
         let retasGames = 6;        // 0 = sin límite de juegos (∞)
         let retasEarlyWin = false; // true = termina al tener mayoría, false = jugar todos
         let retaTimeLimit = 20;    // minutos por partido de reta; 0 = sin tiempo
+        let retaPointsCap = 6;     // maximo de juegos que suma cada ganador; 0 = sin limite
         let retaTimeUp = false;    // el tiempo del partido actual ya se agotó
         let retaActive = false;    // hay una reta (sesión) en curso
         let retaRoster = [];       // participantes de la reta
@@ -2851,6 +2881,54 @@
             updateConfigSummary();
         }
 
+        function setRetaPointsCap(value) {
+            const cap = parseInt(value, 10);
+            if (!Number.isFinite(cap) || cap < 0 || cap > 99) return;
+            retaPointsCap = cap;
+            const custom = document.getElementById('rpc-custom');
+            if (custom) custom.value = '';
+            if (retaActive && retaSession) {
+                retaSession.pointsCap = retaPointsCap;
+                saveRetaState();
+            }
+            updateRetaPointsCapButtons();
+            saveToStorage();
+        }
+
+        function setRetaPointsCapCustom(value) {
+            const cap = parseInt(value, 10);
+            if (!cap || cap < 1 || cap > 99) {
+                const custom = document.getElementById('rpc-custom');
+                if (custom) custom.value = '';
+                updateRetaPointsCapButtons();
+                return;
+            }
+            retaPointsCap = cap;
+            if (retaActive && retaSession) {
+                retaSession.pointsCap = retaPointsCap;
+                saveRetaState();
+            }
+            updateRetaPointsCapButtons();
+            saveToStorage();
+        }
+
+        function updateRetaPointsCapButtons() {
+            const presets = [4, 6, 8, 0];
+            presets.forEach(value => {
+                const button = document.getElementById('rpc-' + value);
+                if (button) button.classList.toggle('active', retaPointsCap === value);
+            });
+            const custom = document.getElementById('rpc-custom');
+            if (custom) custom.value = retaPointsCap > 0 && !presets.includes(retaPointsCap) ? retaPointsCap : '';
+            updateConfigSummary();
+        }
+
+        function retaCountedPoints(gamesWon, cap = retaPointsCap) {
+            const won = Math.max(0, Number(gamesWon) || 0);
+            const maximum = Math.max(0, Number(cap) || 0);
+            return maximum > 0 ? Math.min(won, maximum) : won;
+        }
+
         function setRetasEarlyWin(v) {
             confirmConfigChange(() => {
                 retasEarlyWin = v;
@@ -2925,7 +3003,8 @@
                 const deuceLabel = deuceModeLabel(false);
                 const gamesLabel = retasGames === 0 ? '∞' : retasGames;
                 const timeLabel = retaTimeLimit > 0 ? retaTimeLimit + ' min' : '∞';
-                txt = 'Retas · Juegos: ' + gamesLabel + ' · Tiempo: ' + timeLabel + ' · Fin: ' + (retasEarlyWin ? 'Anticipado' : 'Todos') + ' · 40-40: ' + deuceLabel;
+                const pointsCapLabel = retaPointsCap > 0 ? retaPointsCap : '∞';
+                txt = 'Retas · Juegos: ' + gamesLabel + ' · Tiempo: ' + timeLabel + ' · Máx. pts: ' + pointsCapLabel + ' · Fin: ' + (retasEarlyWin ? 'Anticipado' : 'Todos') + ' · 40-40: ' + deuceLabel;
             }
             // El resumen ya no vive en el encabezado: se lee en el panel de datos
             const resumenEl = document.getElementById('config-summary');
@@ -3761,6 +3840,7 @@
                 filas.push(['Formato', 'Retas']);
                 filas.push(['Juegos por partido', retasGames === 0 ? 'Sin límite (∞)' : retasGames]);
                 filas.push(['Tiempo por partido', retaTimeLimit > 0 ? retaTimeLimit + ' min' : 'Sin tiempo']);
+                filas.push(['Máximo que suma cada ganador', retaPointsCap > 0 ? retaPointsCap + ' pts' : 'Sin límite (∞)']);
                 filas.push(['Fin', retasEarlyWin ? 'Anticipado' : 'Todos los juegos']);
                 filas.push(['40-40', deuceLabel]);
                 if (retaActive && retaSession) {
@@ -4422,6 +4502,7 @@
             return {
                 date: todayISO(),
                 time: nowHM(),
+                pointsCap: retaPointsCap,
                 roster: [],
                 points: {},   // puntos de clasificación por jugador
                 played: {},   // partidos jugados
@@ -4732,6 +4813,7 @@
             renderRoster();
             updateOutcomeControls();
             updateRetaTimeButtons();
+            updateRetaPointsCapButtons();
             updateRetaDateLabels();
             renderMatchupHint();
             document.getElementById('reta-modal').classList.remove('d-none');
@@ -5162,6 +5244,8 @@
             if (!retaActive || !retaSession || padelFormat !== 'retas' || mode !== 'padel') return;
             const names = currentSlotNames();
             const gamesWon = games[winner - 1];
+            const pointsCap = retaSession.pointsCap !== undefined ? retaSession.pointsCap : retaPointsCap;
+            const countedPoints = retaCountedPoints(gamesWon, pointsCap);
             const winnerSlots = winner === 1 ? ['p1a', 'p1b'] : ['p2a', 'p2b'];
             RETA_SLOTS.forEach(k => ensureRetaPlayer(names[k]));
             // Aporte de este partido, guardado con el: permite deshacerlo o borrarlo
@@ -5179,7 +5263,7 @@
                 SHOT_TYPES.forEach(t => st.shots[t] += contribution.shots[t]);
             });
             winnerSlots.forEach(k => {
-                retaSession.points[names[k]] += gamesWon;
+                retaSession.points[names[k]] += countedPoints;
                 retaSession.won[names[k]]++;
             });
             retaSession.matches.push({
@@ -5189,7 +5273,8 @@
                 team2: [names.p2a, names.p2b],
                 games: [games[0], games[1]],
                 winner,
-                pts: gamesWon,
+                pts: countedPoints,
+                pointsCap,
                 by: _retaFinishReason || 'juegos',
                 stats: aporte,
                 duration,
@@ -5650,7 +5735,7 @@
                     </tr>`;
                 });
                 html += '</tbody></table>';
-                html += '<div style="font-size:0.7rem; color:#888; margin-top:6px;">PJ: partidos jugados · PG: ganados · Pts: juegos ganados como pareja ganadora (editable)</div>';
+                html += '<div style="font-size:0.7rem; color:#888; margin-top:6px;">PJ: partidos jugados · PG: ganados · Pts: juegos ganados computables como pareja ganadora (editable)</div>';
             }
             // Partidos de la reta
             if (retaSession.matches.length > 0) {
@@ -5663,6 +5748,9 @@
                     const w2 = m.winner === 2 ? 'color:#ffc107; font-weight:700;' : 'opacity:0.7;';
                     const performanceHTML = matchPerformanceHTML(m.stats);
                     const performanceId = `reta-match-stats-${m.n}-${Math.random().toString(36).slice(2, 6)}`;
+                    const winnerGames = Number(m.games[m.winner - 1]) || 0;
+                    const countedPoints = Number.isFinite(Number(m.pts)) ? Number(m.pts) : winnerGames;
+                    const capDetail = countedPoints < winnerGames ? ` · tope ${Number(m.pointsCap) || countedPoints}` : '';
                     html += `<div style="background:#2c2c54; border-radius:8px; padding:8px 10px; margin-top:6px; font-size:0.8rem;">
                         <div style="display:flex; justify-content:space-between; align-items:center; color:#aaa; font-size:0.7rem;">
                             <span>Partido ${m.n}</span>
@@ -5672,7 +5760,7 @@
                         </div>
                         <div style="${w1}">${t1} — ${m.games[0]}</div>
                         <div style="${w2}">${t2} — ${m.games[1]}</div>
-                        <div style="color:#888; font-size:0.7rem; margin-top:2px;">+${m.pts} pts a cada ganador${m.by === 'puntos' ? ' · definido por puntos' : m.by === 'tiempo' ? ' · por tiempo' : ''}</div>
+                        <div style="color:#888; font-size:0.7rem; margin-top:2px;">+${countedPoints} pts a cada ganador${capDetail}${m.by === 'puntos' ? ' · definido por puntos' : m.by === 'tiempo' ? ' · por tiempo' : ''}</div>
                         ${performanceHTML ? `<button type="button" onclick="document.getElementById('${performanceId}').classList.toggle('d-none')" style="background:none; border:0; color:#7ec8e3; padding:4px 0 0; font-size:0.72rem; font-weight:600; cursor:pointer;">▶ Ver Error/Acierto por juego</button><div id="${performanceId}" class="d-none" style="margin-top:3px;">${performanceHTML}</div>` : ''}
                     </div>`;
                 });
@@ -5737,7 +5825,9 @@
                         const t2 = `${esc(m.team2[0])}/${esc(m.team2[1])}`;
                         const win = m.winner === 1 ? t1 : t2;
                         const performance = matchPerformanceHTML(m.stats);
-                        return `<div style="padding:4px 0; border-bottom:1px solid rgba(255,255,255,0.05);">P${m.n} · ${t1} vs ${t2} — ${m.games[0]}-${m.games[1]} · <span style="color:#ffc107;">${win}</span> (${esc(m.duration)})${performance}</div>`;
+                        const winnerGames = Number(m.games[m.winner - 1]) || 0;
+                        const countedPoints = Number.isFinite(Number(m.pts)) ? Number(m.pts) : winnerGames;
+                        return `<div style="padding:4px 0; border-bottom:1px solid rgba(255,255,255,0.05);">P${m.n} · ${t1} vs ${t2} — ${m.games[0]}-${m.games[1]} · <span style="color:#ffc107;">${win}</span> · +${countedPoints} pts (${esc(m.duration)})${performance}</div>`;
                     }).join('');
                     const retaPerformance = retaStatisticsHTML(r, false);
                     const statsUid = 'rhs-' + Math.random().toString(36).substr(2, 6);
@@ -5792,6 +5882,7 @@
             }
             if (!timerInterval && !_pendingTimerResume) updateIdleTimerDisplay();
             updateRetaTimeButtons();
+            updateRetaPointsCapButtons();
             updateConfigSummary();
             updateOutcomeControls();
         }
@@ -5820,6 +5911,10 @@
                 retaSession = d.session || null;
                 if (!retaSession) retaActive = false;
                 if (retaSession) {
+                    const savedPointsCap = parseInt(retaSession.pointsCap, 10);
+                    retaSession.pointsCap = Number.isFinite(savedPointsCap) && savedPointsCap >= 0 && savedPointsCap <= 99
+                        ? savedPointsCap
+                        : retaPointsCap;
                     if (!retaSession.stats || typeof retaSession.stats !== 'object') retaSession.stats = {};
                     Object.keys(retaSession.stats).forEach(name => {
                         retaSession.stats[name] = normalizePlayerStat(retaSession.stats[name]);
@@ -5877,7 +5972,7 @@
         function saveToStorage() {
             const prev = JSON.parse(localStorage.getItem('padel-state') || '{}');
             const data = {
-                mode, nameMode, padelFormat, setsToWin, gamesPerSet, retasGames, retasEarlyWin, retaTimeLimit, freeMaxPoints, deuceMode, trackShots, trackOutcomes, serve, matchOver,
+                mode, nameMode, padelFormat, setsToWin, gamesPerSet, retasGames, retasEarlyWin, retaTimeLimit, retaPointsCap, freeMaxPoints, deuceMode, trackShots, trackOutcomes, serve, matchOver,
                 // Marca absoluta de arranque: al recargar, el reloj sigue donde iba
                 timerStart, timerElapsed, timerRunning: !!timerInterval, retaTimeUp,
                 points, games, sets, setsWon, tiebreak, advantage, deuceCount,
@@ -5906,6 +6001,9 @@
                 retasGames = d.retasGames !== undefined ? d.retasGames : 6;
                 retasEarlyWin = d.retasEarlyWin || false;
                 retaTimeLimit = d.retaTimeLimit !== undefined ? d.retaTimeLimit : 20;
+                const savedPointsCap = parseInt(d.retaPointsCap, 10);
+                retaPointsCap = Number.isFinite(savedPointsCap) && savedPointsCap >= 0 && savedPointsCap <= 99 ? savedPointsCap : 6;
+                if (retaActive && retaSession) retaPointsCap = retaSession.pointsCap;
                 freeMaxPoints = d.freeMaxPoints || 30;
                 const savedDeuceMode = d.deuceMode === 'advantage' ? '2adv' : d.deuceMode;
                 deuceMode = ['golden', '1adv', '2adv', 'star'].includes(savedDeuceMode) ? savedDeuceMode : 'golden';
@@ -5972,6 +6070,7 @@
                 document.getElementById('rg-8').classList.toggle('active', retasGames === 8);
                 document.getElementById('rg-inf').classList.toggle('active', retasGames === 0);
                 updateRetaTimeButtons();
+                updateRetaPointsCapButtons();
                 document.getElementById('rew-all').classList.toggle('active', !retasEarlyWin);
                 document.getElementById('rew-early').classList.toggle('active', retasEarlyWin);
                 document.getElementById('deuce-golden').classList.toggle('active', deuceMode === 'golden');

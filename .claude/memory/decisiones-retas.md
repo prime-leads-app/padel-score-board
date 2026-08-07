@@ -56,3 +56,11 @@ formato Normal.
 
 ## 2026-08-06-18-05-46-09
 Se conserva Oro, 1 Ventaja y 2 Ventajas, y se agrega Star como cuarta modalidad independiente. Los cuatro botones deben permanecer siempre en una sola fila. Star permite dos ventajas como maximo y, si regresan a 40-40 despues de la segunda, el siguiente punto decide el juego.
+
+## 2026-08-06 · Tope configurable de puntos por partido
+Cada ganador suma a la clasificacion `minimo(juegos ganados, tope configurado)`. El tope
+predeterminado es **6**, acepta 4, 6, 8, un valor personalizado o ∞ para conservar el conteo sin
+limite. El marcador y las estadisticas guardan el resultado real; cada partido conserva aparte el
+aporte computable para que Deshacer sea exacto. Cambiar el tope no recalcula partidos ya cerrados.
+**Por que:** los partidos cronometrados pueden producir marcadores muy distintos y el tope evita que
+un solo resultado desequilibre la clasificacion de toda la reta.

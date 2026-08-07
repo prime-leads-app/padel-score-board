@@ -39,3 +39,4 @@ metadata:
 - 2026-08-06-19-32-26-15: Se registra que actualizar la aplicación después de publicar un cambio se da por entendido y no debe proponerse como siguiente paso ni requerir confirmación.
 - 2026-08-06-19-40-39-16: v5.19 fija la altura del modal de Clasificación, Estadísticas e Historial durante una reta; el contenido central desplaza internamente y el estado sin reta sigue compacto.
 - 2026-08-06-19-44-52-17: v5.20 restablece el orden acordado de las pestañas del resumen: Clasificación, Historial y Estadísticas; conserva la altura estable del modal.
+- 2026-08-06-20-09-02-18: v5.21 agrega Máx. pts configurable en Retas, predeterminado 6; limita solo el aporte a clasificación, conserva marcador real y persiste el aporte para Deshacer. Verificado 6-0 con tope 4 y reversión a cero.
