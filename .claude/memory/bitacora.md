@@ -33,3 +33,4 @@ metadata:
 - 2026-08-06-18-05-46-09: v5.13 agrega Star Point como cuarta regla de 40-40, conserva las otras tres y mantiene los cuatro botones en una fila.
 - 2026-08-06-18-33-36-10: v5.14 agrega Estadísticas a la clasificación, incluye el partido en curso sin duplicarlo y conserva el resumen en Retas anteriores.
 - 2026-08-06-19-06-03-11: v5.15 agrega Historial como tercera pestaña de la clasificación y reutiliza el detalle punto a punto del partido actual.
+- 2026-08-06-19-13-16-12: v5.16 mueve el acceso superior de Historial al extremo derecho; se verificaron dos cambios de juego y Deshacer sincronizado con historial y estadísticas.
