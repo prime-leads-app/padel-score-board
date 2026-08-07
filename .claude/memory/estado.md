@@ -10,4 +10,4 @@ metadata:
   modified: 2026-07-31T13:35:51.259Z
 ---
 
-Ahora: v5.13 incorpora Star Point como cuarta modalidad independiente y mantiene los cuatro botones de 40-40 en una sola fila. Proximo paso: Validar la secuencia completa en el dispositivo usado durante la reta.
+Ahora: v5.27 permite borrar una reta archivada o todo el archivo con confirmación; limpia clasificación, estadísticas y sólo los partidos vinculados por matchId, protegiendo registros antiguos y la reta activa. Próximo paso: la unidad cierra aquí.

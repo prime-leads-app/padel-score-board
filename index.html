@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <!-- Sube en cada publicacion: la app la compara contra la red para saber si esta al dia -->
-    <meta name="app-version" content="5.26">
+    <meta name="app-version" content="5.27">
     <title>Padel Scoreboard</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -2051,7 +2051,7 @@
                 <b style="color:#FFD54F;">Menu ☰</b><br>
                 <b>Reta:</b> participantes, parejas, fecha y tiempo por partido.<br>
                 <b>Clasificacion:</b> tabla, estadisticas de rendimiento, historial punto a punto y partidos de la reta en curso.<br>
-                <b>Retas anteriores:</b> jornadas cerradas con su clasificacion y estadisticas finales.<br>
+                <b>Retas anteriores:</b> jornadas cerradas con su clasificacion y estadisticas finales; permite borrar una reta o todo el archivo con confirmacion.<br>
                 <b>Partidos:</b> historial de partidos, con opcion de borrar uno por uno.<br>
                 <b>Historial:</b> registro de puntos del partido actual.<br>
                 <b>Buscar actualizacion:</b> revisa si hay una version nueva publicada y la instala.
@@ -2172,7 +2172,8 @@
             <div style="margin:8px 0;">
                 <b style="color:#FFD54F;">11. Cerrar la reta</b><br>
                 Con <b>Cerrar reta</b>, desde la clasificacion o desde la pantalla Reta: se guarda la tabla final, los participantes, la fecha y todos los partidos en <b>Retas anteriores</b>, y queda lista una reta nueva.<br>
-                <span style="opacity:0.7;">Pide confirmacion porque no se puede deshacer.</span>
+                Desde <b>Retas anteriores</b> puedes borrar una jornada individual o todas. Siempre pide confirmacion y también limpia sus partidos vinculados del historial general, sin afectar la reta en curso.<br>
+                <span style="opacity:0.7;">Estas acciones no se pueden deshacer.</span>
             </div>
 
         </div>
@@ -2312,7 +2313,7 @@
             </a>
             <a href="https://github.com/prime-leads-app/padel-score-board" target="_blank" rel="noopener" class="card bg-dark border-secondary text-decoration-none flex-fill" style="cursor:pointer;">
                 <div class="card-body py-0 px-2 text-center">
-                    <small class="text-white">PadelApp v<span id="app-version-label">5.26</span></small>
+                    <small class="text-white">PadelApp v<span id="app-version-label">5.27</span></small>
                 </div>
             </a>
             <div class="card bg-dark border-secondary flex-fill">
@@ -2662,10 +2663,22 @@
     <div class="winner-overlay d-none" id="confirm-clear-retas-overlay">
         <div class="winner-card" style="background: linear-gradient(135deg, #c0392b, #2c3e50);">
             <h4 class="mb-3">Borrar todas las retas?</h4>
-            <p class="mb-4" style="opacity:0.8;">Se elimina el historial de retas guardadas.</p>
+            <p class="mb-4" style="opacity:0.8;">Se eliminarán las retas guardadas, sus clasificaciones, estadísticas y sus partidos vinculados del historial general. La reta en curso y los demás partidos no se modificarán.</p>
             <div class="d-flex gap-3 justify-content-center">
                 <button class="btn btn-outline-light btn-lg" onclick="cancelClearRetas()">Cancelar</button>
-                <button class="btn btn-danger btn-lg" onclick="clearRetas(); cancelClearRetas();">Borrar</button>
+                <button class="btn btn-danger btn-lg" onclick="clearRetas()">Borrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirm Delete Archived Reta Overlay -->
+    <div class="winner-overlay d-none" id="confirm-delete-archived-reta-overlay">
+        <div class="winner-card" style="background: linear-gradient(135deg, #c0392b, #2c3e50); max-width:380px;">
+            <h4 class="mb-3">Borrar esta reta?</h4>
+            <div class="mb-4" style="opacity:0.9; font-size:0.85rem; text-align:left;" id="delete-archived-reta-text"></div>
+            <div class="d-flex gap-3 justify-content-center">
+                <button class="btn btn-outline-light btn-lg" onclick="cancelDeleteArchivedReta()">Cancelar</button>
+                <button class="btn btn-danger btn-lg" onclick="deleteArchivedReta()">Borrar</button>
             </div>
         </div>
     </div>
@@ -6019,7 +6032,7 @@
             if (all.length === 0) {
                 list.innerHTML = '<div style="opacity:0.5; text-align:center; padding:16px;">No hay retas guardadas</div>';
             } else {
-                list.innerHTML = all.map(r => {
+                list.innerHTML = all.map((r, retaIndex) => {
                     const standings = (r.standings || []).map((s, i) => {
                         const medal = s.points > 0 && i < 3 ? ['🥇', '🥈', '🥉'][i] : (i + 1) + '.';
                         return `<div style="padding:1px 0;">${medal} ${esc(s.name)} — <strong>${s.points} pts</strong> <span style="color:#888;">(${s.won}/${s.played})</span></div>`;
@@ -6037,9 +6050,12 @@
                     const retaPerformance = retaStatisticsHTML(r, false);
                     const statsUid = 'rhs-' + Math.random().toString(36).substr(2, 6);
                     return `<div style="background:#2c2c54; border-radius:8px; padding:8px 10px; margin-bottom:6px; font-size:0.8rem;">
-                        <div style="display:flex; justify-content:space-between; color:#aaa; font-size:0.7rem;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; color:#aaa; font-size:0.7rem;">
                             <span>${esc(fmtRetaDate(r.date))} · inicio ${esc(r.time)}</span>
-                            <span>${(r.matches || []).length} partidos</span>
+                            <span style="display:flex; align-items:center; gap:7px; white-space:nowrap;">
+                                ${(r.matches || []).length} ${(r.matches || []).length === 1 ? 'partido' : 'partidos'}
+                                <button type="button" onclick="confirmDeleteArchivedReta(${retaIndex})" aria-label="Borrar esta reta" title="Borrar esta reta" style="background:none; border:1px solid rgba(233,69,96,0.65); color:#ff8a9b; border-radius:6px; padding:2px 7px; cursor:pointer; font-size:0.75rem; line-height:1.2;"><i class="bi bi-trash"></i></button>
+                            </span>
                         </div>
                         <div style="margin-top:4px; color:#bbb; font-size:0.72rem;">Participantes: ${(r.roster || []).map(esc).join(', ')}</div>
                         <div style="margin-top:6px;">${standings}</div>
@@ -6066,9 +6082,73 @@
             document.getElementById('confirm-clear-retas-overlay').classList.add('d-none');
         }
 
+        // Borra del historial general únicamente los partidos enlazados por id.
+        // Los registros antiguos sin id se dejan intactos para evitar falsos positivos.
+        function removeArchivedRetaMatchesFromHistory(retas) {
+            const matchIds = new Set();
+            (retas || []).forEach(reta => {
+                (reta.matches || []).forEach(match => {
+                    if (match.matchId) matchIds.add(match.matchId);
+                });
+            });
+            if (!matchIds.size) return 0;
+            try {
+                const savedMatches = JSON.parse(localStorage.getItem('padel-matches') || '[]');
+                const remainingMatches = savedMatches.filter(match => !matchIds.has(match.id));
+                const removedCount = savedMatches.length - remainingMatches.length;
+                if (removedCount > 0) {
+                    if (remainingMatches.length) localStorage.setItem('padel-matches', JSON.stringify(remainingMatches));
+                    else localStorage.removeItem('padel-matches');
+                }
+                return removedCount;
+            } catch(e) {
+                return 0;
+            }
+        }
+
+        let _pendingArchivedRetaDeleteIndex = null;
+
+        function confirmDeleteArchivedReta(index) {
+            const all = JSON.parse(localStorage.getItem('padel-retas') || '[]');
+            const reta = all[index];
+            if (!reta) return;
+            _pendingArchivedRetaDeleteIndex = index;
+            const matches = reta.matches || [];
+            const linkedMatches = matches.filter(match => match.matchId).length;
+            document.getElementById('delete-archived-reta-text').innerHTML =
+                `<div><b>${esc(fmtRetaDate(reta.date))}</b> · inicio ${esc(reta.time)}</div>` +
+                `<div style="margin-top:6px;">Se eliminarán su clasificación, estadísticas y <b>${matches.length}</b> ${matches.length === 1 ? 'partido guardado' : 'partidos guardados'}.</div>` +
+                (linkedMatches > 0
+                    ? `<div style="margin-top:8px; color:#ffe082;">${linkedMatches === 1 ? 'El partido vinculado también desaparecerá' : `Los ${linkedMatches} partidos vinculados también desaparecerán`} del historial general.</div>`
+                    : '<div style="margin-top:8px; color:#ffe082;">Este registro no tiene partidos vinculados de forma segura; no se borrarán otros partidos del historial general.</div>') +
+                '<div style="margin-top:8px; opacity:0.85;">La reta en curso no se modificará. Esta acción no se puede deshacer.</div>';
+            document.getElementById('confirm-delete-archived-reta-overlay').classList.remove('d-none');
+        }
+
+        function cancelDeleteArchivedReta() {
+            _pendingArchivedRetaDeleteIndex = null;
+            document.getElementById('confirm-delete-archived-reta-overlay').classList.add('d-none');
+        }
+
+        function deleteArchivedReta() {
+            const index = _pendingArchivedRetaDeleteIndex;
+            cancelDeleteArchivedReta();
+            if (!Number.isInteger(index)) return;
+            const all = JSON.parse(localStorage.getItem('padel-retas') || '[]');
+            const removed = all.splice(index, 1);
+            if (!removed.length) return;
+            removeArchivedRetaMatchesFromHistory(removed);
+            if (all.length) localStorage.setItem('padel-retas', JSON.stringify(all));
+            else localStorage.removeItem('padel-retas');
+            showRetasHistoryModal();
+        }
+
         function clearRetas() {
+            const all = JSON.parse(localStorage.getItem('padel-retas') || '[]');
+            removeArchivedRetaMatchesFromHistory(all);
             localStorage.removeItem('padel-retas');
             document.getElementById('retas-history-list').innerHTML = '<div style="opacity:0.5; text-align:center; padding:16px;">No hay retas guardadas</div>';
+            cancelClearRetas();
         }
 
         // ── UI y persistencia de la reta ──

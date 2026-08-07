@@ -53,7 +53,7 @@ La ventana de clasificación de la reta separa **Clasificación**, **Historial**
 
 **Borrar un partido:** cada partido de la clasificación tiene un botón de papelera. Al borrarlo (con confirmación) se descuentan sus puntos, partidos jugados, ganados y estadísticas de golpes de todos los involucrados, y el partido también desaparece del historial de Partidos. Cada partido guarda su propio aporte, así que se puede borrar cualquiera, no solo el último.
 
-**Cerrar la reta:** guarda la tabla final, participantes, fecha, hora de inicio y todos los partidos en **Retas anteriores**.
+**Cerrar la reta:** guarda la tabla final, participantes, fecha, hora de inicio y todos los partidos en **Retas anteriores**. Cada reta anterior se puede borrar de forma individual, siempre con confirmación; al hacerlo también se eliminan su clasificación, estadísticas y únicamente los partidos vinculados a esa reta en el historial general. Los registros antiguos sin una relación segura no provocan el borrado de otros partidos. **Borrar todo** aplica la misma limpieza a todas las retas archivadas sin afectar la reta en curso.
 
 ### Libre
 
@@ -107,7 +107,7 @@ Toda la app se controla desde el menú hamburguesa (icono ☰) en la parte super
 - **Cómo jugar pádel/retas/libre** - Reglas y ejemplos de cada modo
 - **Reta** - Participantes, parejas, fecha y tiempo por partido
 - **Clasificación** - Tabla, estadísticas de rendimiento, historial punto a punto, partidos y cierre de la reta en curso
-- **Retas anteriores** - Historial de retas cerradas con tabla final, participantes y estadísticas acumuladas
+- **Retas anteriores** - Historial de retas cerradas con tabla final, participantes y estadísticas acumuladas; permite borrar una reta o todo el archivo con confirmación
 - **Partidos** - Historial de partidos terminados, con opción de borrar uno por uno
 - **Buscar actualización** - Comprueba contra la red si hay una versión nueva publicada
 - **Historial** - Registro de puntos anotados
