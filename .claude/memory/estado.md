@@ -4,10 +4,10 @@ description: Estado volatil de la sesion; se REEMPLAZA cada cierre
 metadata: 
   node_type: memory
   type: project
-  updated: 2026-08-06
+  updated: 2026-08-07
   review_by: 2026-08-31
   originSessionId: 3f0c74ee-036b-4a00-a437-ba79ac59d1c9
   modified: 2026-07-31T13:35:51.259Z
 ---
 
-Ahora: v5.33 ordena los controles izquierdos como menú, equipo, posiciones y jugador sacador, validado a 320 y 390 px. Próximo paso: la unidad cierra aquí.
+Ahora: v5.34 coloca Participantes después del menú y Posiciones a la derecha del reloj, validado a 320 y 390 px. Próximo paso: la unidad cierra aquí.

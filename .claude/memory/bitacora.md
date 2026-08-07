@@ -4,7 +4,7 @@ description: "Historico append-only, una linea corta por unidad de trabajo cerra
 metadata: 
   node_type: memory
   type: reference
-  updated: 2026-08-06
+  updated: 2026-08-07
   originSessionId: 3f0c74ee-036b-4a00-a437-ba79ac59d1c9
   modified: 2026-07-31T13:36:22.612Z
 ---
@@ -52,3 +52,4 @@ metadata:
 - 2026-08-06-23-28-24-28: v5.31 separa equipo sacador, jugador sacador y posiciones en tres botones; elimina del encabezado el cambio de lado y valida el borde amarillo.
 - 2026-08-06-23-43-21-29: v5.32 restaura en el encabezado el botón para cambiar equipos de lado con su marcador, estadísticas y saque, conservando los tres controles independientes.
 - 2026-08-06-23-57-22-30: v5.33 coloca el botón amarillo de jugador sacador en la cuarta posición del encabezado, después del control de posiciones.
+- 2026-08-07-00-03-08-01: v5.34 mueve Participantes junto al menú y traslada el intercambio de posiciones al grupo derecho, conservando ambos comportamientos.

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <!-- Sube en cada publicacion: la app la compara contra la red para saber si esta al dia -->
-    <meta name="app-version" content="5.33">
+    <meta name="app-version" content="5.34">
     <title>Padel Scoreboard</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1813,14 +1813,14 @@
                     <div onclick="toggleHamburger(); checkForUpdate(true)" style="padding:10px 14px; cursor:pointer; display:flex; justify-content:space-between; align-items:center;">Buscar actualización <span>🔄</span></div>
                 </div>
             </div>
+            <button class="btn btn-outline-light btn-sm header-icon-btn d-none" onclick="showLineupModal()" id="btn-lineup" title="Cambiar los integrantes de los equipos" aria-label="Cambiar los integrantes de los equipos"><i class="bi bi-people"></i></button>
             <button class="btn btn-outline-info btn-sm header-icon-btn" id="btn-serve" onclick="toggleServe()" title="Cambiar el equipo sacador" aria-label="Cambiar el equipo sacador"><i class="bi bi-arrow-repeat"></i></button>
-            <button class="btn btn-outline-light btn-sm header-icon-btn" id="btn-player-position-header" onclick="swapServingTeamPlayers()" title="Intercambiar posiciones de los jugadores del equipo sacador" aria-label="Intercambiar posiciones de los jugadores del equipo sacador"><i class="bi bi-shuffle"></i></button>
             <button class="btn btn-outline-warning btn-sm header-icon-btn" id="btn-serve-player-header" onclick="toggleServePlayer()" title="Cambiar el jugador sacador del equipo" aria-label="Cambiar el jugador sacador del equipo"><i class="bi bi-person-check-fill"></i></button>
             <!-- Espaciador: separa las acciones izquierdas de las acciones del partido -->
             <div style="flex:1; min-width:0;"></div>
             <!-- El reloj se ancla al centro de la pantalla, no al hueco entre botones -->
             <span id="match-timer" class="timer-card">00:00</span>
-            <button class="btn btn-outline-light btn-sm header-icon-btn d-none" onclick="showLineupModal()" id="btn-lineup" title="Cambiar los integrantes de los equipos"><i class="bi bi-people"></i></button>
+            <button class="btn btn-outline-light btn-sm header-icon-btn" id="btn-player-position-header" onclick="swapServingTeamPlayers()" title="Intercambiar posiciones de los jugadores del equipo sacador" aria-label="Intercambiar posiciones de los jugadores del equipo sacador"><i class="bi bi-shuffle"></i></button>
             <button class="btn btn-outline-light btn-sm header-icon-btn" onclick="swapTeams()" id="btn-swap-header" title="Los equipos cambian de lado" aria-label="Cambiar los equipos de lado"><i class="bi bi-arrow-left-right"></i></button>
             <button class="btn btn-outline-light btn-sm header-icon-btn d-none" onclick="showRetaStandings()" id="btn-standings-header" title="Resumen de la reta: clasificación, estadísticas e historial" aria-label="Abrir resumen de la reta"><i class="bi bi-trophy"></i></button>
         </div>
@@ -2058,11 +2058,11 @@
                 <b style="color:#FFD54F;">Botones del encabezado</b><br>
                 <b>☰</b> Menu.<br>
                 <b>ⓘ Datos del partido</b> está dentro del menú: formato, juegos, tiempo, 40-40 y partidos jugados de la reta.<br>
+                <b>👥</b> Jugadores del partido: cambia los integrantes de cada equipo sin salir del marcador <span style="opacity:0.7;">(solo en Retas)</span>.<br>
                 <b><i class="bi bi-arrow-repeat"></i></b> Cambia el equipo sacador.<br>
-                <b><i class="bi bi-shuffle"></i></b> Intercambia izquierda/derecha a los jugadores del equipo sacador; el borde amarillo permanece en la posición de saque.<br>
                 <b><i class="bi bi-person-check-fill"></i></b> Cambia cuál de los dos jugadores del equipo está sacando; el borde amarillo pasa al otro nombre.<br>
                 <b>Reloj (al centro):</b> en Retas va en cuenta regresiva y se pone rojo en los ultimos 2 minutos. En los demas modos cuenta hacia arriba.<br>
-                <b>👥</b> Jugadores del partido: cambia los integrantes de cada equipo sin salir del marcador <span style="opacity:0.7;">(solo en Retas)</span>.<br>
+                <b><i class="bi bi-shuffle"></i></b> Intercambia izquierda/derecha a los jugadores del equipo sacador; el borde amarillo permanece en la posición de saque.<br>
                 <b>⇄</b> Cambia los equipos de lado: los del rojo pasan al azul y viceversa, con su marcador, estadisticas y saque <span style="opacity:0.7;">(solo en Retas)</span>.<br>
                 <b>🏆</b> Resumen de la reta con Clasificacion, Historial punto a punto y Estadisticas <span style="opacity:0.7;">(solo en Retas)</span>.
             </div>
@@ -2342,7 +2342,7 @@
             </a>
             <a href="https://github.com/prime-leads-app/padel-score-board" target="_blank" rel="noopener" class="card bg-dark border-secondary text-decoration-none flex-fill" style="cursor:pointer;">
                 <div class="card-body py-0 px-2 text-center">
-                    <small class="text-white">PadelApp v<span id="app-version-label">5.33</span></small>
+                    <small class="text-white">PadelApp v<span id="app-version-label">5.34</span></small>
                 </div>
             </a>
             <div class="card bg-dark border-secondary flex-fill">
