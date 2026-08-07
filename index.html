@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <!-- Sube en cada publicacion: la app la compara contra la red para saber si esta al dia -->
-    <meta name="app-version" content="5.21">
+    <meta name="app-version" content="5.22">
     <title>Padel Scoreboard</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -536,6 +536,92 @@
             border-radius: 16px;
             background: linear-gradient(135deg, #2c3e50, #1a1a2e);
         }
+        .reta-setting-shortcuts {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px;
+        }
+        .reta-setting-shortcut {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            grid-template-areas:
+                "label arrow"
+                "value arrow";
+            align-items: center;
+            min-width: 0;
+            min-height: 52px;
+            padding: 7px 10px;
+            color: #fff;
+            text-align: left;
+            border: 1px solid rgba(126,200,227,0.42);
+            border-radius: 9px;
+            background: rgba(14,30,53,0.42);
+        }
+        .reta-setting-shortcut:hover,
+        .reta-setting-shortcut:focus-visible {
+            border-color: #7ec8e3;
+            background: rgba(126,200,227,0.12);
+            outline: none;
+        }
+        .reta-setting-shortcut-label {
+            grid-area: label;
+            overflow: hidden;
+            color: #7ec8e3;
+            font-size: 0.66rem;
+            font-weight: 800;
+            line-height: 1.1;
+            letter-spacing: 0.08em;
+            text-overflow: ellipsis;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+        .reta-setting-shortcut-value {
+            grid-area: value;
+            overflow: hidden;
+            margin-top: 3px;
+            color: #FFD54F;
+            font-size: 0.9rem;
+            line-height: 1.1;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .reta-setting-shortcut i {
+            grid-area: arrow;
+            margin-left: 7px;
+            color: #9fb3c8;
+            font-size: 0.8rem;
+        }
+        .winner-card.reta-setting-modal-card {
+            max-width: 360px;
+        }
+        .reta-setting-modal-copy {
+            margin: 0 0 12px;
+            color: #9fb3c8;
+            font-size: 0.76rem;
+            line-height: 1.4;
+        }
+        .reta-setting-options {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr)) minmax(52px, 1.25fr);
+            gap: 6px;
+            width: 100%;
+        }
+        .reta-setting-options .cfg-sq-btn {
+            width: 100% !important;
+            height: 42px !important;
+            aspect-ratio: auto;
+            padding: 0 !important;
+            font-size: 0.9rem !important;
+        }
+        .reta-setting-options .reta-num-input {
+            width: 100%;
+            height: 42px;
+            min-width: 0;
+            font-size: 0.78rem;
+        }
+        #confirm-config-overlay {
+            z-index: 1200;
+        }
         #reta-add-player-modal .reta-submodal-card {
             max-width: 360px;
         }
@@ -622,6 +708,19 @@
             background: #fff;
             color: #1a1a1a;
         }
+        .light-theme .reta-setting-shortcut {
+            color: #1a1a1a;
+            border-color: #b9d7e4;
+            background: #f4f8fa;
+        }
+        .light-theme .reta-setting-shortcut:hover,
+        .light-theme .reta-setting-shortcut:focus-visible {
+            border-color: #0d47a1;
+            background: #eaf4f8;
+        }
+        .light-theme .reta-setting-shortcut-label { color: #0d47a1; }
+        .light-theme .reta-setting-shortcut-value { color: #8a6200; }
+        .light-theme .reta-setting-modal-copy { color: #566573; }
         .light-theme .reta-roster-item {
             background: #f5f7fa;
             border-color: #d6dce3;
@@ -631,30 +730,10 @@
             color: #0d47a1;
         }
         @media (max-width: 350px) {
-            .reta-time-row {
-                gap: 4px !important;
-            }
-            .reta-time-row .cfg-sq-btn {
-                width: 34px;
-                height: 34px;
-            }
-            .reta-time-row .reta-num-input {
-                width: 46px;
-                height: 34px;
-                font-size: 0.74rem;
-            }
-            .reta-points-cap-row {
-                gap: 3px !important;
-            }
-            .reta-points-cap-row .cfg-label {
-                font-size: 0.72rem;
-            }
-            .reta-points-cap-row .cfg-sq-btn {
-                width: 31px;
-            }
-            .reta-points-cap-row .reta-num-input {
-                width: 40px;
-            }
+            .reta-setting-shortcuts { gap: 6px; }
+            .reta-setting-shortcut { padding: 7px 8px; }
+            .reta-setting-shortcut-label { font-size: 0.61rem; }
+            .reta-setting-shortcut-value { font-size: 0.84rem; }
             .reta-participant-action {
                 gap: 4px;
                 padding: 4px !important;
@@ -2180,7 +2259,7 @@
             </a>
             <a href="https://github.com/prime-leads-app/padel-score-board" target="_blank" rel="noopener" class="card bg-dark border-secondary text-decoration-none flex-fill" style="cursor:pointer;">
                 <div class="card-body py-0 px-2 text-center">
-                    <small class="text-white">PadelApp v<span id="app-version-label">5.21</span></small>
+                    <small class="text-white">PadelApp v<span id="app-version-label">5.22</span></small>
                 </div>
             </a>
             <div class="card bg-dark border-secondary flex-fill">
@@ -2245,27 +2324,20 @@
                 <h5 style="margin:0; font-weight:700;">🏆 Reta</h5>
                 <button class="btn btn-sm" onclick="closeRetaModal()" style="padding:0 8px; background:#e94560; color:#fff; font-weight:700; border-radius:4px;">✕</button>
             </div>
-            <div style="overflow-y:auto; flex:1; margin-top:10px;">
-                <!-- 1. Jornada: en una linea; la fecha solo se edita si hace falta -->
+            <div id="reta-modal-scroll" style="overflow-y:auto; flex:1; margin-top:10px;">
+                <!-- 1. Jornada: resumen compacto; cada ajuste abre su selector -->
                 <div class="reta-section" style="padding:10px 12px;">
-                    <div class="reta-time-row" style="display:flex; align-items:center; gap:8px;">
-                        <small class="cfg-label" style="margin:0; white-space:nowrap;">Tiempo</small>
-                        <button class="btn btn-outline-light cfg-sq-btn" onclick="setRetaTime(15)" id="rt-15">15</button>
-                        <button class="btn btn-outline-light cfg-sq-btn active" onclick="setRetaTime(20)" id="rt-20">20</button>
-                        <button class="btn btn-outline-light cfg-sq-btn" onclick="setRetaTime(30)" id="rt-30">30</button>
-                        <button class="btn btn-outline-light cfg-sq-btn" onclick="setRetaTime(0)" id="rt-0" title="Sin tiempo">∞</button>
-                        <input type="number" class="reta-num-input" id="rt-custom" min="1" max="180" placeholder="otro" onchange="setRetaTimeCustom(this.value)">
-                    </div>
-                    <div class="reta-time-row reta-points-cap-row" style="display:flex; align-items:center; gap:8px; margin-top:8px;">
-                        <small class="cfg-label" style="margin:0; white-space:nowrap;">Máx. pts</small>
-                        <button class="btn btn-outline-light cfg-sq-btn" onclick="setRetaPointsCap(4)" id="rpc-4">4</button>
-                        <button class="btn btn-outline-light cfg-sq-btn active" onclick="setRetaPointsCap(6)" id="rpc-6">6</button>
-                        <button class="btn btn-outline-light cfg-sq-btn" onclick="setRetaPointsCap(8)" id="rpc-8">8</button>
-                        <button class="btn btn-outline-light cfg-sq-btn" onclick="setRetaPointsCap(0)" id="rpc-0" title="Sin máximo">∞</button>
-                        <input type="number" class="reta-num-input" id="rpc-custom" min="1" max="99" placeholder="otro" aria-label="Otro máximo de puntos" oninput="setRetaPointsCapCustom(this.value)">
-                    </div>
-                    <div style="margin-top:6px; font-size:0.68rem; color:#9fb3c8; line-height:1.3;">
-                        Tope de juegos ganados que suma cada ganador. El marcador real no cambia y los partidos ya terminados conservan su aporte.
+                    <div class="reta-setting-shortcuts">
+                        <button type="button" class="reta-setting-shortcut" onclick="showRetaTimeSettingsModal()" aria-haspopup="dialog">
+                            <span class="reta-setting-shortcut-label">Tiempo</span>
+                            <strong class="reta-setting-shortcut-value" id="reta-time-value">20 min</strong>
+                            <i class="bi bi-chevron-right" aria-hidden="true"></i>
+                        </button>
+                        <button type="button" class="reta-setting-shortcut" onclick="showRetaPointsCapSettingsModal()" aria-haspopup="dialog">
+                            <span class="reta-setting-shortcut-label">Máx. pts</span>
+                            <strong class="reta-setting-shortcut-value" id="reta-points-cap-value">6 pts</strong>
+                            <i class="bi bi-chevron-right" aria-hidden="true"></i>
+                        </button>
                     </div>
                     <div style="margin-top:8px; font-size:0.74rem; color:#9fb3c8; display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
                         <span>📅 <span id="reta-date-label"></span> · inicio <span id="reta-time-label"></span></span>
@@ -2313,6 +2385,44 @@
                 <button class="btn btn-outline-danger btn-sm" id="btn-close-reta-footer" onclick="confirmCloseReta()">Cerrar reta</button>
                 <button class="btn btn-outline-light btn-sm" onclick="closeRetaModal()">Listo</button>
             </div>
+        </div>
+    </div>
+
+    <!-- Tiempo del partido: selector compacto encima de la configuración de Reta -->
+    <div class="winner-overlay d-none reta-submodal" id="reta-time-settings-modal" onclick="if(event.target===this)closeRetaTimeSettingsModal()">
+        <div class="winner-card reta-submodal-card reta-setting-modal-card" role="dialog" aria-modal="true" aria-labelledby="reta-time-settings-title">
+            <div class="reta-submodal-header">
+                <h5 id="reta-time-settings-title">Tiempo del partido</h5>
+                <button type="button" class="btn btn-sm reta-modal-close" onclick="closeRetaTimeSettingsModal()" aria-label="Cerrar">✕</button>
+            </div>
+            <p class="reta-setting-modal-copy">Al llegar a cero, el partido termina automáticamente si hay ventaja en juegos. Si están empatados, se concluye el juego en curso.</p>
+            <div class="reta-setting-options" role="group" aria-label="Tiempo del partido">
+                <button type="button" class="btn btn-outline-light cfg-sq-btn" onclick="setRetaTime(15)" id="rt-15">15</button>
+                <button type="button" class="btn btn-outline-light cfg-sq-btn active" onclick="setRetaTime(20)" id="rt-20">20</button>
+                <button type="button" class="btn btn-outline-light cfg-sq-btn" onclick="setRetaTime(30)" id="rt-30">30</button>
+                <button type="button" class="btn btn-outline-light cfg-sq-btn" onclick="setRetaTime(0)" id="rt-0" title="Sin tiempo" aria-label="Sin tiempo">∞</button>
+                <input type="number" class="reta-num-input" id="rt-custom" min="1" max="180" placeholder="otro" aria-label="Otro tiempo en minutos" onchange="setRetaTimeCustom(this.value)">
+            </div>
+            <button type="button" class="btn btn-outline-light btn-sm w-100" style="margin-top:14px;" onclick="closeRetaTimeSettingsModal()">Listo</button>
+        </div>
+    </div>
+
+    <!-- Puntos de clasificación: limita el aporte sin cambiar el marcador real -->
+    <div class="winner-overlay d-none reta-submodal" id="reta-points-cap-settings-modal" onclick="if(event.target===this)closeRetaPointsCapSettingsModal()">
+        <div class="winner-card reta-submodal-card reta-setting-modal-card" role="dialog" aria-modal="true" aria-labelledby="reta-points-cap-settings-title">
+            <div class="reta-submodal-header">
+                <h5 id="reta-points-cap-settings-title">Máximo de puntos</h5>
+                <button type="button" class="btn btn-sm reta-modal-close" onclick="closeRetaPointsCapSettingsModal()" aria-label="Cerrar">✕</button>
+            </div>
+            <p class="reta-setting-modal-copy">Limita lo que suma cada ganador a la clasificación. El marcador real no cambia y los partidos cerrados conservan su aporte.</p>
+            <div class="reta-setting-options" role="group" aria-label="Máximo de puntos para la clasificación">
+                <button type="button" class="btn btn-outline-light cfg-sq-btn" onclick="setRetaPointsCap(4)" id="rpc-4">4</button>
+                <button type="button" class="btn btn-outline-light cfg-sq-btn active" onclick="setRetaPointsCap(6)" id="rpc-6">6</button>
+                <button type="button" class="btn btn-outline-light cfg-sq-btn" onclick="setRetaPointsCap(8)" id="rpc-8">8</button>
+                <button type="button" class="btn btn-outline-light cfg-sq-btn" onclick="setRetaPointsCap(0)" id="rpc-0" title="Sin máximo" aria-label="Sin máximo">∞</button>
+                <input type="number" class="reta-num-input" id="rpc-custom" min="1" max="99" placeholder="otro" aria-label="Otro máximo de puntos" oninput="setRetaPointsCapCustom(this.value)">
+            </div>
+            <button type="button" class="btn btn-outline-light btn-sm w-100" style="margin-top:14px;" onclick="closeRetaPointsCapSettingsModal()">Listo</button>
         </div>
     </div>
 
@@ -2875,10 +2985,19 @@
                 if (b) b.classList.toggle('active', retaTimeLimit === v);
             });
             const custom = document.getElementById('rt-custom');
-            if (custom && retaTimeLimit > 0 && !presets.includes(retaTimeLimit)) {
-                custom.value = retaTimeLimit;
-            }
+            if (custom) custom.value = retaTimeLimit > 0 && !presets.includes(retaTimeLimit) ? retaTimeLimit : '';
+            const valueLabel = document.getElementById('reta-time-value');
+            if (valueLabel) valueLabel.textContent = retaTimeLimit > 0 ? retaTimeLimit + ' min' : 'Sin tiempo';
             updateConfigSummary();
+        }
+
+        function showRetaTimeSettingsModal() {
+            updateRetaTimeButtons();
+            document.getElementById('reta-time-settings-modal').classList.remove('d-none');
+        }
+
+        function closeRetaTimeSettingsModal() {
+            document.getElementById('reta-time-settings-modal').classList.add('d-none');
         }
 
         function setRetaPointsCap(value) {
@@ -2920,7 +3039,18 @@
             });
             const custom = document.getElementById('rpc-custom');
             if (custom) custom.value = retaPointsCap > 0 && !presets.includes(retaPointsCap) ? retaPointsCap : '';
+            const valueLabel = document.getElementById('reta-points-cap-value');
+            if (valueLabel) valueLabel.textContent = retaPointsCap > 0 ? retaPointsCap + ' pts' : 'Sin límite';
             updateConfigSummary();
+        }
+
+        function showRetaPointsCapSettingsModal() {
+            updateRetaPointsCapButtons();
+            document.getElementById('reta-points-cap-settings-modal').classList.remove('d-none');
+        }
+
+        function closeRetaPointsCapSettingsModal() {
+            document.getElementById('reta-points-cap-settings-modal').classList.add('d-none');
         }
 
         function retaCountedPoints(gamesWon, cap = retaPointsCap) {
@@ -4816,10 +4946,15 @@
             updateRetaPointsCapButtons();
             updateRetaDateLabels();
             renderMatchupHint();
-            document.getElementById('reta-modal').classList.remove('d-none');
+            const retaModal = document.getElementById('reta-modal');
+            retaModal.classList.remove('d-none');
+            retaModal.scrollTop = 0;
+            document.getElementById('reta-modal-scroll').scrollTop = 0;
         }
 
         function closeRetaModal() {
+            closeRetaTimeSettingsModal();
+            closeRetaPointsCapSettingsModal();
             closeRetaParticipantsModal();
             closeAddRetaPlayerModal();
             cancelRemoveRosterPlayer();

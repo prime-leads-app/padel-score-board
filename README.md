@@ -23,7 +23,7 @@ Formato informal popular en México. Una reta es una **jornada con varios partid
 **Cada partido:**
 
 - **Juegos:** 4, 6, 8 o **∞** (sin tope; define el tiempo o el botón Fin partido)
-- **Tiempo por partido:** 15, 20, 30 min, el valor que escribas, o ∞ para jugar sin reloj. El cronómetro va en cuenta regresiva y suena una alarma al llegar a cero
+- **Tiempo por partido:** el botón **Tiempo** muestra el valor actual y abre las opciones 15, 20, 30 min, el valor que escribas, o ∞ para jugar sin reloj. El cronómetro va en cuenta regresiva y suena una alarma al llegar a cero
 - **Puntos:** Igual que pádel oficial (0 → 15 → 30 → 40)
 - **Desempate:** Si empatan (ej: 3-3 en reta de 6), se juega un juego extra
 - **Fin del partido:**
@@ -125,8 +125,8 @@ Las opciones generales se abren desde el menú hamburguesa > Configuración; las
 | Sets | 1, 2, 3 | Sets para ganar (solo Normal) |
 | Juegos | 6, 4 | Juegos por set (solo Normal) |
 | Juegos | 4, 6, 8, ∞ | Juegos por partido, ∞ = sin tope (solo Retas) |
-| Tiempo | 15, 20, 30, otro, ∞ | Minutos por partido, ∞ = sin reloj (solo Retas) |
-| Máx. pts | 4, 6, 8, otro, ∞ | Máximo de juegos ganados que suma cada ganador a la clasificación; predeterminado 6 (solo Retas) |
+| Tiempo | 15, 20, 30, otro, ∞ | El botón compacto abre el selector de minutos; ∞ = sin reloj (solo Retas) |
+| Máx. pts | 4, 6, 8, otro, ∞ | El botón compacto abre el máximo de juegos ganados que suma cada ganador; predeterminado 6 (solo Retas) |
 | Fin | Todos / Anticipado | Jugar todos los juegos o terminar con mayoría (solo Retas) |
 | Participantes | Ver participantes / Agregar | Consulta, edita, elimina o agrega jugadores desde la pantalla Reta |
 | Puntos | 5, 10, 15, 20, 25, 30 | Puntos para ganar (solo Libre) |
