@@ -1,0 +1,14 @@
+# UNA sola convencion de fin de linea para todo el repo: LF.
+#
+# Sin esta regla, tres herramientas escriben el mismo archivo con tres convenciones distintas: git
+# lo saca en CRLF al hacer checkout (por el core.autocrlf del instalador de Git for Windows), los
+# editores y Claude Code lo guardan en LF, y PowerShell le anexa CRLF. El resultado son archivos
+# con los saltos MEZCLADOS dentro del mismo archivo, que es lo que rompe los recuentos por linea.
+#
+# Medido el 2026-08-07 sobre los 15 archivos versionados: 3 estaban en CRLF o mezclados en
+# disco, contra un indice que ya estaba limpio en LF.
+*        text=auto eol=lf
+
+# `text=auto` y no `text` a secas: es deliberado. `text` fuerza el tratamiento como texto y
+# atropella la deteccion de binarios de git, que es lo unico que protege a un archivo de extension
+# inocente con bytes NUL dentro.
