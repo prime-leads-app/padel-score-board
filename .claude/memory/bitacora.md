@@ -51,3 +51,4 @@ metadata:
 - 2026-08-06-23-17-06-27: v5.30 mueve Saque al encabezado, agrega un control separado para posiciones y elimina el gesto triple; Datos del partido pasa al menú.
 - 2026-08-06-23-28-24-28: v5.31 separa equipo sacador, jugador sacador y posiciones en tres botones; elimina del encabezado el cambio de lado y valida el borde amarillo.
 - 2026-08-06-23-43-21-29: v5.32 restaura en el encabezado el botón para cambiar equipos de lado con su marcador, estadísticas y saque, conservando los tres controles independientes.
+- 2026-08-06-23-57-22-30: v5.33 coloca el botón amarillo de jugador sacador en la cuarta posición del encabezado, después del control de posiciones.

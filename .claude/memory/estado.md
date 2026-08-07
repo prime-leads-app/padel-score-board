@@ -10,4 +10,4 @@ metadata:
   modified: 2026-07-31T13:35:51.259Z
 ---
 
-Ahora: v5.32 restaura el cambio de lado completo y mantiene en una fila los ocho controles, validado a 320 y 390 px. Próximo paso: la unidad cierra aquí.
+Ahora: v5.33 ordena los controles izquierdos como menú, equipo, posiciones y jugador sacador, validado a 320 y 390 px. Próximo paso: la unidad cierra aquí.
