@@ -132,7 +132,7 @@ Las opciones generales se abren desde el menú hamburguesa > Configuración; las
 | Participantes | Ver participantes / Agregar | Consulta, edita, elimina o agrega jugadores desde la pantalla Reta |
 | Puntos | 5, 10, 15, 20, 25, 30 | Puntos para ganar (solo Libre) |
 | 40-40 | Oro / 1 Ventaja / 2 Ventajas / Star | Qué pasa en empate a 40. Star permite hasta dos ventajas y, si regresan a iguales después de la segunda, activa un punto decisivo |
-| Error/Acierto | Registrar Error/Acierto / Sólo sumar puntos | Se configura en la pantalla Reta y divide la tarjeta de cada jugador para registrar quién cometió el Error o consiguió el Acierto |
+| Error/Acierto | Registrar Errores/Aciertos / Sólo sumar puntos | Se configura en la pantalla Reta y divide la tarjeta de cada jugador para registrar quién cometió el Error o consiguió el Acierto |
 
 ## Instalar en el celular
 
