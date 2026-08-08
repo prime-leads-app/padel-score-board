@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <!-- Sube en cada publicacion: la app la compara contra la red para saber si esta al dia -->
-    <meta name="app-version" content="5.39">
+    <meta name="app-version" content="5.40">
     <title>Padel Scoreboard</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -429,36 +429,32 @@
             padding: 8px 6px;
         }
         .config-options-grid .config-span-all { grid-column: 1 / -1; }
-        .config-setting-shortcuts {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 8px;
-            margin-bottom: 8px;
+        .config-reta-overview {
+            padding: 14px;
+            border: 1px solid rgba(126,200,227,0.42);
+            border-radius: 10px;
+            background: rgba(14,30,53,0.38);
         }
-        .config-setting-shortcut {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 8px;
-            min-height: 48px;
-            padding: 8px 10px;
-            border: 1px solid rgba(126,200,227,0.45);
-            border-radius: 8px;
-            background: rgba(20,45,70,0.36);
+        .config-reta-overview-date {
             color: #fff;
-            text-align: left;
-        }
-        .config-setting-shortcut span:first-child {
-            color: #7ec8e3;
-            font-size: 0.72rem;
+            font-size: 1rem;
             font-weight: 700;
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
+            line-height: 1.25;
         }
-        .config-setting-shortcut strong {
+        .config-reta-overview-line {
+            margin-top: 6px;
+            color: #aebdca;
+            font-size: 0.8rem;
+            line-height: 1.35;
+        }
+        .config-reta-overview-line strong {
             color: #ffd54f;
-            font-size: 0.9rem;
-            white-space: nowrap;
+            font-weight: 700;
+        }
+        .config-reta-overview-action {
+            min-height: 44px;
+            margin-top: 12px;
+            font-weight: 700 !important;
         }
         .config-toggle-stack {
             display: grid;
@@ -483,13 +479,6 @@
             gap: 10px;
         }
         .config-name-team-block { min-width: 0; }
-        .config-reta-status {
-            margin-top: 8px;
-            color: #aeb8c2;
-            font-size: 0.78rem;
-            line-height: 1.35;
-            text-align: center;
-        }
         .light-theme .config-profile-tabs {
             border-color: #9fc6d6;
             background: #edf3f7;
@@ -501,14 +490,13 @@
         }
         .light-theme .config-section { background: rgba(0,0,0,0.045); }
         .light-theme .config-section-title { color: #0d47a1; }
-        .light-theme .config-setting-shortcut {
+        .light-theme .config-reta-overview {
             border-color: #a9c9d6;
             background: #f4f8fa;
-            color: #1f2d3a;
         }
-        .light-theme .config-setting-shortcut span:first-child { color: #0d47a1; }
-        .light-theme .config-setting-shortcut strong { color: #9a6400; }
-        .light-theme .config-reta-status { color: #5f6f7c; }
+        .light-theme .config-reta-overview-date { color: #1f2d3a; }
+        .light-theme .config-reta-overview-line { color: #5f6f7c; }
+        .light-theme .config-reta-overview-line strong { color: #8a6200; }
 
         .config-row-wrap {
             display: grid;
@@ -725,6 +713,48 @@
         .lineup-participant-actions {
             margin-bottom: 10px;
         }
+        .lineup-reta-overview {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            min-height: 50px;
+            margin-bottom: 10px;
+            padding: 8px 10px;
+            border: 1px solid rgba(126,200,227,0.42);
+            border-radius: 9px;
+            background: rgba(14,30,53,0.42);
+            color: #fff;
+            text-align: left;
+        }
+        .lineup-reta-overview:hover,
+        .lineup-reta-overview:focus-visible {
+            border-color: #7ec8e3;
+            background: rgba(126,200,227,0.12);
+            outline: none;
+        }
+        .lineup-reta-overview-main,
+        .lineup-reta-overview-detail {
+            display: block;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .lineup-reta-overview-main {
+            color: #ffd54f;
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+        .lineup-reta-overview-detail {
+            margin-top: 3px;
+            color: #aebdca;
+            font-size: 0.68rem;
+        }
+        .lineup-reta-overview i {
+            color: #7ec8e3;
+            font-size: 1rem;
+        }
         .reta-participant-label-short {
             display: none;
         }
@@ -845,6 +875,21 @@
             min-width: 0;
             font-size: 0.78rem;
         }
+        .reta-setting-choice-grid {
+            display: grid;
+            gap: 6px;
+            width: 100%;
+        }
+        .reta-setting-choice-grid.cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .reta-setting-choice-grid.cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+        .reta-setting-choice-grid .btn {
+            min-width: 0;
+            min-height: 42px;
+            padding: 5px 3px !important;
+            font-size: clamp(0.66rem, 2.8vw, 0.82rem) !important;
+            line-height: 1.15;
+            white-space: nowrap;
+        }
         .reta-date-setting-fields {
             display: grid;
             grid-template-columns: minmax(0, 1.35fr) minmax(0, 0.85fr);
@@ -958,6 +1003,19 @@
         .light-theme .reta-setting-shortcut-label { color: #0d47a1; }
         .light-theme .reta-setting-shortcut-value { color: #8a6200; }
         .light-theme .reta-setting-shortcut-meta { color: #607d8b; }
+        .light-theme .lineup-reta-overview {
+            border-color: #b9d7e4;
+            background: #f4f8fa;
+            color: #1a1a1a;
+        }
+        .light-theme .lineup-reta-overview:hover,
+        .light-theme .lineup-reta-overview:focus-visible {
+            border-color: #0d47a1;
+            background: #eaf4f8;
+        }
+        .light-theme .lineup-reta-overview-main { color: #8a6200; }
+        .light-theme .lineup-reta-overview-detail { color: #607d8b; }
+        .light-theme .lineup-reta-overview i { color: #0d47a1; }
         .light-theme .reta-setting-modal-copy { color: #566573; }
         .light-theme .reta-roster-item {
             background: #f5f7fa;
@@ -2109,41 +2167,13 @@
 
             <div class="config-profile-panel" id="config-retas" role="tabpanel" aria-labelledby="profile-retas">
                 <div class="config-section">
-                    <div class="config-section-title">Reglas del partido</div>
-                    <div class="config-setting-shortcuts">
-                        <button type="button" class="config-setting-shortcut" onclick="showRetaTimeSettingsModal()" aria-haspopup="dialog">
-                            <span>Tiempo</span><strong id="config-reta-time-value">20 min</strong>
-                        </button>
-                        <button type="button" class="config-setting-shortcut" onclick="showRetaPointsCapSettingsModal()" aria-haspopup="dialog">
-                            <span>Máx. pts</span><strong id="config-reta-points-cap-value">6 pts</strong>
-                        </button>
-                    </div>
-                    <div class="config-options-grid">
-                        <div class="cfg-card cfg-card-tight">
-                            <small class="cfg-label">Juegos</small>
-                            <div style="display:flex; gap:4px;">
-                                <button class="btn btn-outline-light cfg-sq-btn" onclick="setRetasGames(4)" id="rg-4">4</button>
-                                <button class="btn btn-outline-light cfg-sq-btn active" onclick="setRetasGames(6)" id="rg-6">6</button>
-                                <button class="btn btn-outline-light cfg-sq-btn" onclick="setRetasGames(8)" id="rg-8">8</button>
-                                <button class="btn btn-outline-light cfg-sq-btn" onclick="setRetasGames(0)" id="rg-inf">∞</button>
-                            </div>
-                        </div>
-                        <div class="cfg-card">
-                            <small class="cfg-label">Fin</small>
-                            <div class="btn-group btn-group-sm">
-                                <button class="btn btn-outline-light py-1 px-2 active" onclick="setRetasEarlyWin(false)" id="rew-all">Todos</button>
-                                <button class="btn btn-outline-light py-1 px-2" onclick="setRetasEarlyWin(true)" id="rew-early">Anticipado</button>
-                            </div>
-                        </div>
-                        <div class="cfg-card cfg-card-tight config-span-all">
-                            <small class="cfg-label">Empate 40-40</small>
-                            <div class="btn-group btn-group-sm deuce-mode-group" id="retas-deuce-mode-group">
-                                <button class="btn btn-outline-light py-1 px-2 active" onclick="setDeuceMode('golden')" data-deuce-mode="golden">Oro</button>
-                                <button class="btn btn-outline-light py-1 px-2" onclick="setDeuceMode('1adv')" data-deuce-mode="1adv">1 Vent.</button>
-                                <button class="btn btn-outline-light py-1 px-2" onclick="setDeuceMode('2adv')" data-deuce-mode="2adv">2 Vent.</button>
-                                <button class="btn btn-outline-light py-1 px-2" onclick="setDeuceMode('star')" data-deuce-mode="star">Star</button>
-                            </div>
-                        </div>
+                    <div class="config-section-title">Reta actual</div>
+                    <div class="config-reta-overview">
+                        <div class="config-reta-overview-date" id="config-reta-overview-date">Reta sin iniciar</div>
+                        <div class="config-reta-overview-line" id="config-reta-overview-rules">20 min · 6 juegos · máx. 6 pts</div>
+                        <div class="config-reta-overview-line" id="config-reta-overview-registration">Oro · Todos · Errores/Aciertos + golpes</div>
+                        <div class="config-reta-overview-line" id="config-reta-overview-status">0 participantes · sin iniciar</div>
+                        <button type="button" class="btn btn-warning w-100 config-reta-overview-action" onclick="showRetaModal()">Configurar reta</button>
                     </div>
                 </div>
             </div>
@@ -2171,10 +2201,6 @@
                     <div class="config-toggle-row" id="config-name-mode" role="group" aria-label="Registrar por jugadores o equipos">
                         <button class="btn btn-outline-light name-btn active" onclick="setNameMode('players')" id="btn-players">Por jugadores</button>
                         <button class="btn btn-outline-light name-btn" onclick="setNameMode('teams')" id="btn-teams">Por equipos</button>
-                    </div>
-                    <div class="config-toggle-row d-none" id="config-outcome-detail" role="group" aria-label="Registro de errores y aciertos">
-                        <button class="btn btn-outline-light mode-btn active" onclick="setTrackOutcomes(true)" id="btn-config-outcomes-on">Registrar Errores/Aciertos</button>
-                        <button class="btn btn-outline-light mode-btn" onclick="setTrackOutcomes(false)" id="btn-config-outcomes-off">Sólo sumar puntos</button>
                     </div>
                     <div class="config-toggle-row" role="group" id="global-shot-detail-config" aria-label="Detalle de golpes">
                         <button class="btn btn-outline-light mode-btn active" onclick="setTrackShots(true)" id="btn-shots-on">Con detalle de golpes</button>
@@ -2213,12 +2239,6 @@
                 </div>
             </div>
 
-            <!-- La gestión de participantes y parejas continúa en la pantalla Reta. -->
-            <div id="reta-config-shortcut" class="config-section d-none">
-                <div class="config-section-title">Reta actual</div>
-                <button class="btn btn-warning w-100" onclick="showRetaModal()" style="font-weight:700; padding:11px;">Participantes y parejas</button>
-                <div id="reta-status-mini" class="config-reta-status"></div>
-            </div>
         </div>
         </div>
 
@@ -2231,7 +2251,7 @@
                 <b>Pádel normal:</b> Partido con puntos de pádel, juegos y sets.<br>
                 <b>Pádel retas:</b> Jornada con varios partidos y parejas que rotan; los puntos se acumulan por jugador en una tabla de clasificación.<br>
                 <b>Libre:</b> Marcador simple en el que cada toque suma un punto.<br>
-                Cada modalidad conserva por separado sus nombres, forma de registro, detalle de golpes y reglas compartidas, por lo que puedes cambiar de pestaña sin volver a configurarla.
+                Cada modalidad conserva por separado sus nombres, forma de registro, detalle de golpes y reglas compartidas. La pestaña <b>Pádel retas</b> muestra un resumen; <b>Configurar reta</b> abre el único editor de sus reglas, participantes y parejas.
             </div>
 
             <div style="margin:8px 0;">
@@ -2255,7 +2275,7 @@
 
             <div style="margin:8px 0;">
                 <b style="color:#FFD54F;">Participantes y parejas</b> (solo en Retas)<br>
-                Se administran en la pantalla <b>Reta</b>: desde el menu ☰ → <b>Reta</b>, o con el boton amarillo de Configuracion.<br>
+                Se administran en la pantalla <b>Reta</b>: desde el menu ☰ → <b>Reta</b>, con <b>Configurar reta</b> en Configuración o desde Jugadores del partido.<br>
                 <b>Ver participantes</b> abre la lista donde puedes editar o quitar jugadores; antes de eliminar se solicita confirmacion. <b>Agregar</b> abre la captura de un nombre nuevo. Antes de cada partido eliges de las listas desplegables quienes forman cada equipo. La lista se guarda en el telefono para la proxima reta.<br>
                 <span style="opacity:0.7;">Si eliges a alguien que ya estaba en el otro equipo, los dos se intercambian: nadie queda repetido.</span>
             </div>
@@ -2312,10 +2332,10 @@
 
             <div style="margin:8px 0;">
                 <b style="color:#FFD54F;">Registro de Error/Acierto</b> (solo en Retas)<br>
-                Se activa o desactiva desde la pestaña <b>Pádel retas</b> de Configuración o desde la pantalla <b>Reta</b>.<br>
+                Se activa o desactiva desde la pantalla <b>Reta</b>.<br>
                 <b>Registrar Errores/Aciertos:</b> La tarjeta de cada jugador se divide en <b>Error</b> a la izquierda y <b>Acierto</b> a la derecha. Error da el punto al equipo contrario; Acierto lo da al equipo del jugador. Ambos quedan en sus estadísticas por juego, partido y reta.<br>
                 <b>Sólo sumar puntos:</b> La tarjeta vuelve a funcionar como antes y atribuye el punto al jugador sin clasificarlo como Error o Acierto.<br>
-                <b>Con detalle de golpes:</b> Después de Error o Acierto solicita el tipo de golpe y lo incluye en el historial y las estadísticas. <b>Sin detalle de golpes:</b> conserva únicamente Error/Acierto. Esta opción sólo aparece en modo Jugadores y se sincroniza con Configuración.<br>
+                <b>Con detalle de golpes:</b> Después de Error o Acierto solicita el tipo de golpe y lo incluye en el historial y las estadísticas. <b>Sin detalle de golpes:</b> conserva únicamente Error/Acierto. En Retas se configura en la misma pantalla Reta.<br>
                 <span style="opacity:0.7;">La zona grande del equipo siempre permite sumar un punto rápido sin atribuirlo. Deshacer revierte también Error/Acierto y el detalle de golpe.</span>
             </div>
 
@@ -2607,7 +2627,7 @@
             </a>
             <a href="https://github.com/prime-leads-app/padel-score-board" target="_blank" rel="noopener" class="card bg-dark border-secondary text-decoration-none flex-fill" style="cursor:pointer;">
                 <div class="card-body py-0 px-2 text-center">
-                    <small class="text-white">PadelApp v<span id="app-version-label">5.39</span></small>
+                    <small class="text-white">PadelApp v<span id="app-version-label">5.40</span></small>
                 </div>
             </a>
             <div class="card bg-dark border-secondary flex-fill">
@@ -2688,6 +2708,18 @@
                         <button type="button" class="reta-setting-shortcut" onclick="showRetaPointsCapSettingsModal()" aria-haspopup="dialog">
                             <span class="reta-setting-shortcut-label">Máx. pts</span>
                             <strong class="reta-setting-shortcut-value" id="reta-points-cap-value">6 pts</strong>
+                        </button>
+                        <button type="button" class="reta-setting-shortcut" onclick="showRetaGamesSettingsModal()" aria-haspopup="dialog">
+                            <span class="reta-setting-shortcut-label">Juegos</span>
+                            <strong class="reta-setting-shortcut-value" id="reta-games-value">6</strong>
+                        </button>
+                        <button type="button" class="reta-setting-shortcut" onclick="showRetaFinishSettingsModal()" aria-haspopup="dialog">
+                            <span class="reta-setting-shortcut-label">Fin</span>
+                            <strong class="reta-setting-shortcut-value" id="reta-finish-value">Todos</strong>
+                        </button>
+                        <button type="button" class="reta-setting-shortcut" onclick="showRetaDeuceSettingsModal()" aria-haspopup="dialog">
+                            <span class="reta-setting-shortcut-label">Empate 40-40</span>
+                            <strong class="reta-setting-shortcut-value" id="reta-deuce-value">Oro</strong>
                         </button>
                     </div>
                 </div>
@@ -2793,6 +2825,56 @@
         </div>
     </div>
 
+    <!-- Reglas restantes del partido: un solo editor dentro de la pantalla Reta -->
+    <div class="winner-overlay d-none reta-submodal" id="reta-games-settings-modal" onclick="if(event.target===this)closeRetaGamesSettingsModal()">
+        <div class="winner-card reta-submodal-card reta-setting-modal-card" role="dialog" aria-modal="true" aria-labelledby="reta-games-settings-title">
+            <div class="reta-submodal-header">
+                <h5 id="reta-games-settings-title">Juegos del partido</h5>
+                <button type="button" class="btn btn-sm reta-modal-close" onclick="closeRetaGamesSettingsModal()" aria-label="Cerrar">✕</button>
+            </div>
+            <p class="reta-setting-modal-copy">Define el límite de juegos del partido. Con ∞, el tiempo o el botón Fin determinan cuándo termina.</p>
+            <div class="reta-setting-choice-grid cols-4" role="group" aria-label="Juegos del partido">
+                <button type="button" class="btn btn-outline-light" onclick="setRetasGames(4)" id="rg-4">4</button>
+                <button type="button" class="btn btn-outline-light active" onclick="setRetasGames(6)" id="rg-6">6</button>
+                <button type="button" class="btn btn-outline-light" onclick="setRetasGames(8)" id="rg-8">8</button>
+                <button type="button" class="btn btn-outline-light" onclick="setRetasGames(0)" id="rg-inf" aria-label="Sin límite de juegos">∞</button>
+            </div>
+            <button type="button" class="btn btn-outline-light btn-sm w-100" style="margin-top:14px;" onclick="closeRetaGamesSettingsModal()">Listo</button>
+        </div>
+    </div>
+
+    <div class="winner-overlay d-none reta-submodal" id="reta-finish-settings-modal" onclick="if(event.target===this)closeRetaFinishSettingsModal()">
+        <div class="winner-card reta-submodal-card reta-setting-modal-card" role="dialog" aria-modal="true" aria-labelledby="reta-finish-settings-title">
+            <div class="reta-submodal-header">
+                <h5 id="reta-finish-settings-title">Fin del partido</h5>
+                <button type="button" class="btn btn-sm reta-modal-close" onclick="closeRetaFinishSettingsModal()" aria-label="Cerrar">✕</button>
+            </div>
+            <p class="reta-setting-modal-copy">Todos juega el límite completo. Anticipado termina cuando un equipo ya no puede ser alcanzado.</p>
+            <div class="reta-setting-choice-grid cols-2" role="group" aria-label="Fin del partido">
+                <button type="button" class="btn btn-outline-light active" onclick="setRetasEarlyWin(false)" id="rew-all">Todos</button>
+                <button type="button" class="btn btn-outline-light" onclick="setRetasEarlyWin(true)" id="rew-early">Anticipado</button>
+            </div>
+            <button type="button" class="btn btn-outline-light btn-sm w-100" style="margin-top:14px;" onclick="closeRetaFinishSettingsModal()">Listo</button>
+        </div>
+    </div>
+
+    <div class="winner-overlay d-none reta-submodal" id="reta-deuce-settings-modal" onclick="if(event.target===this)closeRetaDeuceSettingsModal()">
+        <div class="winner-card reta-submodal-card reta-setting-modal-card" role="dialog" aria-modal="true" aria-labelledby="reta-deuce-settings-title">
+            <div class="reta-submodal-header">
+                <h5 id="reta-deuce-settings-title">Empate 40-40</h5>
+                <button type="button" class="btn btn-sm reta-modal-close" onclick="closeRetaDeuceSettingsModal()" aria-label="Cerrar">✕</button>
+            </div>
+            <p class="reta-setting-modal-copy">Selecciona cómo se define el juego cuando ambos equipos llegan a 40.</p>
+            <div class="reta-setting-choice-grid cols-4" role="group" aria-label="Regla de empate a 40">
+                <button type="button" class="btn btn-outline-light active" onclick="setDeuceMode('golden')" data-deuce-mode="golden">Oro</button>
+                <button type="button" class="btn btn-outline-light" onclick="setDeuceMode('1adv')" data-deuce-mode="1adv">1 Vent.</button>
+                <button type="button" class="btn btn-outline-light" onclick="setDeuceMode('2adv')" data-deuce-mode="2adv">2 Vent.</button>
+                <button type="button" class="btn btn-outline-light" onclick="setDeuceMode('star')" data-deuce-mode="star">Star</button>
+            </div>
+            <button type="button" class="btn btn-outline-light btn-sm w-100" style="margin-top:14px;" onclick="closeRetaDeuceSettingsModal()">Listo</button>
+        </div>
+    </div>
+
     <!-- Lista de participantes: se abre encima del modal de la reta -->
     <div class="winner-overlay d-none reta-submodal" id="reta-participants-modal" onclick="if(event.target===this)closeRetaParticipantsModal()">
         <div class="winner-card reta-submodal-card">
@@ -2864,6 +2946,13 @@
                 <h5 style="margin:0; font-weight:700;">Jugadores del partido</h5>
                 <button class="btn btn-sm" onclick="closeLineupModal()" style="padding:0 8px; background:#e94560; color:#fff; font-weight:700; border-radius:4px;">✕</button>
             </div>
+            <button type="button" class="lineup-reta-overview" onclick="openRetaFromLineup()" aria-label="Ver y modificar la configuración de la reta">
+                <span>
+                    <span class="lineup-reta-overview-main" id="lineup-reta-overview-main">20 min · 6 juegos · Oro</span>
+                    <span class="lineup-reta-overview-detail" id="lineup-reta-overview-detail">Máx. 6 pts · Errores/Aciertos + golpes</span>
+                </span>
+                <i class="bi bi-chevron-right" aria-hidden="true"></i>
+            </button>
             <div class="reta-participant-actions lineup-participant-actions" role="group" aria-label="Administrar participantes de la reta">
                 <button type="button" class="btn btn-outline-info reta-participant-action" onclick="showRetaParticipantsModal()">
                     <i class="bi bi-people-fill" aria-hidden="true"></i>
@@ -3354,6 +3443,41 @@
             };
         }
 
+        function updateRetaSettingSummaries() {
+            const gamesLabel = retasGames === 0 ? '∞ juegos' : `${retasGames} juegos`;
+            const timeLabel = retaTimeLimit > 0 ? `${retaTimeLimit} min` : 'Sin tiempo';
+            const pointsCapLabel = retaPointsCap > 0 ? `Máx. ${retaPointsCap} pts` : 'Máx. sin límite';
+            const finishLabel = retasEarlyWin ? 'Anticipado' : 'Todos';
+            const deuceLabel = deuceModeLabel(false);
+            const outcomeLabel = trackOutcomes ? 'Errores/Aciertos' : 'Sólo sumar puntos';
+            const shotsLabel = trackShots ? 'con golpes' : 'sin golpes';
+            const dateInput = document.getElementById('reta-date');
+            const startInput = document.getElementById('reta-time');
+            const date = retaSession && retaSession.date ? retaSession.date : (dateInput && dateInput.value ? dateInput.value : todayISO());
+            const start = retaSession && retaSession.time ? retaSession.time : (startInput && startInput.value ? startInput.value : nowHM());
+            const matchesCount = retaSession && Array.isArray(retaSession.matches) ? retaSession.matches.length : 0;
+            const rosterCount = retaSession && Array.isArray(retaSession.roster) ? retaSession.roster.length : retaRoster.length;
+            const matchesLabel = `${matchesCount} ${matchesCount === 1 ? 'partido jugado' : 'partidos jugados'}`;
+
+            const values = {
+                'reta-games-value': retasGames === 0 ? '∞' : String(retasGames),
+                'reta-finish-value': finishLabel,
+                'reta-deuce-value': deuceLabel,
+                'config-reta-overview-date': `${retaActive ? 'Reta activa' : 'Próxima reta'} · ${fmtRetaDate(date)} · inicio ${start}`,
+                'config-reta-overview-rules': `${timeLabel} · ${gamesLabel} · ${pointsCapLabel.toLowerCase()}`,
+                'config-reta-overview-registration': `${deuceLabel} · ${finishLabel} · ${outcomeLabel} · ${shotsLabel}`,
+                'config-reta-overview-status': retaActive ? `${matchesLabel} · ${rosterCount} participantes` : `${rosterCount} participantes · sin iniciar`,
+                'lineup-reta-overview-main': `${timeLabel} · ${gamesLabel} · ${deuceLabel}`,
+                'lineup-reta-overview-detail': `${pointsCapLabel} · ${outcomeLabel} · ${shotsLabel}`
+            };
+            Object.entries(values).forEach(([id, value]) => {
+                const element = document.getElementById(id);
+                if (element) element.textContent = value;
+            });
+            const lineupSummary = document.querySelector('.lineup-reta-overview');
+            if (lineupSummary) lineupSummary.setAttribute('aria-label', `Configurar reta: ${values['lineup-reta-overview-main']}; ${values['lineup-reta-overview-detail']}`);
+        }
+
         function updateDeuceModeControls() {
             ['golden', '1adv', '2adv', 'star'].forEach(value => {
                 const normalButton = document.getElementById('deuce-' + value);
@@ -3362,6 +3486,7 @@
             document.querySelectorAll('[data-deuce-mode]').forEach(button => {
                 button.classList.toggle('active', button.dataset.deuceMode === deuceMode);
             });
+            updateRetaSettingSummaries();
         }
 
         function applyConfigProfile(key) {
@@ -3394,10 +3519,8 @@
                 if (panel) panel.classList.toggle('active', key === activeProfile);
             });
             const isRetas = activeProfile === 'retas';
-            document.getElementById('config-name-mode').classList.toggle('d-none', isRetas);
-            document.getElementById('config-outcome-detail').classList.toggle('d-none', !isRetas);
+            document.getElementById('config-registration-section').classList.toggle('d-none', isRetas);
             document.getElementById('names-config').classList.toggle('d-none', isRetas);
-            document.getElementById('reta-config-shortcut').classList.toggle('d-none', !isRetas);
         }
 
         function setConfigProfile(profile) {
@@ -3510,12 +3633,26 @@
         function setRetasGames(n) {
             confirmConfigChange(() => {
                 retasGames = n;
-                [4, 6, 8, 0].forEach(v => {
-                    const b = document.getElementById(v === 0 ? 'rg-inf' : 'rg-' + v);
-                    if (b) b.classList.toggle('active', n === v);
-                });
+                updateRetasGamesControls();
                 resetMatch();
             });
+        }
+
+        function updateRetasGamesControls() {
+            [4, 6, 8, 0].forEach(value => {
+                const button = document.getElementById(value === 0 ? 'rg-inf' : 'rg-' + value);
+                if (button) button.classList.toggle('active', retasGames === value);
+            });
+            updateRetaSettingSummaries();
+        }
+
+        function showRetaGamesSettingsModal() {
+            updateRetasGamesControls();
+            document.getElementById('reta-games-settings-modal').classList.remove('d-none');
+        }
+
+        function closeRetaGamesSettingsModal() {
+            document.getElementById('reta-games-settings-modal').classList.add('d-none');
         }
 
         function setRetaTime(min) {
@@ -3547,8 +3684,7 @@
             if (custom) custom.value = retaTimeLimit > 0 && !presets.includes(retaTimeLimit) ? retaTimeLimit : '';
             const valueLabel = document.getElementById('reta-time-value');
             if (valueLabel) valueLabel.textContent = retaTimeLimit > 0 ? retaTimeLimit + ' min' : 'Sin tiempo';
-            const configValueLabel = document.getElementById('config-reta-time-value');
-            if (configValueLabel) configValueLabel.textContent = retaTimeLimit > 0 ? retaTimeLimit + ' min' : 'Sin tiempo';
+            updateRetaSettingSummaries();
             updateConfigSummary();
         }
 
@@ -3602,8 +3738,7 @@
             if (custom) custom.value = retaPointsCap > 0 && !presets.includes(retaPointsCap) ? retaPointsCap : '';
             const valueLabel = document.getElementById('reta-points-cap-value');
             if (valueLabel) valueLabel.textContent = retaPointsCap > 0 ? retaPointsCap + ' pts' : 'Sin límite';
-            const configValueLabel = document.getElementById('config-reta-points-cap-value');
-            if (configValueLabel) configValueLabel.textContent = retaPointsCap > 0 ? retaPointsCap + ' pts' : 'Sin límite';
+            updateRetaSettingSummaries();
             updateConfigSummary();
         }
 
@@ -3625,10 +3760,24 @@
         function setRetasEarlyWin(v) {
             confirmConfigChange(() => {
                 retasEarlyWin = v;
-                document.getElementById('rew-all').classList.toggle('active', !v);
-                document.getElementById('rew-early').classList.toggle('active', v);
+                updateRetasFinishControls();
                 resetMatch();
             });
+        }
+
+        function updateRetasFinishControls() {
+            document.getElementById('rew-all').classList.toggle('active', !retasEarlyWin);
+            document.getElementById('rew-early').classList.toggle('active', retasEarlyWin);
+            updateRetaSettingSummaries();
+        }
+
+        function showRetaFinishSettingsModal() {
+            updateRetasFinishControls();
+            document.getElementById('reta-finish-settings-modal').classList.remove('d-none');
+        }
+
+        function closeRetaFinishSettingsModal() {
+            document.getElementById('reta-finish-settings-modal').classList.add('d-none');
         }
 
         function setDeuceMode(m) {
@@ -3637,6 +3786,15 @@
                 updateDeuceModeControls();
                 resetMatch();
             });
+        }
+
+        function showRetaDeuceSettingsModal() {
+            updateDeuceModeControls();
+            document.getElementById('reta-deuce-settings-modal').classList.remove('d-none');
+        }
+
+        function closeRetaDeuceSettingsModal() {
+            document.getElementById('reta-deuce-settings-modal').classList.add('d-none');
         }
 
         function deuceModeLabel(full) {
@@ -3661,17 +3819,15 @@
                 const button = document.getElementById(id);
                 if (button) button.classList.toggle('active', !trackShots);
             });
+            updateRetaSettingSummaries();
         }
 
         function updateOutcomeSettingControls() {
-            ['btn-outcomes-on', 'btn-config-outcomes-on'].forEach(id => {
-                const button = document.getElementById(id);
-                if (button) button.classList.toggle('active', trackOutcomes);
-            });
-            ['btn-outcomes-off', 'btn-config-outcomes-off'].forEach(id => {
-                const button = document.getElementById(id);
-                if (button) button.classList.toggle('active', !trackOutcomes);
-            });
+            const enabledButton = document.getElementById('btn-outcomes-on');
+            const disabledButton = document.getElementById('btn-outcomes-off');
+            if (enabledButton) enabledButton.classList.toggle('active', trackOutcomes);
+            if (disabledButton) disabledButton.classList.toggle('active', !trackOutcomes);
+            updateRetaSettingSummaries();
         }
 
         function setTrackOutcomes(v) {
@@ -5851,6 +6007,7 @@
             const cerrarBtn = document.getElementById('btn-close-reta-footer');
             if (cerrarBtn) cerrarBtn.classList.toggle('d-none', !retaActive);
             if (mini) mini.innerHTML = html;
+            updateRetaSettingSummaries();
         }
 
         // El bloque de parejas es uno solo: se presta a la pantalla que lo necesite
@@ -5865,12 +6022,18 @@
             moveRetaPairs('lineup-host');
             renderRoster();
             renderMatchupHint();
+            updateRetaSettingSummaries();
             document.getElementById('lineup-modal').classList.remove('d-none');
         }
 
         function closeLineupModal() {
             document.getElementById('lineup-modal').classList.add('d-none');
             moveRetaPairs('reta-pairs-home');
+        }
+
+        function openRetaFromLineup() {
+            closeLineupModal();
+            showRetaModal();
         }
 
         function showRetaModal() {
@@ -5884,9 +6047,13 @@
             if (!document.getElementById('reta-time').value) document.getElementById('reta-time').value = retaSession ? retaSession.time : nowHM();
             renderRoster();
             updateOutcomeControls();
+            updateRetasGamesControls();
+            updateRetasFinishControls();
+            updateDeuceModeControls();
             updateRetaTimeButtons();
             updateRetaPointsCapButtons();
             updateRetaDateLabels();
+            updateRetaSettingSummaries();
             renderMatchupHint();
             const retaModal = document.getElementById('reta-modal');
             retaModal.classList.remove('d-none');
@@ -5919,6 +6086,7 @@
             const dl = document.getElementById('reta-date-label'), tl = document.getElementById('reta-time-label');
             if (dl) dl.textContent = fmtRetaDate(d && d.value ? d.value : todayISO());
             if (tl) tl.textContent = (t && t.value) || nowHM();
+            updateRetaSettingSummaries();
         }
 
         function showRetaDateSettingsModal() {
@@ -7033,7 +7201,6 @@
         function updateRetaUI() {
             const isRetas = mode === 'padel' && padelFormat === 'retas';
             updateConfigProfileUI();
-            document.getElementById('reta-config-shortcut').classList.toggle('d-none', !isRetas);
             document.getElementById('names-config').classList.toggle('d-none', isRetas);
             document.getElementById('btn-serve-player-header').classList.toggle('d-none', mode !== 'padel');
             document.getElementById('btn-player-position-header').classList.toggle('d-none', mode !== 'padel');
@@ -7047,6 +7214,9 @@
                 renderRoster();
             }
             if (!timerInterval && !_pendingTimerResume) updateIdleTimerDisplay();
+            updateRetasGamesControls();
+            updateRetasFinishControls();
+            updateDeuceModeControls();
             updateRetaTimeButtons();
             updateRetaPointsCapButtons();
             updateConfigSummary();

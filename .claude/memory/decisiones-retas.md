@@ -4,7 +4,7 @@ description: "ADR de las reglas de negocio de las retas, dictadas por el usuario
 metadata: 
   node_type: memory
   type: project
-  updated: 2026-08-06
+  updated: 2026-08-08
   originSessionId: 3f0c74ee-036b-4a00-a437-ba79ac59d1c9
   modified: 2026-07-31T13:34:10.302Z
 ---
@@ -64,3 +64,7 @@ limite. El marcador y las estadisticas guardan el resultado real; cada partido c
 aporte computable para que Deshacer sea exacto. Cambiar el tope no recalcula partidos ya cerrados.
 **Por que:** los partidos cronometrados pueden producir marcadores muy distintos y el tope evita que
 un solo resultado desequilibre la clasificacion de toda la reta.
+
+## 2026-08-08-17-36-36-04
+### Una sola fuente de configuración para Retas
+La pantalla Reta es el único editor de Fecha, Tiempo, Máx. pts, Juegos, Fin, 40-40, Error/Acierto y detalle de golpes. Configuración > Pádel retas muestra sólo el resumen y abre ese editor; Jugadores del partido conserva parejas y participantes y ofrece un resumen pulsable que lleva al mismo editor.
