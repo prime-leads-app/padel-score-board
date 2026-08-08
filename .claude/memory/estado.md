@@ -10,4 +10,4 @@ metadata:
   modified: 2026-07-31T13:35:51.259Z
 ---
 
-Ahora: v5.37 registra el tipo de golpe tanto en Aciertos como en Errores, lo conserva en historial y estadísticas, y sincroniza el ajuste dentro de la pantalla Reta. Se validaron modo Jugadores/Equipos, ambos modales, Sin detalle, cronología, acumulados y Deshacer. Próximo paso: la unidad cierra aquí.
+Ahora: v5.38 permite consultar, editar o agregar participantes desde Jugadores del partido sin abrir la configuración completa de la reta. Se validaron ambos accesos, contador, retorno al modal, composición móvil y ausencia de errores. Próximo paso: la unidad cierra aquí.

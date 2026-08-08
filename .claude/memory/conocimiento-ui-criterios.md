@@ -4,7 +4,7 @@ description: Criterios de interfaz que fijo el usuario y que ya costaron correcc
 metadata: 
   node_type: memory
   type: reference
-  updated: 2026-08-06
+  updated: 2026-08-08
   review_by: 2027-01-31
   originSessionId: 3f0c74ee-036b-4a00-a437-ba79ac59d1c9
   modified: 2026-07-31T13:35:15.106Z
@@ -55,3 +55,6 @@ Los nombres usan 24.18 px a 390 px mediante clamp(1.3rem, 6.2vw, 1.55rem), con p
 
 ## 2026-08-06-17-46-05-08
 El encabezado incluye un acceso directo al historial del partido actual. La lista conserva un evento por punto con jugador, Error/Acierto, equipo beneficiado y marcador resultante; los eventos se muestran del mas reciente al mas antiguo y Deshacer elimina tambien el ultimo registro.
+
+## 2026-08-08-10-40-39-02
+El modal Jugadores del partido muestra antes de las parejas los mismos accesos Ver participantes y Agregar de la pantalla Reta. Ambos reutilizan los modales existentes; el contador del roster se sincroniza mediante data-reta-roster-count y cerrar cada submodal regresa a la alineación sin perder selecciones.

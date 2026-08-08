@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <!-- Sube en cada publicacion: la app la compara contra la red para saber si esta al dia -->
-    <meta name="app-version" content="5.37">
+    <meta name="app-version" content="5.38">
     <title>Padel Scoreboard</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -584,6 +584,9 @@
             justify-content: center;
             gap: 6px;
             white-space: nowrap;
+        }
+        .lineup-participant-actions {
+            margin-bottom: 10px;
         }
         .reta-participant-label-short {
             display: none;
@@ -2156,7 +2159,7 @@
                 <b style="color:#FFD54F;">Botones del encabezado</b><br>
                 <b>☰</b> Menu.<br>
                 <b>ⓘ Datos del partido</b> está dentro del menú: formato, juegos, tiempo, 40-40 y partidos jugados de la reta.<br>
-                <b>👥</b> Jugadores del partido: cambia los integrantes de cada equipo sin salir del marcador <span style="opacity:0.7;">(solo en Retas)</span>.<br>
+                <b>👥</b> Jugadores del partido: cambia los integrantes de cada equipo, consulta la lista o agrega participantes sin salir del marcador <span style="opacity:0.7;">(solo en Retas)</span>.<br>
                 <b><i class="bi bi-arrow-repeat"></i></b> Cambia el equipo sacador.<br>
                 <b><i class="bi bi-person-check-fill"></i></b> Cambia cuál de los dos jugadores del equipo está sacando; el borde amarillo pasa al otro nombre.<br>
                 <b>Reloj (al centro):</b> en Retas va en cuenta regresiva y se pone rojo en los ultimos 2 minutos. En los demas modos cuenta hacia arriba.<br>
@@ -2440,7 +2443,7 @@
             </a>
             <a href="https://github.com/prime-leads-app/padel-score-board" target="_blank" rel="noopener" class="card bg-dark border-secondary text-decoration-none flex-fill" style="cursor:pointer;">
                 <div class="card-body py-0 px-2 text-center">
-                    <small class="text-white">PadelApp v<span id="app-version-label">5.37</span></small>
+                    <small class="text-white">PadelApp v<span id="app-version-label">5.38</span></small>
                 </div>
             </a>
             <div class="card bg-dark border-secondary flex-fill">
@@ -2544,7 +2547,7 @@
                             <i class="bi bi-people-fill" aria-hidden="true"></i>
                             <span class="reta-participant-label-full">Ver participantes</span>
                             <span class="reta-participant-label-short">Participantes</span>
-                            <span class="reta-count-badge" id="reta-roster-count">0</span>
+                            <span class="reta-count-badge" id="reta-roster-count" data-reta-roster-count>0</span>
                         </button>
                         <button type="button" class="btn btn-warning reta-participant-action" onclick="showAddRetaPlayerModal()">
                             <i class="bi bi-person-plus-fill" aria-hidden="true"></i>
@@ -2696,6 +2699,18 @@
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
                 <h5 style="margin:0; font-weight:700;">Jugadores del partido</h5>
                 <button class="btn btn-sm" onclick="closeLineupModal()" style="padding:0 8px; background:#e94560; color:#fff; font-weight:700; border-radius:4px;">✕</button>
+            </div>
+            <div class="reta-participant-actions lineup-participant-actions" role="group" aria-label="Administrar participantes de la reta">
+                <button type="button" class="btn btn-outline-info reta-participant-action" onclick="showRetaParticipantsModal()">
+                    <i class="bi bi-people-fill" aria-hidden="true"></i>
+                    <span class="reta-participant-label-full">Ver participantes</span>
+                    <span class="reta-participant-label-short">Participantes</span>
+                    <span class="reta-count-badge" data-reta-roster-count>0</span>
+                </button>
+                <button type="button" class="btn btn-warning reta-participant-action" onclick="showAddRetaPlayerModal()">
+                    <i class="bi bi-person-plus-fill" aria-hidden="true"></i>
+                    <span>Agregar</span>
+                </button>
             </div>
             <div id="lineup-host"></div>
             <button class="btn btn-outline-light w-100" style="margin-top:12px; font-weight:700;" onclick="closeLineupModal()">Listo</button>
@@ -5465,8 +5480,9 @@
 
         function renderRoster() {
             const cont = document.getElementById('reta-roster-chips');
-            const count = document.getElementById('reta-roster-count');
-            if (count) count.textContent = retaRoster.length;
+            document.querySelectorAll('[data-reta-roster-count]').forEach(count => {
+                count.textContent = retaRoster.length;
+            });
             cont.innerHTML = retaRoster.length
                 ? retaRoster.map((n, i) => `<div class="reta-roster-item">
                     <div class="reta-roster-name"><span class="reta-roster-index">${i + 1}</span><span>${esc(n)}</span></div>
