@@ -10,6 +10,6 @@ metadata:
   modified: 2026-07-31T13:35:51.259Z
 ---
 
-Ahora: v5.40 centraliza todas las reglas editables de Retas en la pantalla Reta, deja Configuración > Pádel retas como resumen y agrega acceso contextual desde Jugadores del partido. Se validaron persistencia, los seis selectores, los perfiles Normal/Libre y la composición móvil a 390 x 844.
+Ahora: v5.41 integra directamente el editor completo de Retas en Configuración > Pádel retas y elimina el botón intermedio. El mismo bloque DOM se mueve a la pantalla Reta o a Jugadores del partido cuando se accede desde el marcador; se validaron los seis selectores, participantes, parejas, persistencia y composición móvil a 390 x 844.
 
 Próximo paso: la unidad cierra aquí.

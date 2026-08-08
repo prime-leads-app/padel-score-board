@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <!-- Sube en cada publicacion: la app la compara contra la red para saber si esta al dia -->
-    <meta name="app-version" content="5.40">
+    <meta name="app-version" content="5.41">
     <title>Padel Scoreboard</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -375,7 +375,7 @@
         }
 
         /* Configuración por modalidad: una sola navegación y bloques con una
-           jerarquía estable. La pantalla Reta conserva su gestión independiente. */
+           jerarquía estable. Retas integra directamente su editor completo. */
         .config-profile-tabs {
             display: grid;
             grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -429,32 +429,33 @@
             padding: 8px 6px;
         }
         .config-options-grid .config-span-all { grid-column: 1 / -1; }
-        .config-reta-overview {
-            padding: 14px;
-            border: 1px solid rgba(126,200,227,0.42);
-            border-radius: 10px;
-            background: rgba(14,30,53,0.38);
+        .config-retas-editor-home { margin-top: 2px; }
+        .reta-editor-content {
+            display: flex;
+            flex: 1;
+            min-height: 0;
+            flex-direction: column;
+            text-align: left;
         }
-        .config-reta-overview-date {
-            color: #fff;
-            font-size: 1rem;
-            font-weight: 700;
-            line-height: 1.25;
+        .reta-editor-host-modal {
+            display: flex;
+            flex: 1;
+            min-height: 0;
+            flex-direction: column;
         }
-        .config-reta-overview-line {
-            margin-top: 6px;
-            color: #aebdca;
-            font-size: 0.8rem;
-            line-height: 1.35;
+        .reta-editor-footer {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 6px;
+            padding-top: 14px;
         }
-        .config-reta-overview-line strong {
-            color: #ffd54f;
-            font-weight: 700;
+        #config-retas #reta-modal-scroll {
+            overflow-y: visible !important;
+            margin-top: 0 !important;
         }
-        .config-reta-overview-action {
-            min-height: 44px;
-            margin-top: 12px;
-            font-weight: 700 !important;
+        #config-retas .reta-editor-footer {
+            padding: 12px 2px 4px;
         }
         .config-toggle-stack {
             display: grid;
@@ -490,14 +491,6 @@
         }
         .light-theme .config-section { background: rgba(0,0,0,0.045); }
         .light-theme .config-section-title { color: #0d47a1; }
-        .light-theme .config-reta-overview {
-            border-color: #a9c9d6;
-            background: #f4f8fa;
-        }
-        .light-theme .config-reta-overview-date { color: #1f2d3a; }
-        .light-theme .config-reta-overview-line { color: #5f6f7c; }
-        .light-theme .config-reta-overview-line strong { color: #8a6200; }
-
         .config-row-wrap {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -2166,14 +2159,78 @@
             </div>
 
             <div class="config-profile-panel" id="config-retas" role="tabpanel" aria-labelledby="profile-retas">
-                <div class="config-section">
-                    <div class="config-section-title">Reta actual</div>
-                    <div class="config-reta-overview">
-                        <div class="config-reta-overview-date" id="config-reta-overview-date">Reta sin iniciar</div>
-                        <div class="config-reta-overview-line" id="config-reta-overview-rules">20 min · 6 juegos · máx. 6 pts</div>
-                        <div class="config-reta-overview-line" id="config-reta-overview-registration">Oro · Todos · Errores/Aciertos + golpes</div>
-                        <div class="config-reta-overview-line" id="config-reta-overview-status">0 participantes · sin iniciar</div>
-                        <button type="button" class="btn btn-warning w-100 config-reta-overview-action" onclick="showRetaModal()">Configurar reta</button>
+                <div id="config-retas-editor-home" class="config-retas-editor-home">
+                    <div id="reta-editor-content" class="reta-editor-content">
+                        <div id="reta-modal-scroll" style="overflow-y:auto; flex:1; margin-top:10px;">
+                            <!-- 1. Jornada: cada card abre su selector -->
+                            <div class="reta-section" style="padding:10px 12px;">
+                                <div class="reta-setting-shortcuts">
+                                    <button type="button" class="reta-setting-shortcut reta-setting-shortcut-date" onclick="showRetaDateSettingsModal()" aria-haspopup="dialog">
+                                        <span class="reta-setting-shortcut-label">Fecha</span>
+                                        <strong class="reta-setting-shortcut-value" id="reta-date-label"></strong>
+                                        <span class="reta-setting-shortcut-meta">Inicio <span id="reta-time-label"></span></span>
+                                    </button>
+                                    <button type="button" class="reta-setting-shortcut" onclick="showRetaTimeSettingsModal()" aria-haspopup="dialog">
+                                        <span class="reta-setting-shortcut-label">Tiempo</span>
+                                        <strong class="reta-setting-shortcut-value" id="reta-time-value">20 min</strong>
+                                    </button>
+                                    <button type="button" class="reta-setting-shortcut" onclick="showRetaPointsCapSettingsModal()" aria-haspopup="dialog">
+                                        <span class="reta-setting-shortcut-label">Máx. pts</span>
+                                        <strong class="reta-setting-shortcut-value" id="reta-points-cap-value">6 pts</strong>
+                                    </button>
+                                    <button type="button" class="reta-setting-shortcut" onclick="showRetaGamesSettingsModal()" aria-haspopup="dialog">
+                                        <span class="reta-setting-shortcut-label">Juegos</span>
+                                        <strong class="reta-setting-shortcut-value" id="reta-games-value">6</strong>
+                                    </button>
+                                    <button type="button" class="reta-setting-shortcut" onclick="showRetaFinishSettingsModal()" aria-haspopup="dialog">
+                                        <span class="reta-setting-shortcut-label">Fin</span>
+                                        <strong class="reta-setting-shortcut-value" id="reta-finish-value">Todos</strong>
+                                    </button>
+                                    <button type="button" class="reta-setting-shortcut" onclick="showRetaDeuceSettingsModal()" aria-haspopup="dialog">
+                                        <span class="reta-setting-shortcut-label">Empate 40-40</span>
+                                        <strong class="reta-setting-shortcut-value" id="reta-deuce-value">Oro</strong>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- 2. Modo de registro de Error/Acierto -->
+                            <div class="reta-section reta-compact-section" id="outcome-detail-config" role="region" aria-label="Error/Acierto">
+                                <div class="reta-compact-toggle" role="group" aria-label="Modo de puntuación">
+                                    <button class="btn btn-outline-light mode-btn active" onclick="setTrackOutcomes(true)" id="btn-outcomes-on">Registrar Errores/Aciertos</button>
+                                    <button class="btn btn-outline-light mode-btn" onclick="setTrackOutcomes(false)" id="btn-outcomes-off">Sólo sumar puntos</button>
+                                </div>
+                                <div class="reta-compact-toggle" id="reta-shot-detail-config" role="group" aria-label="Detalle de golpes">
+                                    <button class="btn btn-outline-light mode-btn active" onclick="setTrackShots(true)" id="btn-reta-shots-on">Con detalle de golpes</button>
+                                    <button class="btn btn-outline-light mode-btn" onclick="setTrackShots(false)" id="btn-reta-shots-off">Sin detalle de golpes</button>
+                                </div>
+                            </div>
+
+                            <!-- 3. Participantes -->
+                            <div class="reta-section reta-compact-section" role="region" aria-label="Participantes">
+                                <div class="reta-participant-actions">
+                                    <button type="button" class="btn btn-outline-info reta-participant-action" onclick="showRetaParticipantsModal()">
+                                        <i class="bi bi-people-fill" aria-hidden="true"></i>
+                                        <span class="reta-participant-label-full">Ver participantes</span>
+                                        <span class="reta-participant-label-short">Participantes</span>
+                                        <span class="reta-count-badge" id="reta-roster-count" data-reta-roster-count>0</span>
+                                    </button>
+                                    <button type="button" class="btn btn-warning reta-participant-action" onclick="showAddRetaPlayerModal()">
+                                        <i class="bi bi-person-plus-fill" aria-hidden="true"></i>
+                                        <span>Agregar</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- 4. Parejas del partido: se presta al modal del marcador -->
+                            <div id="reta-pairs-home"></div>
+                        </div>
+
+                        <div class="reta-editor-footer">
+                            <button class="btn btn-warning btn-sm" id="btn-start-reta" onclick="startReta()" style="font-weight:700;">Iniciar</button>
+                            <button class="btn btn-outline-info btn-sm" onclick="showRetaStandings()">📊 Clasificación</button>
+                            <button class="btn btn-outline-danger btn-sm" id="btn-close-reta-footer" onclick="confirmCloseReta()">Cerrar reta</button>
+                            <button class="btn btn-outline-light btn-sm" onclick="closeRetaEditor()">Listo</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -2251,7 +2308,7 @@
                 <b>Pádel normal:</b> Partido con puntos de pádel, juegos y sets.<br>
                 <b>Pádel retas:</b> Jornada con varios partidos y parejas que rotan; los puntos se acumulan por jugador en una tabla de clasificación.<br>
                 <b>Libre:</b> Marcador simple en el que cada toque suma un punto.<br>
-                Cada modalidad conserva por separado sus nombres, forma de registro, detalle de golpes y reglas compartidas. La pestaña <b>Pádel retas</b> muestra un resumen; <b>Configurar reta</b> abre el único editor de sus reglas, participantes y parejas.
+                Cada modalidad conserva por separado sus nombres, forma de registro, detalle de golpes y reglas compartidas. La pestaña <b>Pádel retas</b> integra directamente el editor completo de reglas, participantes y parejas; el menú <b>Reta</b> y Jugadores del partido muestran ese mismo editor desde el marcador.
             </div>
 
             <div style="margin:8px 0;">
@@ -2275,7 +2332,7 @@
 
             <div style="margin:8px 0;">
                 <b style="color:#FFD54F;">Participantes y parejas</b> (solo en Retas)<br>
-                Se administran en la pantalla <b>Reta</b>: desde el menu ☰ → <b>Reta</b>, con <b>Configurar reta</b> en Configuración o desde Jugadores del partido.<br>
+                Se administran directamente en <b>Configuración → Pádel retas</b>. Desde el marcador también puedes abrir el mismo editor con el menú ☰ → <b>Reta</b> o desde Jugadores del partido.<br>
                 <b>Ver participantes</b> abre la lista donde puedes editar o quitar jugadores; antes de eliminar se solicita confirmacion. <b>Agregar</b> abre la captura de un nombre nuevo. Antes de cada partido eliges de las listas desplegables quienes forman cada equipo. La lista se guarda en el telefono para la proxima reta.<br>
                 <span style="opacity:0.7;">Si eliges a alguien que ya estaba en el otro equipo, los dos se intercambian: nadie queda repetido.</span>
             </div>
@@ -2332,10 +2389,10 @@
 
             <div style="margin:8px 0;">
                 <b style="color:#FFD54F;">Registro de Error/Acierto</b> (solo en Retas)<br>
-                Se activa o desactiva desde la pantalla <b>Reta</b>.<br>
+                Se activa o desactiva desde <b>Configuración → Pádel retas</b> o desde la pantalla <b>Reta</b>.<br>
                 <b>Registrar Errores/Aciertos:</b> La tarjeta de cada jugador se divide en <b>Error</b> a la izquierda y <b>Acierto</b> a la derecha. Error da el punto al equipo contrario; Acierto lo da al equipo del jugador. Ambos quedan en sus estadísticas por juego, partido y reta.<br>
                 <b>Sólo sumar puntos:</b> La tarjeta vuelve a funcionar como antes y atribuye el punto al jugador sin clasificarlo como Error o Acierto.<br>
-                <b>Con detalle de golpes:</b> Después de Error o Acierto solicita el tipo de golpe y lo incluye en el historial y las estadísticas. <b>Sin detalle de golpes:</b> conserva únicamente Error/Acierto. En Retas se configura en la misma pantalla Reta.<br>
+                <b>Con detalle de golpes:</b> Después de Error o Acierto solicita el tipo de golpe y lo incluye en el historial y las estadísticas. <b>Sin detalle de golpes:</b> conserva únicamente Error/Acierto. En Retas se configura en el mismo editor integrado.<br>
                 <span style="opacity:0.7;">La zona grande del equipo siempre permite sumar un punto rápido sin atribuirlo. Deshacer revierte también Error/Acierto y el detalle de golpe.</span>
             </div>
 
@@ -2627,7 +2684,7 @@
             </a>
             <a href="https://github.com/prime-leads-app/padel-score-board" target="_blank" rel="noopener" class="card bg-dark border-secondary text-decoration-none flex-fill" style="cursor:pointer;">
                 <div class="card-body py-0 px-2 text-center">
-                    <small class="text-white">PadelApp v<span id="app-version-label">5.40</span></small>
+                    <small class="text-white">PadelApp v<span id="app-version-label">5.41</span></small>
                 </div>
             </a>
             <div class="card bg-dark border-secondary flex-fill">
@@ -2692,76 +2749,7 @@
                 <h5 style="margin:0; font-weight:700;">🏆 Reta</h5>
                 <button class="btn btn-sm" onclick="closeRetaModal()" style="padding:0 8px; background:#e94560; color:#fff; font-weight:700; border-radius:4px;">✕</button>
             </div>
-            <div id="reta-modal-scroll" style="overflow-y:auto; flex:1; margin-top:10px;">
-                <!-- 1. Jornada: resumen compacto; cada ajuste abre su selector -->
-                <div class="reta-section" style="padding:10px 12px;">
-                    <div class="reta-setting-shortcuts">
-                        <button type="button" class="reta-setting-shortcut reta-setting-shortcut-date" onclick="showRetaDateSettingsModal()" aria-haspopup="dialog">
-                            <span class="reta-setting-shortcut-label">Fecha</span>
-                            <strong class="reta-setting-shortcut-value" id="reta-date-label"></strong>
-                            <span class="reta-setting-shortcut-meta">Inicio <span id="reta-time-label"></span></span>
-                        </button>
-                        <button type="button" class="reta-setting-shortcut" onclick="showRetaTimeSettingsModal()" aria-haspopup="dialog">
-                            <span class="reta-setting-shortcut-label">Tiempo</span>
-                            <strong class="reta-setting-shortcut-value" id="reta-time-value">20 min</strong>
-                        </button>
-                        <button type="button" class="reta-setting-shortcut" onclick="showRetaPointsCapSettingsModal()" aria-haspopup="dialog">
-                            <span class="reta-setting-shortcut-label">Máx. pts</span>
-                            <strong class="reta-setting-shortcut-value" id="reta-points-cap-value">6 pts</strong>
-                        </button>
-                        <button type="button" class="reta-setting-shortcut" onclick="showRetaGamesSettingsModal()" aria-haspopup="dialog">
-                            <span class="reta-setting-shortcut-label">Juegos</span>
-                            <strong class="reta-setting-shortcut-value" id="reta-games-value">6</strong>
-                        </button>
-                        <button type="button" class="reta-setting-shortcut" onclick="showRetaFinishSettingsModal()" aria-haspopup="dialog">
-                            <span class="reta-setting-shortcut-label">Fin</span>
-                            <strong class="reta-setting-shortcut-value" id="reta-finish-value">Todos</strong>
-                        </button>
-                        <button type="button" class="reta-setting-shortcut" onclick="showRetaDeuceSettingsModal()" aria-haspopup="dialog">
-                            <span class="reta-setting-shortcut-label">Empate 40-40</span>
-                            <strong class="reta-setting-shortcut-value" id="reta-deuce-value">Oro</strong>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- 2. Modo de registro de Error/Acierto -->
-                <div class="reta-section reta-compact-section" id="outcome-detail-config" role="region" aria-label="Error/Acierto">
-                    <div class="reta-compact-toggle" role="group" aria-label="Modo de puntuación">
-                        <button class="btn btn-outline-light mode-btn active" onclick="setTrackOutcomes(true)" id="btn-outcomes-on">Registrar Errores/Aciertos</button>
-                        <button class="btn btn-outline-light mode-btn" onclick="setTrackOutcomes(false)" id="btn-outcomes-off">Sólo sumar puntos</button>
-                    </div>
-                    <div class="reta-compact-toggle" id="reta-shot-detail-config" role="group" aria-label="Detalle de golpes">
-                        <button class="btn btn-outline-light mode-btn active" onclick="setTrackShots(true)" id="btn-reta-shots-on">Con detalle de golpes</button>
-                        <button class="btn btn-outline-light mode-btn" onclick="setTrackShots(false)" id="btn-reta-shots-off">Sin detalle de golpes</button>
-                    </div>
-                </div>
-
-                <!-- 3. Participantes -->
-                <div class="reta-section reta-compact-section" role="region" aria-label="Participantes">
-                    <div class="reta-participant-actions">
-                        <button type="button" class="btn btn-outline-info reta-participant-action" onclick="showRetaParticipantsModal()">
-                            <i class="bi bi-people-fill" aria-hidden="true"></i>
-                            <span class="reta-participant-label-full">Ver participantes</span>
-                            <span class="reta-participant-label-short">Participantes</span>
-                            <span class="reta-count-badge" id="reta-roster-count" data-reta-roster-count>0</span>
-                        </button>
-                        <button type="button" class="btn btn-warning reta-participant-action" onclick="showAddRetaPlayerModal()">
-                            <i class="bi bi-person-plus-fill" aria-hidden="true"></i>
-                            <span>Agregar</span>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- 4. Parejas del partido (se presta al modal del marcador) -->
-                <div id="reta-pairs-home"></div>
-            </div>
-
-            <div style="display:flex; gap:6px; justify-content:center; flex-wrap:wrap; padding-top:14px;">
-                <button class="btn btn-warning btn-sm" id="btn-start-reta" onclick="startReta()" style="font-weight:700;">Iniciar</button>
-                <button class="btn btn-outline-info btn-sm" onclick="showRetaStandings()">📊 Clasificación</button>
-                <button class="btn btn-outline-danger btn-sm" id="btn-close-reta-footer" onclick="confirmCloseReta()">Cerrar reta</button>
-                <button class="btn btn-outline-light btn-sm" onclick="closeRetaModal()">Listo</button>
-            </div>
+            <div id="reta-modal-editor-home" class="reta-editor-host-modal"></div>
         </div>
     </div>
 
@@ -3451,22 +3439,11 @@
             const deuceLabel = deuceModeLabel(false);
             const outcomeLabel = trackOutcomes ? 'Errores/Aciertos' : 'Sólo sumar puntos';
             const shotsLabel = trackShots ? 'con golpes' : 'sin golpes';
-            const dateInput = document.getElementById('reta-date');
-            const startInput = document.getElementById('reta-time');
-            const date = retaSession && retaSession.date ? retaSession.date : (dateInput && dateInput.value ? dateInput.value : todayISO());
-            const start = retaSession && retaSession.time ? retaSession.time : (startInput && startInput.value ? startInput.value : nowHM());
-            const matchesCount = retaSession && Array.isArray(retaSession.matches) ? retaSession.matches.length : 0;
-            const rosterCount = retaSession && Array.isArray(retaSession.roster) ? retaSession.roster.length : retaRoster.length;
-            const matchesLabel = `${matchesCount} ${matchesCount === 1 ? 'partido jugado' : 'partidos jugados'}`;
 
             const values = {
                 'reta-games-value': retasGames === 0 ? '∞' : String(retasGames),
                 'reta-finish-value': finishLabel,
                 'reta-deuce-value': deuceLabel,
-                'config-reta-overview-date': `${retaActive ? 'Reta activa' : 'Próxima reta'} · ${fmtRetaDate(date)} · inicio ${start}`,
-                'config-reta-overview-rules': `${timeLabel} · ${gamesLabel} · ${pointsCapLabel.toLowerCase()}`,
-                'config-reta-overview-registration': `${deuceLabel} · ${finishLabel} · ${outcomeLabel} · ${shotsLabel}`,
-                'config-reta-overview-status': retaActive ? `${matchesLabel} · ${rosterCount} participantes` : `${rosterCount} participantes · sin iniciar`,
                 'lineup-reta-overview-main': `${timeLabel} · ${gamesLabel} · ${deuceLabel}`,
                 'lineup-reta-overview-detail': `${pointsCapLabel} · ${outcomeLabel} · ${shotsLabel}`
             };
@@ -3521,6 +3498,7 @@
             const isRetas = activeProfile === 'retas';
             document.getElementById('config-registration-section').classList.toggle('d-none', isRetas);
             document.getElementById('names-config').classList.toggle('d-none', isRetas);
+            if (isRetas) prepareRetaEditor('config-retas-editor-home');
         }
 
         function setConfigProfile(profile) {
@@ -5345,7 +5323,10 @@
         }
 
         function toggleAllConfig() {
-            document.getElementById('config-modal').classList.toggle('d-none');
+            const modal = document.getElementById('config-modal');
+            const opening = modal.classList.contains('d-none');
+            if (opening && activeConfigProfileKey() === 'retas') prepareRetaEditor('config-retas-editor-home');
+            modal.classList.toggle('d-none');
         }
 
         function toggleHamburger() {
@@ -6010,11 +5991,34 @@
             updateRetaSettingSummaries();
         }
 
-        // El bloque de parejas es uno solo: se presta a la pantalla que lo necesite
+        // El editor y el bloque de parejas son únicos: se mueven al acceso que los necesite.
+        function moveRetaEditor(destinoId) {
+            const editor = document.getElementById('reta-editor-content');
+            const destino = document.getElementById(destinoId);
+            if (editor && destino && editor.parentElement !== destino) destino.appendChild(editor);
+        }
+
         function moveRetaPairs(destinoId) {
             const sec = document.getElementById('reta-pairs-section');
             const destino = document.getElementById(destinoId);
             if (sec && destino && sec.parentElement !== destino) destino.appendChild(sec);
+        }
+
+        function prepareRetaEditor(destinoId) {
+            moveRetaEditor(destinoId);
+            moveRetaPairs('reta-pairs-home');
+            if (!document.getElementById('reta-date').value) document.getElementById('reta-date').value = retaSession ? retaSession.date : todayISO();
+            if (!document.getElementById('reta-time').value) document.getElementById('reta-time').value = retaSession ? retaSession.time : nowHM();
+            renderRoster();
+            updateOutcomeControls();
+            updateRetasGamesControls();
+            updateRetasFinishControls();
+            updateDeuceModeControls();
+            updateRetaTimeButtons();
+            updateRetaPointsCapButtons();
+            updateRetaDateLabels();
+            updateRetaSettingSummaries();
+            renderMatchupHint();
         }
 
         function showLineupModal() {
@@ -6042,19 +6046,7 @@
                 if (!document.getElementById('confirm-config-overlay').classList.contains('d-none')) return;
                 if (mode !== 'padel' || padelFormat !== 'retas') return;
             }
-            moveRetaPairs('reta-pairs-home');
-            if (!document.getElementById('reta-date').value) document.getElementById('reta-date').value = retaSession ? retaSession.date : todayISO();
-            if (!document.getElementById('reta-time').value) document.getElementById('reta-time').value = retaSession ? retaSession.time : nowHM();
-            renderRoster();
-            updateOutcomeControls();
-            updateRetasGamesControls();
-            updateRetasFinishControls();
-            updateDeuceModeControls();
-            updateRetaTimeButtons();
-            updateRetaPointsCapButtons();
-            updateRetaDateLabels();
-            updateRetaSettingSummaries();
-            renderMatchupHint();
+            prepareRetaEditor('reta-modal-editor-home');
             const retaModal = document.getElementById('reta-modal');
             retaModal.classList.remove('d-none');
             retaModal.scrollTop = 0;
@@ -6069,6 +6061,17 @@
             closeAddRetaPlayerModal();
             cancelRemoveRosterPlayer();
             document.getElementById('reta-modal').classList.add('d-none');
+            moveRetaEditor('config-retas-editor-home');
+        }
+
+        function closeRetaEditor() {
+            const retaModal = document.getElementById('reta-modal');
+            if (!retaModal.classList.contains('d-none')) {
+                closeRetaModal();
+                return;
+            }
+            const configModal = document.getElementById('config-modal');
+            if (!configModal.classList.contains('d-none')) toggleAllConfig();
         }
 
         function saveRetaMeta() {

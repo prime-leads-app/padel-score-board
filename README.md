@@ -37,11 +37,11 @@ Formato informal popular en México. Una reta es una **jornada con varios partid
 
 **Botón Fin partido:** corta el partido en cualquier momento. Gana quien vaya arriba en juegos; si van iguales, gana quien lleve más puntos en el juego en disputa. Si van iguales en juegos y en puntos, la app avisa y no cierra.
 
-**Participantes y parejas:** desde la pantalla Reta, **Ver participantes** abre la lista donde puedes editar o quitar jugadores y **Agregar** abre una ventana independiente para capturar uno nuevo. Esas dos acciones también están disponibles en **Jugadores del partido**, accesible desde el botón de participantes del encabezado, para administrar la lista sin pasar por la configuración completa de la reta. Eliminar siempre solicita confirmación para evitar bajas accidentales. Al editar un nombre también se actualizan sus parejas y las estadísticas de la reta activa. La lista se guarda en el dispositivo para la próxima reta. Antes de cada partido eliges de listas desplegables quiénes forman cada equipo; un jugador no puede estar en dos lugares a la vez.
+**Participantes y parejas:** en **Configuración > Pádel retas**, **Ver participantes** abre la lista donde puedes editar o quitar jugadores y **Agregar** abre una ventana independiente para capturar uno nuevo. El mismo editor se abre desde **Reta** y **Jugadores del partido** en el panel principal. Eliminar siempre solicita confirmación para evitar bajas accidentales. Al editar un nombre también se actualizan sus parejas y las estadísticas de la reta activa. La lista se guarda en el dispositivo para la próxima reta. Antes de cada partido eliges de listas desplegables quiénes forman cada equipo; un jugador no puede estar en dos lugares a la vez.
 
 **Clasificación individual:** solo suma la pareja que gana, y cada uno de los dos ganadores suma los juegos que ganó su equipo hasta el máximo configurado, que inicialmente es 6. Con máximo 6, ganar 10-2 suma 6 pts a cada ganador y ganar 5-2 suma 5; el marcador real no se modifica. También se puede elegir ∞ para no aplicar tope. Un cambio de máximo se aplica a los partidos que terminen después; los ya cerrados conservan el aporte registrado. Si el partido se definió con juegos empatados, cuentan los juegos completos. Los puntos de la tabla se pueden **editar a mano** desde la clasificación.
 
-**Rendimiento por jugador:** desde la pantalla Reta puedes activar o desactivar el detalle de **Error/Acierto**. Al activarlo, cada tarjeta de participante se divide en **Error** y **Acierto**. Error concede el punto al equipo contrario; Acierto lo concede al equipo del jugador. También puedes elegir **Con detalle de golpes** o **Sin detalle de golpes** en la misma pantalla. Con el detalle activo, Acierto conserva su selector de Volea, Bandeja, Globo, Smash, Remate u Otro, mientras Error abre un selector específico con Derecha/Revés, Volea, Globo, Salida de pared, Bandeja/Smash, Saque/Resto u Otro. La app guarda el resultado y su tipo por juego y partido, calcula el porcentaje de rendimiento y los acumula durante toda la reta. La zona grande del equipo sigue disponible para anotar un punto rápido sin atribución.
+**Rendimiento por jugador:** desde **Configuración > Pádel retas** o la pantalla Reta puedes activar o desactivar el detalle de **Error/Acierto**. Al activarlo, cada tarjeta de participante se divide en **Error** y **Acierto**. Error concede el punto al equipo contrario; Acierto lo concede al equipo del jugador. También puedes elegir **Con detalle de golpes** o **Sin detalle de golpes** en el mismo editor. Con el detalle activo, Acierto conserva su selector de Volea, Bandeja, Globo, Smash, Remate u Otro, mientras Error abre un selector específico con Derecha/Revés, Volea, Globo, Salida de pared, Bandeja/Smash, Saque/Resto u Otro. La app guarda el resultado y su tipo por juego y partido, calcula el porcentaje de rendimiento y los acumula durante toda la reta. La zona grande del equipo sigue disponible para anotar un punto rápido sin atribución.
 
 **Orden de saque:** cada control tiene una sola acción. A la izquierda, las flechas circulares cambian el equipo sacador y el icono amarillo de persona cambia cuál de sus dos jugadores saca, moviendo el borde amarillo al otro nombre. A la derecha del reloj, las flechas verticales intercambian arriba/abajo a los equipos completos y las flechas horizontales intercambian izquierda/derecha a los jugadores del equipo sacador sin mover el indicador de su posición física. Al terminar cada juego, el saque pasa al equipo contrario y queda preparado el compañero del equipo anterior para su siguiente turno; la secuencia predeterminada es equipo 1 izquierda, equipo 2 izquierda, equipo 1 derecha y equipo 2 derecha. **Deshacer** también restaura el equipo y jugador que sacaban antes del punto.
 
@@ -106,7 +106,7 @@ Modo libre para cualquier actividad. Cada toque suma 1 punto.
 
 Toda la app se controla desde el menú hamburguesa (icono ☰) en la parte superior:
 
-- **Configuración** - Organiza las opciones en Pádel normal, Pádel retas y Libre; Pádel retas muestra un resumen y abre su editor único
+- **Configuración** - Organiza las opciones en Pádel normal, Pádel retas y Libre; Pádel retas muestra directamente su editor completo
 - **Ayuda opciones** - Explica qué significa cada opción de configuración
 - **Cómo jugar pádel/retas/libre** - Reglas y ejemplos de cada modo
 - **Reta** - Participantes, parejas, fecha y tiempo por partido
@@ -119,7 +119,7 @@ Toda la app se controla desde el menú hamburguesa (icono ☰) en la parte super
 
 ## Configuración
 
-Las opciones generales se abren desde el menú hamburguesa > Configuración. El selector superior separa **Pádel normal**, **Pádel retas** y **Libre**. Pádel normal y Libre muestran sus controles propios; Pádel retas muestra un resumen de la jornada y el botón **Configurar reta**, que abre el único editor de sus reglas, registro, participantes y parejas. El modal **Jugadores del partido** conserva el acceso rápido a las parejas y agrega un resumen pulsable para llegar a ese editor sin volver al menú.
+Las opciones generales se abren desde el menú hamburguesa > Configuración. El selector superior separa **Pádel normal**, **Pádel retas** y **Libre**. Pádel normal y Libre muestran sus controles propios; Pádel retas integra directamente el editor completo de reglas, registro, participantes y parejas, sin un botón o modal intermedio. Desde el panel principal, **Reta** y el resumen pulsable de **Jugadores del partido** abren ese mismo editor compartido.
 
 | Opción | Valores | Descripción |
 |--------|---------|-------------|
@@ -127,16 +127,16 @@ Las opciones generales se abren desde el menú hamburguesa > Configuración. El 
 | Nombres | Jugadores / Equipos | 2 nombres por equipo o 1 nombre de equipo |
 | Sets | 1, 2, 3 | Sets para ganar (solo Normal) |
 | Juegos | 6, 4 | Juegos por set (solo Normal) |
-| Juegos | 4, 6, 8, ∞ | Card de la pantalla Reta; ∞ = sin tope |
+| Juegos | 4, 6, 8, ∞ | Card del editor de Retas; ∞ = sin tope |
 | Fecha e inicio | Fecha / hora | El botón Fecha muestra ambos datos y abre su editor (solo Retas) |
 | Tiempo | 15, 20, 30, otro, ∞ | El botón compacto abre el selector de minutos; ∞ = sin reloj (solo Retas) |
 | Máx. pts | 4, 6, 8, otro, ∞ | El botón compacto abre el máximo de juegos ganados que suma cada ganador; predeterminado 6 (solo Retas) |
-| Fin | Todos / Anticipado | Card de la pantalla Reta para jugar todos los juegos o terminar con mayoría |
-| Participantes | Ver participantes / Agregar | Consulta, edita, elimina o agrega jugadores desde la pantalla Reta |
+| Fin | Todos / Anticipado | Card del editor de Retas para jugar todos los juegos o terminar con mayoría |
+| Participantes | Ver participantes / Agregar | Consulta, edita, elimina o agrega jugadores desde el editor de Retas |
 | Puntos | 5, 10, 15, 20, 25, 30 | Puntos para ganar (solo Libre) |
-| 40-40 | Oro / 1 Ventaja / 2 Ventajas / Star | Card de la pantalla Reta. Star permite hasta dos ventajas y, si regresan a iguales después de la segunda, activa un punto decisivo |
-| Error/Acierto | Registrar Errores/Aciertos / Sólo sumar puntos | Se configura únicamente en la pantalla Reta y divide la tarjeta de cada jugador para registrar quién cometió el Error o consiguió el Acierto |
-| Detalle de golpes | Con detalle de golpes / Sin detalle de golpes | En Retas se configura en la misma pantalla Reta; permite clasificar tanto el golpe del Acierto como el golpe en el que ocurrió el Error |
+| 40-40 | Oro / 1 Ventaja / 2 Ventajas / Star | Card del editor de Retas. Star permite hasta dos ventajas y, si regresan a iguales después de la segunda, activa un punto decisivo |
+| Error/Acierto | Registrar Errores/Aciertos / Sólo sumar puntos | Se configura en el editor de Retas y divide la tarjeta de cada jugador para registrar quién cometió el Error o consiguió el Acierto |
+| Detalle de golpes | Con detalle de golpes / Sin detalle de golpes | Se configura en el editor de Retas y permite clasificar tanto el golpe del Acierto como el golpe en el que ocurrió el Error |
 
 ## Instalar en el celular
 

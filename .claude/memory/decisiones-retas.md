@@ -68,3 +68,7 @@ un solo resultado desequilibre la clasificacion de toda la reta.
 ## 2026-08-08-17-36-36-04
 ### Una sola fuente de configuración para Retas
 La pantalla Reta es el único editor de Fecha, Tiempo, Máx. pts, Juegos, Fin, 40-40, Error/Acierto y detalle de golpes. Configuración > Pádel retas muestra sólo el resumen y abre ese editor; Jugadores del partido conserva parejas y participantes y ofrece un resumen pulsable que lleva al mismo editor.
+
+## 2026-08-08-17-54-14-05
+### Editor de Retas integrado en su pestaña
+Configuración > Pádel retas muestra directamente el editor completo, sin resumen ni botón intermedio. Los accesos Reta y Jugadores del partido reutilizan el mismo bloque DOM dentro de un modal, por lo que no existen controles duplicados ni una segunda fuente de configuración. Esta decisión sustituye el patrón de resumen más lanzador introducido en v5.40.
