@@ -4,7 +4,7 @@ description: "Historico append-only, una linea corta por unidad de trabajo cerra
 metadata: 
   node_type: memory
   type: reference
-  updated: 2026-08-07
+  updated: 2026-08-08
   originSessionId: 3f0c74ee-036b-4a00-a437-ba79ac59d1c9
   modified: 2026-07-31T13:36:22.612Z
 ---
@@ -55,3 +55,4 @@ metadata:
 - 2026-08-07-00-03-08-01: v5.34 mueve Participantes junto al menú y traslada el intercambio de posiciones al grupo derecho, conservando ambos comportamientos.
 - 2026-08-07-00-15-05-02: v5.35 usa flechas verticales para intercambiar equipos y horizontales para posiciones internas, en ese orden a la derecha del reloj.
 - 2026-08-07-00-52-00-03: v5.36 agrega auditoría de saques, reinicios y alertas de secuencia a la cronología de las retas.
+- 2026-08-08-08-36-06-01: v5.37 agrega detalle contextual de golpes para Acierto y Error en retas, con persistencia, reportes y Deshacer.

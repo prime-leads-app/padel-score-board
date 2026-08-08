@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <!-- Sube en cada publicacion: la app la compara contra la red para saber si esta al dia -->
-    <meta name="app-version" content="5.36">
+    <meta name="app-version" content="5.37">
     <title>Padel Scoreboard</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -322,6 +322,40 @@
             flex-direction: column;
             justify-content: center;
         }
+        .shot-type-card {
+            background: linear-gradient(135deg, #1b5e20, #2c3e50);
+            padding: 24px 16px;
+        }
+        .shot-type-card.error-mode {
+            background: linear-gradient(135deg, #8b1e2d, #2c3e50);
+        }
+        .shot-type-context {
+            margin: 2px 0 10px;
+            color: rgba(255,255,255,0.72);
+            font-size: 0.78rem;
+            text-align: left;
+        }
+        .shot-type-options {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex: 1;
+        }
+        .shot-type-option {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            flex: 1;
+            min-height: 58px;
+            border: none;
+            border-radius: 10px;
+            background: var(--shot-color, #455a64);
+            color: #fff;
+            font-weight: 700;
+            font-size: clamp(1rem, 5vw, 1.3rem);
+            cursor: pointer;
+        }
 
         #config-modal {
             align-items: flex-start;
@@ -528,6 +562,9 @@
         #outcome-detail-config .reta-compact-toggle {
             grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.95fr);
             min-width: 0;
+        }
+        #reta-shot-detail-config {
+            margin-top: 7px;
         }
         #outcome-detail-config .mode-btn {
             min-width: 0;
@@ -1901,7 +1938,7 @@
                     <button class="btn btn-outline-light name-btn active" onclick="setNameMode('players')" id="btn-players">Jugadores</button>
                     <button class="btn btn-outline-light name-btn" onclick="setNameMode('teams')" id="btn-teams">Equipos</button>
                 </div>
-                <div class="btn-group" role="group">
+                <div class="btn-group" role="group" id="global-shot-detail-config">
                     <button class="btn btn-outline-light mode-btn active" onclick="setTrackShots(true)" id="btn-shots-on">Con detalle de golpes</button>
                     <button class="btn btn-outline-light mode-btn" onclick="setTrackShots(false)" id="btn-shots-off">Sin detalle de golpes</button>
                 </div>
@@ -2109,9 +2146,10 @@
             <div style="margin:8px 0;">
                 <b style="color:#FFD54F;">Registro de Error/Acierto</b> (solo en Retas)<br>
                 Se activa o desactiva desde la pantalla <b>Reta</b>.<br>
-                <b>Registrar Errores/Aciertos:</b> La tarjeta de cada jugador se divide en <b>Error</b> a la izquierda y <b>Acierto</b> a la derecha. Error da el punto al equipo contrario; Acierto lo da al equipo del jugador. Ambos quedan en sus estadisticas por juego, partido y reta.<br>
+                <b>Registrar Errores/Aciertos:</b> La tarjeta de cada jugador se divide en <b>Error</b> a la izquierda y <b>Acierto</b> a la derecha. Error da el punto al equipo contrario; Acierto lo da al equipo del jugador. Ambos quedan en sus estadísticas por juego, partido y reta.<br>
                 <b>Sólo sumar puntos:</b> La tarjeta vuelve a funcionar como antes y atribuye el punto al jugador sin clasificarlo como Error o Acierto.<br>
-                <span style="opacity:0.7;">La zona grande del equipo siempre permite sumar un punto rapido sin atribuirlo. Deshacer revierte tambien Error/Acierto y el detalle de golpe.</span>
+                <b>Con detalle de golpes:</b> Después de Error o Acierto solicita el tipo de golpe y lo incluye en el historial y las estadísticas. <b>Sin detalle de golpes:</b> conserva únicamente Error/Acierto. Esta opción sólo aparece en modo Jugadores y se sincroniza con Configuración.<br>
+                <span style="opacity:0.7;">La zona grande del equipo siempre permite sumar un punto rápido sin atribuirlo. Deshacer revierte también Error/Acierto y el detalle de golpe.</span>
             </div>
 
             <div style="margin:8px 0;">
@@ -2402,7 +2440,7 @@
             </a>
             <a href="https://github.com/prime-leads-app/padel-score-board" target="_blank" rel="noopener" class="card bg-dark border-secondary text-decoration-none flex-fill" style="cursor:pointer;">
                 <div class="card-body py-0 px-2 text-center">
-                    <small class="text-white">PadelApp v<span id="app-version-label">5.36</span></small>
+                    <small class="text-white">PadelApp v<span id="app-version-label">5.37</span></small>
                 </div>
             </a>
             <div class="card bg-dark border-secondary flex-fill">
@@ -2492,6 +2530,10 @@
                     <div class="reta-compact-toggle" role="group" aria-label="Modo de puntuación">
                         <button class="btn btn-outline-light mode-btn active" onclick="setTrackOutcomes(true)" id="btn-outcomes-on">Registrar Errores/Aciertos</button>
                         <button class="btn btn-outline-light mode-btn" onclick="setTrackOutcomes(false)" id="btn-outcomes-off">Sólo sumar puntos</button>
+                    </div>
+                    <div class="reta-compact-toggle" id="reta-shot-detail-config" role="group" aria-label="Detalle de golpes">
+                        <button class="btn btn-outline-light mode-btn active" onclick="setTrackShots(true)" id="btn-reta-shots-on">Con detalle de golpes</button>
+                        <button class="btn btn-outline-light mode-btn" onclick="setTrackShots(false)" id="btn-reta-shots-off">Sin detalle de golpes</button>
                     </div>
                 </div>
 
@@ -2858,7 +2900,7 @@
 
     <!-- Shot Type Modal -->
     <div class="winner-overlay d-none" id="shot-type-overlay" onclick="closeShotTypeModal()">
-        <div class="winner-card" style="background: linear-gradient(135deg, #1b5e20, #2c3e50); padding:24px 16px;" onclick="event.stopPropagation()">
+        <div class="winner-card shot-type-card" id="shot-type-card" onclick="event.stopPropagation()">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
                 <h5 style="margin:0; font-weight:700;" id="shot-type-title">Tipo de golpe</h5>
                 <div style="display:flex; align-items:center; gap:8px;">
@@ -2866,14 +2908,8 @@
                     <button onclick="closeShotTypeModal()" style="padding:2px 8px; background:#e94560; color:#fff; font-weight:700; border:none; border-radius:4px; font-size:0.9rem; cursor:pointer;">✕</button>
                 </div>
             </div>
-            <div style="display:flex; flex-direction:column; gap:8px; flex:1;">
-                <button onclick="registerShot('volea')" style="display:flex; align-items:center; justify-content:center; gap:10px; flex:1; border:none; border-radius:10px; background:#00838f; color:#fff; font-weight:700; font-size:1.3rem; cursor:pointer;"><i class="bi bi-shield"></i> Volea</button>
-                <button onclick="registerShot('bandeja')" style="display:flex; align-items:center; justify-content:center; gap:10px; flex:1; border:none; border-radius:10px; background:#e65100; color:#fff; font-weight:700; font-size:1.3rem; cursor:pointer;"><i class="bi bi-hand-index"></i> Bandeja</button>
-                <button onclick="registerShot('globo')" style="display:flex; align-items:center; justify-content:center; gap:10px; flex:1; border:none; border-radius:10px; background:#1565c0; color:#fff; font-weight:700; font-size:1.3rem; cursor:pointer;"><i class="bi bi-arrow-up-circle"></i> Globo</button>
-                <button onclick="registerShot('smash')" style="display:flex; align-items:center; justify-content:center; gap:10px; flex:1; border:none; border-radius:10px; background:#c62828; color:#fff; font-weight:700; font-size:1.3rem; cursor:pointer;"><i class="bi bi-arrow-down-circle"></i> Smash</button>
-                <button onclick="registerShot('remate')" style="display:flex; align-items:center; justify-content:center; gap:10px; flex:1; border:none; border-radius:10px; background:#6a1b9a; color:#fff; font-weight:700; font-size:1.3rem; cursor:pointer;"><i class="bi bi-lightning-charge"></i> Remate</button>
-                <button onclick="registerShot('otro')" style="display:flex; align-items:center; justify-content:center; gap:10px; flex:1; border:none; border-radius:10px; background:#455a64; color:#fff; font-weight:700; font-size:1.3rem; cursor:pointer;"><i class="bi bi-three-dots"></i> Otro</button>
-            </div>
+            <div class="shot-type-context" id="shot-type-context">Selecciona el golpe con el que terminó el punto.</div>
+            <div class="shot-type-options" id="shot-type-options"></div>
         </div>
     </div>
 
@@ -2904,10 +2940,45 @@
         let trackOutcomes = true; // true = dividir cada jugador en Error / Acierto
         const SHOT_TYPES = ['smash', 'bandeja', 'globo', 'remate', 'volea', 'otro'];
         const SHOT_LABELS = { smash: 'Smash', bandeja: 'Bandeja', globo: 'Globo', remate: 'Remate', volea: 'Volea', otro: 'Otro' };
+        const ERROR_SHOT_TYPES = ['fondo', 'volea', 'globo', 'pared', 'bandeja_smash', 'saque_resto', 'otro'];
+        const ERROR_SHOT_LABELS = {
+            fondo: 'Derecha/Revés',
+            volea: 'Volea',
+            globo: 'Globo',
+            pared: 'Salida de pared',
+            bandeja_smash: 'Bandeja/Smash',
+            saque_resto: 'Saque/Resto',
+            otro: 'Otro'
+        };
+        const SHOT_OPTIONS = [
+            { type: 'volea', label: 'Volea', icon: 'bi-shield', color: '#00838f' },
+            { type: 'bandeja', label: 'Bandeja', icon: 'bi-hand-index', color: '#e65100' },
+            { type: 'globo', label: 'Globo', icon: 'bi-arrow-up-circle', color: '#1565c0' },
+            { type: 'smash', label: 'Smash', icon: 'bi-arrow-down-circle', color: '#c62828' },
+            { type: 'remate', label: 'Remate', icon: 'bi-lightning-charge', color: '#6a1b9a' },
+            { type: 'otro', label: 'Otro', icon: 'bi-three-dots', color: '#455a64' }
+        ];
+        const ERROR_SHOT_OPTIONS = [
+            { type: 'fondo', label: 'Derecha/Revés', icon: 'bi-arrow-left-right', color: '#b71c1c' },
+            { type: 'volea', label: 'Volea', icon: 'bi-shield', color: '#ad2831' },
+            { type: 'globo', label: 'Globo', icon: 'bi-arrow-up-circle', color: '#c44536' },
+            { type: 'pared', label: 'Salida de pared', icon: 'bi-bounding-box', color: '#8d2f23' },
+            { type: 'bandeja_smash', label: 'Bandeja/Smash', icon: 'bi-arrow-down-circle', color: '#d65a31' },
+            { type: 'saque_resto', label: 'Saque/Resto', icon: 'bi-record-circle', color: '#a44200' },
+            { type: 'otro', label: 'Otro', icon: 'bi-three-dots', color: '#455a64' }
+        ];
+
+        function shotLabel(type, outcome) {
+            if (outcome === 'error') return ERROR_SHOT_LABELS[type] || SHOT_LABELS[type] || type;
+            return SHOT_LABELS[type] || ERROR_SHOT_LABELS[type] || type;
+        }
+
         function emptyPlayerStat() {
             const shots = {};
+            const errorShots = {};
             SHOT_TYPES.forEach(t => shots[t] = 0);
-            return { points: 0, aciertos: 0, errors: 0, games: {}, shots };
+            ERROR_SHOT_TYPES.forEach(t => errorShots[t] = 0);
+            return { points: 0, aciertos: 0, errors: 0, games: {}, shots, errorShots };
         }
 
         function emptyPlayerStats() {
@@ -2923,6 +2994,7 @@
             normalized.aciertos = Number(stat.aciertos) || 0;
             normalized.errors = Number(stat.errors) || 0;
             SHOT_TYPES.forEach(t => normalized.shots[t] = Number(stat.shots && stat.shots[t]) || 0);
+            ERROR_SHOT_TYPES.forEach(t => normalized.errorShots[t] = Number(stat.errorShots && stat.errorShots[t]) || 0);
             if (stat.games && typeof stat.games === 'object') {
                 Object.entries(stat.games).forEach(([game, values]) => {
                     normalized.games[game] = {
@@ -2946,7 +3018,9 @@
 
         function playerHasStats(stat) {
             const s = normalizePlayerStat(stat);
-            return s.points > 0 || s.aciertos > 0 || s.errors > 0 || SHOT_TYPES.some(t => s.shots[t] > 0);
+            return s.points > 0 || s.aciertos > 0 || s.errors > 0
+                || SHOT_TYPES.some(t => s.shots[t] > 0)
+                || ERROR_SHOT_TYPES.some(t => s.errorShots[t] > 0);
         }
 
         function performancePercent(stat) {
@@ -2972,7 +3046,9 @@
 
         function shotSummary(stat) {
             const s = normalizePlayerStat(stat);
-            return SHOT_TYPES.filter(t => s.shots[t] > 0).map(t => `${s.shots[t]} ${SHOT_LABELS[t]}`).join(', ');
+            const success = SHOT_TYPES.filter(t => s.shots[t] > 0).map(t => `${s.shots[t]} ${SHOT_LABELS[t]}`).join(', ');
+            const errors = ERROR_SHOT_TYPES.filter(t => s.errorShots[t] > 0).map(t => `${s.errorShots[t]} ${ERROR_SHOT_LABELS[t]}`).join(', ');
+            return [success ? `Golpes a favor: ${success}` : '', errors ? `Errores por golpe: ${errors}` : ''].filter(Boolean).join(' · ');
         }
 
         function performanceByGameHTML(stat) {
@@ -3274,9 +3350,19 @@
 
         function setTrackShots(v) {
             trackShots = v;
-            document.getElementById('btn-shots-on').classList.toggle('active', v);
-            document.getElementById('btn-shots-off').classList.toggle('active', !v);
+            updateTrackShotControls();
             saveToStorage();
+        }
+
+        function updateTrackShotControls() {
+            ['btn-shots-on', 'btn-reta-shots-on'].forEach(id => {
+                const button = document.getElementById(id);
+                if (button) button.classList.toggle('active', trackShots);
+            });
+            ['btn-shots-off', 'btn-reta-shots-off'].forEach(id => {
+                const button = document.getElementById(id);
+                if (button) button.classList.toggle('active', !trackShots);
+            });
         }
 
         function setTrackOutcomes(v) {
@@ -3296,6 +3382,12 @@
             document.querySelectorAll('.player-control').forEach(control => {
                 control.classList.toggle('outcome-detail-active', enabled);
             });
+            const individualMode = nameMode === 'players';
+            const globalShotConfig = document.getElementById('global-shot-detail-config');
+            const retaOutcomeConfig = document.getElementById('outcome-detail-config');
+            if (globalShotConfig) globalShotConfig.classList.toggle('d-none', !individualMode);
+            if (retaOutcomeConfig) retaOutcomeConfig.classList.toggle('d-none', !individualMode);
+            updateTrackShotControls();
         }
 
         function setFreeMaxPoints(n) {
@@ -3710,7 +3802,7 @@
             const attribution = playerId ? { playerId, outcome: null, game: currentGameNumber() } : null;
             if (!addPoint(player, attribution)) return;
             lastPointTime = now;
-            if (playerId && trackShots) showShotTypeModal(playerId);
+            if (playerId && trackShots) showShotTypeModal(playerId, null);
             startCooldownBar(player);
         }
 
@@ -3724,7 +3816,7 @@
             const attribution = { playerId, outcome, game: currentGameNumber() };
             if (!addPoint(scoringTeam, attribution)) return;
             lastPointTime = now;
-            if (outcome === 'acierto' && trackShots) showShotTypeModal(playerId);
+            if (trackShots) showShotTypeModal(playerId, outcome);
             startCooldownBar(scoringTeam);
         }
 
@@ -3750,15 +3842,26 @@
         }
 
         let pendingShotPlayer = null;
+        let pendingShotOutcome = null;
         let shotTypeTimer = null;
         let shotTypeCountdown = 5;
 
-        function showShotTypeModal(playerId) {
+        function showShotTypeModal(playerId, outcome = null) {
             pendingShotPlayer = playerId;
+            pendingShotOutcome = outcome;
             shotTypeCountdown = 10;
             const nameEl = document.getElementById('name-' + playerId);
             const playerName = nameEl ? nameEl.textContent : playerId;
-            document.getElementById('shot-type-title').textContent = playerName + ' - Tipo de golpe';
+            const isError = outcome === 'error';
+            const options = isError ? ERROR_SHOT_OPTIONS : SHOT_OPTIONS;
+            document.getElementById('shot-type-title').textContent = playerName + (isError ? ' - Tipo de error' : ' - Tipo de golpe');
+            document.getElementById('shot-type-context').textContent = isError
+                ? 'Selecciona el golpe en el que se cometió el error.'
+                : 'Selecciona el golpe con el que terminó el punto.';
+            document.getElementById('shot-type-card').classList.toggle('error-mode', isError);
+            document.getElementById('shot-type-options').innerHTML = options.map(option =>
+                `<button class="shot-type-option" onclick="registerShot('${option.type}')" style="--shot-color:${option.color}"><i class="bi ${option.icon}" aria-hidden="true"></i>${option.label}</button>`
+            ).join('');
             document.getElementById('shot-type-timer').textContent = '10s';
             document.getElementById('shot-type-overlay').classList.remove('d-none');
             if (shotTypeTimer) clearInterval(shotTypeTimer);
@@ -3774,26 +3877,33 @@
         let _lastShotSlot = null;
 
         function registerShot(type) {
-            if (pendingShotPlayer) {
-                _lastShotSlot = pendingShotPlayer;
-                playerStats[pendingShotPlayer] = normalizePlayerStat(playerStats[pendingShotPlayer]);
-                playerStats[pendingShotPlayer].shots[type]++;
-                // Update last matchLog entry with shot type
+            const selectedPlayer = pendingShotPlayer;
+            const selectedOutcome = pendingShotOutcome;
+            const validTypes = selectedOutcome === 'error' ? ERROR_SHOT_TYPES : SHOT_TYPES;
+            const selectedType = validTypes.includes(type) ? type : 'otro';
+            const statBucket = selectedOutcome === 'error' ? 'errorShots' : 'shots';
+            if (selectedPlayer) {
+                _lastShotSlot = selectedPlayer;
+                playerStats[selectedPlayer] = normalizePlayerStat(playerStats[selectedPlayer]);
+                playerStats[selectedPlayer][statBucket][selectedType]++;
+                // Vincula el detalle con el mismo punto y resultado que lo abrió.
                 for (let i = matchLog.length - 1; i >= 0; i--) {
-                    if (matchLog[i].player && matchLog[i].shot === null) {
-                        matchLog[i].shot = type;
+                    const entry = matchLog[i];
+                    const sameOutcome = selectedOutcome === null || entry.outcome === selectedOutcome;
+                    if (entry.playerId === selectedPlayer && entry.shot === null && sameOutcome) {
+                        entry.shot = selectedType;
                         break;
                     }
                 }
                 for (let i = pointTimeline.length - 1; i >= 0; i--) {
                     const entry = pointTimeline[i];
                     const isPoint = !entry.eventType || entry.eventType === 'point';
-                    if (isPoint && entry.playerId === pendingShotPlayer && entry.shot === null) {
-                        pointTimeline[i].shot = type;
+                    const sameOutcome = selectedOutcome === null || entry.outcome === selectedOutcome;
+                    if (isPoint && entry.playerId === selectedPlayer && entry.shot === null && sameOutcome) {
+                        entry.shot = selectedType;
                         break;
                     }
                 }
-                pendingShotPlayer = null;
             }
             closeShotTypeModal();
             saveToStorage();
@@ -3818,15 +3928,15 @@
                     localStorage.setItem('padel-matches', JSON.stringify(matches));
                 }
                 // El golpe llegó despues de cerrar el partido: sumarlo tambien a la reta
-                if (retaActive && retaSession && _lastShotSlot) {
-                    const pName = currentSlotNames()[_lastShotSlot];
+                if (retaActive && retaSession && selectedPlayer) {
+                    const pName = currentSlotNames()[selectedPlayer];
                     if (pName && retaSession.stats[pName]) {
                         retaSession.stats[pName] = normalizePlayerStat(retaSession.stats[pName]);
-                        retaSession.stats[pName].shots[type]++;
+                        retaSession.stats[pName][statBucket][selectedType]++;
                         const retaMatch = retaSession.matches.find(m => m.matchId === _lastSavedMatchId);
                         if (retaMatch && retaMatch.stats && retaMatch.stats[pName]) {
                             retaMatch.stats[pName] = normalizePlayerStat(retaMatch.stats[pName]);
-                            retaMatch.stats[pName].shots[type]++;
+                            retaMatch.stats[pName][statBucket][selectedType]++;
                         }
                         saveRetaState();
                     }
@@ -3838,6 +3948,7 @@
         function closeShotTypeModal() {
             if (shotTypeTimer) { clearInterval(shotTypeTimer); shotTypeTimer = null; }
             pendingShotPlayer = null;
+            pendingShotOutcome = null;
             document.getElementById('shot-type-overlay').classList.add('d-none');
         }
 
@@ -4646,7 +4757,9 @@
             } else if (entry.legacy && entry.text) {
                 action = esc(entry.text);
             }
-            const shot = entry.shot ? ` · Golpe: ${esc(SHOT_LABELS[entry.shot] || entry.shot)}` : '';
+            const shot = entry.shot
+                ? ` · ${entry.outcome === 'error' ? 'Error en' : 'Golpe'}: ${esc(shotLabel(entry.shot, entry.outcome))}`
+                : '';
             const score = timelineScoreLabel(entry.score);
             return `<article class="live-history-item team-${scoringTeam}">
                 <div class="live-history-sequence">${sequence}</div>
@@ -4834,7 +4947,7 @@
                                 line += ` · <span style="color:#7ec8e3;">${h.player}</span>`;
                                 if (h.outcome === 'error') line += ' <span style="color:#ff9eaa;">[Error]</span>';
                                 if (h.outcome === 'acierto') line += ' <span style="color:#9be7a5;">[Acierto]</span>';
-                                if (h.shot) line += ` <span style="color:#ffc107;">[${SHOT_LABELS[h.shot] || h.shot}]</span>`;
+                                if (h.shot) line += ` <span style="color:#ffc107;">[${h.outcome === 'error' ? 'Error en: ' : ''}${esc(shotLabel(h.shot, h.outcome))}]</span>`;
                             }
                             return line;
                         };
@@ -4940,7 +5053,7 @@
                         line += ` · <span style="color:#7ec8e3;">${h.player}</span>`;
                         if (h.outcome === 'error') line += ' <span style="color:#ff9eaa;">[Error]</span>';
                         if (h.outcome === 'acierto') line += ' <span style="color:#9be7a5;">[Acierto]</span>';
-                        if (h.shot) line += ` <span style="color:#ffc107;">[${SHOT_LABELS[h.shot] || h.shot}]</span>`;
+                        if (h.shot) line += ` <span style="color:#ffc107;">[${h.outcome === 'error' ? 'Error en: ' : ''}${esc(shotLabel(h.shot, h.outcome))}]</span>`;
                     }
                     return line;
                 };
@@ -5918,6 +6031,7 @@
                 st.aciertos += contribution.aciertos;
                 st.errors += contribution.errors;
                 SHOT_TYPES.forEach(t => st.shots[t] += contribution.shots[t]);
+                ERROR_SHOT_TYPES.forEach(t => st.errorShots[t] += contribution.errorShots[t]);
             });
             winnerSlots.forEach(k => {
                 retaSession.points[names[k]] += countedPoints;
@@ -5963,6 +6077,7 @@
                     st.aciertos = Math.max(0, st.aciertos - contribution.aciertos);
                     st.errors = Math.max(0, st.errors - contribution.errors);
                     SHOT_TYPES.forEach(t => st.shots[t] = Math.max(0, st.shots[t] - contribution.shots[t]));
+                    ERROR_SHOT_TYPES.forEach(t => st.errorShots[t] = Math.max(0, st.errorShots[t] - contribution.errorShots[t]));
                 });
             }
         }
@@ -6152,6 +6267,7 @@
                         aciertos: 0,
                         errors: 0,
                         shots: Object.fromEntries(SHOT_TYPES.map(type => [type, 0])),
+                        errorShots: Object.fromEntries(ERROR_SHOT_TYPES.map(type => [type, 0])),
                         gamesFor: 0,
                         gamesAgainst: 0,
                         partners: new Set(),
@@ -6168,6 +6284,7 @@
                 player.aciertos += stat.aciertos;
                 player.errors += stat.errors;
                 SHOT_TYPES.forEach(type => player.shots[type] += stat.shots[type]);
+                ERROR_SHOT_TYPES.forEach(type => player.errorShots[type] += stat.errorShots[type]);
             };
 
             (session.roster || []).forEach(getPlayer);
@@ -6199,9 +6316,13 @@
             return Array.from(playerMap.values()).map(player => {
                 const tracked = player.aciertos + player.errors;
                 const shotTotal = SHOT_TYPES.reduce((total, type) => total + player.shots[type], 0);
+                const errorShotTotal = ERROR_SHOT_TYPES.reduce((total, type) => total + player.errorShots[type], 0);
                 const topShot = SHOT_TYPES
                     .filter(type => player.shots[type] > 0)
                     .sort((a, b) => player.shots[b] - player.shots[a])[0] || null;
+                const topErrorShot = ERROR_SHOT_TYPES
+                    .filter(type => player.errorShots[type] > 0)
+                    .sort((a, b) => player.errorShots[b] - player.errorShots[a])[0] || null;
                 return {
                     ...player,
                     tracked,
@@ -6211,6 +6332,8 @@
                     unclassified: Math.max(0, player.attributedPoints - player.aciertos),
                     shotTotal,
                     topShot,
+                    errorShotTotal,
+                    topErrorShot,
                     recent: player.recent.slice(-3)
                 };
             }).sort((a, b) => b.classificationPoints - a.classificationPoints || b.won - a.won || a.played - b.played || a.name.localeCompare(b.name));
@@ -6251,8 +6374,10 @@
                 ? `<span>Últimos: ${player.recent.map(won => `<span class="reta-form-mark ${won ? 'win' : 'loss'}" title="${won ? 'Ganó' : 'Perdió'}">${won ? 'G' : 'P'}</span>`).join('')}</span>`
                 : '';
             const shots = SHOT_TYPES.filter(type => player.shots[type] > 0).map(type => `${SHOT_LABELS[type]}: ${player.shots[type]}`).join(' · ');
+            const errorShots = ERROR_SHOT_TYPES.filter(type => player.errorShots[type] > 0).map(type => `${ERROR_SHOT_LABELS[type]}: ${player.errorShots[type]}`).join(' · ');
             const detailLines = [];
-            if (shots) detailLines.push(`Golpes registrados: ${shots}`);
+            if (shots) detailLines.push(`Golpes a favor: ${shots}`);
+            if (errorShots) detailLines.push(`Errores por golpe: ${errorShots}`);
             if (player.partners.size || player.opponents.size) detailLines.push(`Parejas distintas: ${player.partners.size} · Rivales distintos: ${player.opponents.size}`);
             if (player.unclassified > 0) detailLines.push(`Puntos atribuidos sin Error/Acierto: ${player.unclassified}`);
             const details = detailLines.length
@@ -6809,8 +6934,7 @@
                 document.getElementById('deuce-1adv').classList.toggle('active', deuceMode === '1adv');
                 document.getElementById('deuce-2adv').classList.toggle('active', deuceMode === '2adv');
                 document.getElementById('deuce-star').classList.toggle('active', deuceMode === 'star');
-                document.getElementById('btn-shots-on').classList.toggle('active', trackShots);
-                document.getElementById('btn-shots-off').classList.toggle('active', !trackShots);
+                updateTrackShotControls();
                 document.getElementById('btn-outcomes-on').classList.toggle('active', trackOutcomes);
                 document.getElementById('btn-outcomes-off').classList.toggle('active', !trackOutcomes);
                 updateOutcomeControls();
