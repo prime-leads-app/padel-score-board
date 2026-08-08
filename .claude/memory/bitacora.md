@@ -57,3 +57,4 @@ metadata:
 - 2026-08-07-00-52-00-03: v5.36 agrega auditoría de saques, reinicios y alertas de secuencia a la cronología de las retas.
 - 2026-08-08-08-36-06-01: v5.37 agrega detalle contextual de golpes para Acierto y Error en retas, con persistencia, reportes y Deshacer.
 - 2026-08-08-10-40-39-02: v5.38 replica la administración de participantes dentro de Jugadores del partido.
+- 2026-08-08-16-17-09-03: v5.39 reorganiza Configuración en tres perfiles independientes sin mover la gestión operativa de Reta.

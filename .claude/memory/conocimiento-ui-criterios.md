@@ -58,3 +58,7 @@ El encabezado incluye un acceso directo al historial del partido actual. La list
 
 ## 2026-08-08-10-40-39-02
 El modal Jugadores del partido muestra antes de las parejas los mismos accesos Ver participantes y Agregar de la pantalla Reta. Ambos reutilizan los modales existentes; el contador del roster se sincroniza mediante data-reta-roster-count y cerrar cada submodal regresa a la alineación sin perder selecciones.
+
+## 2026-08-08-16-17-09-03
+### Configuración por modalidad
+Configuración usa una sola fila con Pádel normal, Pádel retas y Libre. Cada perfil conserva nombres, registro por jugadores o equipos, detalle de golpes y reglas compartidas; los valores exclusivos siguen siendo propios de su modalidad. Participantes, parejas y fecha permanecen en la pantalla Reta, accesible desde el perfil de Retas.

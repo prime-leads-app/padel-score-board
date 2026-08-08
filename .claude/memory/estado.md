@@ -10,4 +10,6 @@ metadata:
   modified: 2026-07-31T13:35:51.259Z
 ---
 
-Ahora: v5.38 permite consultar, editar o agregar participantes desde Jugadores del partido sin abrir la configuración completa de la reta. Se validaron ambos accesos, contador, retorno al modal, composición móvil y ausencia de errores. Próximo paso: la unidad cierra aquí.
+Ahora: v5.39 reorganiza Configuración en Pádel normal, Pádel retas y Libre, conserva los ajustes por perfil y migra los datos anteriores sin cambiar la operación de Reta. Se validaron persistencia, accesos existentes, sintaxis y composición móvil a 390 x 844.
+
+Próximo paso: la unidad cierra aquí.

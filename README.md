@@ -41,7 +41,7 @@ Formato informal popular en México. Una reta es una **jornada con varios partid
 
 **Clasificación individual:** solo suma la pareja que gana, y cada uno de los dos ganadores suma los juegos que ganó su equipo hasta el máximo configurado, que inicialmente es 6. Con máximo 6, ganar 10-2 suma 6 pts a cada ganador y ganar 5-2 suma 5; el marcador real no se modifica. También se puede elegir ∞ para no aplicar tope. Un cambio de máximo se aplica a los partidos que terminen después; los ya cerrados conservan el aporte registrado. Si el partido se definió con juegos empatados, cuentan los juegos completos. Los puntos de la tabla se pueden **editar a mano** desde la clasificación.
 
-**Rendimiento por jugador:** desde la pantalla Reta puedes activar o desactivar el detalle de **Error/Acierto**. Al activarlo, cada tarjeta de participante se divide en **Error** y **Acierto**. Error concede el punto al equipo contrario; Acierto lo concede al equipo del jugador. En modo Jugadores también puedes elegir **Con detalle de golpes** o **Sin detalle de golpes** desde la misma pantalla Reta; este ajuste se mantiene sincronizado con Configuración. Con el detalle activo, Acierto conserva su selector de Volea, Bandeja, Globo, Smash, Remate u Otro, mientras Error abre un selector específico con Derecha/Revés, Volea, Globo, Salida de pared, Bandeja/Smash, Saque/Resto u Otro. La app guarda el resultado y su tipo por juego y partido, calcula el porcentaje de rendimiento y los acumula durante toda la reta. La zona grande del equipo sigue disponible para anotar un punto rápido sin atribución.
+**Rendimiento por jugador:** desde la pestaña **Pádel retas** de Configuración o desde la pantalla Reta puedes activar o desactivar el detalle de **Error/Acierto**. Al activarlo, cada tarjeta de participante se divide en **Error** y **Acierto**. Error concede el punto al equipo contrario; Acierto lo concede al equipo del jugador. En modo Jugadores también puedes elegir **Con detalle de golpes** o **Sin detalle de golpes**; ambos controles se mantienen sincronizados. Con el detalle activo, Acierto conserva su selector de Volea, Bandeja, Globo, Smash, Remate u Otro, mientras Error abre un selector específico con Derecha/Revés, Volea, Globo, Salida de pared, Bandeja/Smash, Saque/Resto u Otro. La app guarda el resultado y su tipo por juego y partido, calcula el porcentaje de rendimiento y los acumula durante toda la reta. La zona grande del equipo sigue disponible para anotar un punto rápido sin atribución.
 
 **Orden de saque:** cada control tiene una sola acción. A la izquierda, las flechas circulares cambian el equipo sacador y el icono amarillo de persona cambia cuál de sus dos jugadores saca, moviendo el borde amarillo al otro nombre. A la derecha del reloj, las flechas verticales intercambian arriba/abajo a los equipos completos y las flechas horizontales intercambian izquierda/derecha a los jugadores del equipo sacador sin mover el indicador de su posición física. Al terminar cada juego, el saque pasa al equipo contrario y queda preparado el compañero del equipo anterior para su siguiente turno; la secuencia predeterminada es equipo 1 izquierda, equipo 2 izquierda, equipo 1 derecha y equipo 2 derecha. **Deshacer** también restaura el equipo y jugador que sacaban antes del punto.
 
@@ -106,7 +106,7 @@ Modo libre para cualquier actividad. Cada toque suma 1 punto.
 
 Toda la app se controla desde el menú hamburguesa (icono ☰) en la parte superior:
 
-- **Configuración** - Muestra/oculta todas las opciones de juego (modo, nombres, formato, etc.)
+- **Configuración** - Organiza las opciones en Pádel normal, Pádel retas y Libre; cada modalidad recuerda sus propios ajustes
 - **Ayuda opciones** - Explica qué significa cada opción de configuración
 - **Cómo jugar pádel/retas/libre** - Reglas y ejemplos de cada modo
 - **Reta** - Participantes, parejas, fecha y tiempo por partido
@@ -119,13 +119,12 @@ Toda la app se controla desde el menú hamburguesa (icono ☰) en la parte super
 
 ## Configuración
 
-Las opciones generales se abren desde el menú hamburguesa > Configuración; las opciones propias de la jornada se editan desde Reta:
+Las opciones generales se abren desde el menú hamburguesa > Configuración. El selector superior separa **Pádel normal**, **Pádel retas** y **Libre**; cada modalidad conserva de forma independiente los nombres, el registro por jugadores/equipos, el detalle de golpes y las reglas que comparte con otra modalidad. La administración operativa de participantes, parejas y fecha continúa en la pantalla Reta.
 
 | Opción | Valores | Descripción |
 |--------|---------|-------------|
-| Modo | Padel / Libre | Tipo de marcador |
+| Modalidad | Pádel normal / Pádel retas / Libre | Cambia de perfil sin perder la configuración guardada de los otros perfiles |
 | Nombres | Jugadores / Equipos | 2 nombres por equipo o 1 nombre de equipo |
-| Formato | Normal / Retas | Formato de partido (solo Padel) |
 | Sets | 1, 2, 3 | Sets para ganar (solo Normal) |
 | Juegos | 6, 4 | Juegos por set (solo Normal) |
 | Juegos | 4, 6, 8, ∞ | Juegos por partido, ∞ = sin tope (solo Retas) |
@@ -136,8 +135,8 @@ Las opciones generales se abren desde el menú hamburguesa > Configuración; las
 | Participantes | Ver participantes / Agregar | Consulta, edita, elimina o agrega jugadores desde la pantalla Reta |
 | Puntos | 5, 10, 15, 20, 25, 30 | Puntos para ganar (solo Libre) |
 | 40-40 | Oro / 1 Ventaja / 2 Ventajas / Star | Qué pasa en empate a 40. Star permite hasta dos ventajas y, si regresan a iguales después de la segunda, activa un punto decisivo |
-| Error/Acierto | Registrar Errores/Aciertos / Sólo sumar puntos | Se configura en la pantalla Reta y divide la tarjeta de cada jugador para registrar quién cometió el Error o consiguió el Acierto |
-| Detalle de golpes | Con detalle de golpes / Sin detalle de golpes | Disponible en modo Jugadores y sincronizado entre Configuración y Reta; permite clasificar tanto el golpe del Acierto como el golpe en el que ocurrió el Error |
+| Error/Acierto | Registrar Errores/Aciertos / Sólo sumar puntos | Se configura en Pádel retas o en la pantalla Reta y divide la tarjeta de cada jugador para registrar quién cometió el Error o consiguió el Acierto |
+| Detalle de golpes | Con detalle de golpes / Sin detalle de golpes | Disponible en modo Jugadores y sincronizado entre Configuración y Reta; cada modalidad conserva su selección y permite clasificar tanto el golpe del Acierto como el golpe en el que ocurrió el Error |
 
 ## Instalar en el celular
 
