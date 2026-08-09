@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <!-- Sube en cada publicacion: la app la compara contra la red para saber si esta al dia -->
-    <meta name="app-version" content="5.44">
+    <meta name="app-version" content="5.45">
     <title>Padel Scoreboard</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1797,6 +1797,37 @@
             box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.12);
         }
 
+        .serve-event .live-history-event-head { align-items: center; }
+        .serve-event .live-history-event-head time { color: #ffe082; }
+        .serve-event-details {
+            display: grid;
+            gap: 4px;
+            margin-top: 7px;
+        }
+        .serve-event-detail {
+            display: grid;
+            grid-template-columns: 54px minmax(0, 1fr);
+            align-items: baseline;
+            gap: 7px;
+            color: #dce6ef;
+            font-size: 0.69rem;
+            line-height: 1.3;
+        }
+        .serve-event-detail-label {
+            color: #9fb3c8;
+            font-size: 0.59rem;
+            font-weight: 800;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+        .serve-event-detail strong {
+            min-width: 0;
+            font-weight: 650;
+            text-align: left;
+        }
+        .serve-event-detail .serve-event-live { color: #ffe082; }
+        .serve-event-detail.score strong { color: #ffc107; }
+
         .live-history-item.reset-event {
             margin: 4px 0;
             padding: 9px 8px;
@@ -1901,6 +1932,11 @@
         .light-theme .live-history-item { border-color: #dce3e8; }
         .light-theme .live-history-award { color: #34495e; }
         .light-theme .live-history-item.serve-event { background: #fff9e6; border-color: #e6bd3f; }
+        .light-theme .serve-event .live-history-event-head time,
+        .light-theme .serve-event-detail .serve-event-live,
+        .light-theme .serve-event-detail.score strong { color: #8a6200; }
+        .light-theme .serve-event-detail { color: #34495e; }
+        .light-theme .serve-event-detail-label { color: #607d8b; }
         .light-theme .live-history-item.reset-event { background: #fff3e6; border-color: #e9a45d; }
 
         /* ── Winner ── */
@@ -2705,7 +2741,7 @@
             </a>
             <a href="https://github.com/prime-leads-app/padel-score-board" target="_blank" rel="noopener" class="card bg-dark border-secondary text-decoration-none flex-fill" style="cursor:pointer;">
                 <div class="card-body py-0 px-2 text-center">
-                    <small class="text-white">PadelApp v<span id="app-version-label">5.44</span></small>
+                    <small class="text-white">PadelApp v<span id="app-version-label">5.45</span></small>
                 </div>
             </a>
             <div class="card bg-dark border-secondary flex-fill">
@@ -5241,15 +5277,20 @@
             const score = timelineScoreLabel(entry.score);
             const endScore = timelineScoreLabel(entry.endScore);
             const displayedScore = endScore || score;
-            const scorePrefix = endScore ? 'Cierre: ' : 'Inicio: ';
+            const scorePrefix = endScore ? 'Final: ' : 'Inicial: ';
             const reason = entry.reason || 'Turno de saque';
-            const endReason = entry.endReason && entry.endReason !== reason ? ` · ${esc(entry.endReason)}` : '';
+            const endReason = entry.endReason && entry.endReason !== reason ? entry.endReason : '';
+            const inProgress = !entry.endedAt && !entry.endedTimestamp;
             return `<article class="live-history-item serve-event team-${servingTeam}">
                 <div class="live-history-sequence"><i class="bi bi-person-badge" aria-hidden="true"></i></div>
                 <div>
-                    <div class="live-history-event-head"><strong>${esc(entry.player || 'Jugador')} <span class="live-history-outcome serve">Al saque</span></strong><time>${esc(start)}</time></div>
-                    <div class="live-history-award">Inicio <strong>${esc(start)}</strong> · Fin <strong>${esc(end)}</strong></div>
-                    <div class="live-history-scoreline"><span>Juego ${esc(entry.game || 1)} · ${esc(reason)}${endReason}</span>${displayedScore ? `<strong>${scorePrefix}${esc(displayedScore)}</strong>` : ''}</div>
+                    <div class="live-history-event-head"><strong>${esc(entry.player || 'Jugador')} <span class="live-history-outcome serve">Al saque</span></strong><time>Inicio ${esc(start)}</time></div>
+                    <div class="serve-event-details">
+                        <div class="serve-event-detail"><span class="serve-event-detail-label">Fin</span><strong class="${inProgress ? 'serve-event-live' : ''}">${esc(end)}</strong></div>
+                        <div class="serve-event-detail"><span class="serve-event-detail-label">Contexto</span><strong>Juego ${esc(entry.game || 1)} · ${esc(reason)}</strong></div>
+                        ${endReason ? `<div class="serve-event-detail"><span class="serve-event-detail-label">Cierre</span><strong>${esc(endReason)}</strong></div>` : ''}
+                        ${displayedScore ? `<div class="serve-event-detail score"><span class="serve-event-detail-label">Marcador</span><strong>${scorePrefix}${esc(displayedScore)}</strong></div>` : ''}
+                    </div>
                 </div>
             </article>`;
         }

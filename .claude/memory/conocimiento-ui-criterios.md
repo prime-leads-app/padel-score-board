@@ -62,3 +62,7 @@ El modal Jugadores del partido muestra antes de las parejas los mismos accesos V
 ## 2026-08-08-16-17-09-03
 ### Configuración por modalidad
 Configuración usa una sola fila con Pádel normal, Pádel retas y Libre. Cada perfil conserva nombres, registro por jugadores o equipos, detalle de golpes y reglas compartidas; los valores exclusivos siguen siendo propios de su modalidad. Participantes, parejas y fecha permanecen en la pantalla Reta, accesible desde el perfil de Retas.
+
+## 2026-08-08-18-45-26-09
+### Cronología con lectura vertical
+Los eventos de saque deben leerse en una secuencia vertical estable: jugador y hora de inicio en el encabezado, después Fin, Contexto, Cierre cuando exista y Marcador. No se debe enfrentar contexto y marcador en columnas opuestas porque obliga a alternar la lectura y provoca saltos de línea confusos en móvil.

@@ -10,6 +10,6 @@ metadata:
   modified: 2026-07-31T13:35:51.259Z
 ---
 
-Ahora: v5.44 corrige la sobrecompactación de v5.43 y deja Configuración > Pádel retas en un punto medio: cards de 52 px, secciones y parejas con separaciones moderadas y pie visible. Se validó a 390 x 788 que quedan 21 px libres, sin recortes ni desbordamiento horizontal.
+Ahora: v5.45 reorganiza los eventos de saque de la cronología en lectura vertical: jugador y hora de inicio, Fin, Contexto, Cierre opcional y Marcador. Se validó con una reta real a 390 x 844 que el card conserva todos los datos, no se recorta y elimina el salto entre columnas.
 
 Próximo paso: la unidad cierra aquí.
