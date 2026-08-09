@@ -65,3 +65,4 @@ metadata:
 - 2026-08-08-18-30-47-08: v5.44 recupera altura visual en Retas y conserva el pie completo con margen corto.
 - 2026-08-08-18-45-26-09: v5.45 ordena secuencialmente los datos de los eventos de saque en la cronología.
 - 2026-08-08-19-08-44-10: v5.46 diferencia visualmente Error, Acierto y Saque en la cronología de la reta.
+- 2026-08-08-19-24-14-11: v5.47 limpia el partido al reiniciar y simplifica los eventos de punto.

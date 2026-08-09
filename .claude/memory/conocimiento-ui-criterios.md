@@ -69,3 +69,6 @@ Los eventos de saque deben leerse en una secuencia vertical estable: jugador y h
 
 ## 2026-08-08-19-08-44-10
 La cronología codifica el tipo de evento con fondo y círculo semánticos: rojo para Error, verde para Acierto, amarillo para Saque y neutro para puntos sin detalle. El equipo beneficiado permanece explícito en el texto Punto para, evitando que el color tenga dos significados. Se verificaron los tres estados juntos a 390 x 844.
+
+## 2026-08-08-19-24-14-11
+Reiniciar descarta marcador, cronología, saques, golpes y estadísticas del partido actual; ya no conserva eventos naranjas de reinicio. En los eventos de punto, el golpe se muestra junto a Error/Acierto, Punto para queda solo, Juego ocupa su propia línea y el marcador muestra únicamente Puntos, sin repetir Juegos.

@@ -10,6 +10,6 @@ metadata:
   modified: 2026-07-31T13:35:51.259Z
 ---
 
-Ahora: v5.46 diferencia los eventos de la cronología por su causa con fondos y círculos semánticos, manteniendo el equipo beneficiado como texto. Se validó en una reta real a 390 x 844 con un Error, un Acierto y un Saque visibles sin recortes.
+Ahora: v5.47 hace que Reiniciar elimine toda la actividad y estadísticas del partido actual. Los cards de Error/Acierto muestran el golpe en el encabezado y separan Punto para, Juego y Marcador de puntos en lectura vertical; se validó a 390 x 844.
 
 Próximo paso: la unidad cierra aquí.
