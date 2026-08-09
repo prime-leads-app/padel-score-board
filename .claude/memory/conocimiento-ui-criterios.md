@@ -4,7 +4,7 @@ description: Criterios de interfaz que fijo el usuario y que ya costaron correcc
 metadata: 
   node_type: memory
   type: reference
-  updated: 2026-08-08
+  updated: 2026-08-09
   review_by: 2027-01-31
   originSessionId: 3f0c74ee-036b-4a00-a437-ba79ac59d1c9
   modified: 2026-07-31T13:35:15.106Z
@@ -126,3 +126,6 @@ El modal muestra el nombre del participante junto a una etiqueta semantica verde
 
 ## 2026-08-08-23-42-03-29
 El modal conserva solo el nombre, la etiqueta Acierto, Error o Punto y las opciones. Se eliminaron Tipo de golpe, Tipo de error y las instrucciones, incluido el espacio que ocupaban.
+
+## 2026-08-09-10-53-41-01
+Saque aparece antes de Otro, se registra en el historial y participa en la normalizacion, acumulacion, resta y detalle estadistico mediante SHOT_TYPES.

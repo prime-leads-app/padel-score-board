@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <!-- Sube en cada publicacion: la app la compara contra la red para saber si esta al dia -->
-    <meta name="app-version" content="5.65">
+    <meta name="app-version" content="5.66">
     <title>Padel Scoreboard</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -3028,7 +3028,7 @@
             </a>
             <a href="https://github.com/prime-leads-app/padel-score-board" target="_blank" rel="noopener" class="card bg-dark border-secondary text-decoration-none flex-fill" style="cursor:pointer;">
                 <div class="card-body py-0 px-2 text-center">
-                    <small class="text-white">PadelApp v<span id="app-version-label">5.65</span></small>
+                    <small class="text-white">PadelApp v<span id="app-version-label">5.66</span></small>
                 </div>
             </a>
             <div class="card bg-dark border-secondary flex-fill">
@@ -3547,8 +3547,8 @@
             retas: { nameMode: 'players', deuceMode: 'golden', trackShots: true, trackOutcomes: true, names: [...DEFAULT_PLAYER_NAMES], teamNames: [...DEFAULT_TEAM_NAMES] },
             free: { nameMode: 'players', deuceMode: 'golden', trackShots: true, trackOutcomes: true, names: [...DEFAULT_PLAYER_NAMES], teamNames: [...DEFAULT_TEAM_NAMES] }
         };
-        const SHOT_TYPES = ['smash', 'bandeja', 'globo', 'remate', 'volea', 'otro'];
-        const SHOT_LABELS = { smash: 'Smash', bandeja: 'Bandeja', globo: 'Globo', remate: 'Remate', volea: 'Volea', otro: 'Otro' };
+        const SHOT_TYPES = ['smash', 'bandeja', 'globo', 'remate', 'volea', 'saque', 'otro'];
+        const SHOT_LABELS = { smash: 'Smash', bandeja: 'Bandeja', globo: 'Globo', remate: 'Remate', volea: 'Volea', saque: 'Saque', otro: 'Otro' };
         const ERROR_SHOT_TYPES = ['fondo', 'volea', 'globo', 'pared', 'bandeja_smash', 'saque_resto', 'otro'];
         const ERROR_SHOT_LABELS = {
             fondo: 'Derecha/Revés',
@@ -3565,6 +3565,7 @@
             { type: 'globo', label: 'Globo', icon: 'bi-arrow-up-circle', color: '#1565c0' },
             { type: 'smash', label: 'Smash', icon: 'bi-arrow-down-circle', color: '#c62828' },
             { type: 'remate', label: 'Remate', icon: 'bi-lightning-charge', color: '#6a1b9a' },
+            { type: 'saque', label: 'Saque', icon: 'bi-record-circle', color: '#2e7d32' },
             { type: 'otro', label: 'Otro', icon: 'bi-three-dots', color: '#455a64' }
         ];
         const ERROR_SHOT_OPTIONS = [
