@@ -84,3 +84,6 @@ Los cards de punto y los resultados de juego o partido usan formato de marcador 
 
 ## 2026-08-08-20-46-18-15
 Cada elemento de la cronología tiene una sola responsabilidad: el separador Juego N finalizado muestra el marcador de juegos con ambas parejas; el punto decisivo sólo indica que cerró el juego o partido; el card amarillo muestra únicamente jugador al saque, intervalo, juego y estado. Los motivos de juegos anteriores permanecen almacenados pero no se mezclan visualmente; los cambios manuales sí se distinguen.
+
+## 2026-08-08-20-59-02-16
+El encabezado interior de un partido terminado usa Pareja 1 (juegos) VS Pareja 2 (juegos). Se eliminó la segunda línea redundante Resultado y el conteo de eventos; las puntuaciones conservan el amarillo y los colores identificadores de cada pareja.

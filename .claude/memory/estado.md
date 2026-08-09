@@ -10,6 +10,6 @@ metadata:
   modified: 2026-07-31T13:35:51.259Z
 ---
 
-Ahora: v5.51 separa visualmente resultados y saques en la cronología. Se validó a 390 x 844 con un partido guardado: el separador contiene el resultado, el punto decisivo sólo identifica el cierre y el card amarillo muestra únicamente el turno al que pertenece.
+Ahora: v5.52 muestra el resultado del partido directamente después del nombre de cada pareja y elimina la segunda línea redundante. Se validó a 390 x 844 sin pérdida de nombres ni puntuaciones.
 
 Próximo paso: la unidad cierra aquí.

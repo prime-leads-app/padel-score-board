@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <!-- Sube en cada publicacion: la app la compara contra la red para saber si esta al dia -->
-    <meta name="app-version" content="5.51">
+    <meta name="app-version" content="5.52">
     <title>Padel Scoreboard</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1734,6 +1734,11 @@
         .live-history-team.team-1 { color: #ff9eaa; }
         .live-history-team.team-2 { color: #90caf9; text-align: right; }
 
+        .live-history-team-result {
+            color: #ffc107;
+            white-space: nowrap;
+        }
+
         .live-history-vs {
             color: #75889a;
             font-size: 0.65rem;
@@ -2101,6 +2106,7 @@
         .light-theme .live-history-team-score-side.team-1 .live-history-team-score-name { color: #a0182f; }
         .light-theme .live-history-team-score-side.team-2 .live-history-team-score-name { color: #0d5a9c; }
         .light-theme .live-history-team-score-separator { color: #607d8b; }
+        .light-theme .live-history-team-result { color: #8a6200; }
         .light-theme .live-history-game-divider { color: #8a6200; }
         .light-theme .live-history-game-divider-label small { color: #607d8b; }
         .light-theme .live-history-item.point-event { background: #f3f7fa; border-color: #c8d6df; }
@@ -2917,7 +2923,7 @@
             </a>
             <a href="https://github.com/prime-leads-app/padel-score-board" target="_blank" rel="noopener" class="card bg-dark border-secondary text-decoration-none flex-fill" style="cursor:pointer;">
                 <div class="card-body py-0 px-2 text-center">
-                    <small class="text-white">PadelApp v<span id="app-version-label">5.51</span></small>
+                    <small class="text-white">PadelApp v<span id="app-version-label">5.52</span></small>
                 </div>
             </a>
             <div class="card bg-dark border-secondary flex-fill">
@@ -5579,10 +5585,9 @@
                 <summary>Partido ${esc(match.n || '')}: ${esc(team1)} vs ${esc(team2)} · ${esc(games)}</summary>
                 <div class="reta-history-match-body">
                     <div class="live-history-matchup">
-                        <div class="live-history-team team-1">${esc(team1)}</div>
+                        <div class="live-history-team team-1">${esc(team1)} <strong class="live-history-team-result">(${esc(match.games[0])})</strong></div>
                         <div class="live-history-vs">VS</div>
-                        <div class="live-history-team team-2">${esc(team2)}</div>
-                        <div class="live-history-current-score">Resultado: ${esc(games)} · ${events.length} ${events.length === 1 ? 'evento' : 'eventos'}</div>
+                        <div class="live-history-team team-2">${esc(team2)} <strong class="live-history-team-result">(${esc(match.games[1])})</strong></div>
                     </div>
                     <div class="live-history-list">${timelineEntriesHTML(events)}</div>
                 </div>
