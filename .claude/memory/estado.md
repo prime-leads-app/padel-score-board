@@ -10,6 +10,6 @@ metadata:
   modified: 2026-07-31T13:35:51.259Z
 ---
 
-Ahora: v5.61 reduce la sección de registro a una fila con dos combos accesibles y conserva toda su funcionalidad. Se validaron visualmente a 390 x 844 y se probaron ambas opciones de cada combo, restaurando después la configuración inicial.
+Ahora: v5.62 intercambia visualmente los combos para mostrar Golpes y después Registro, sin modificar sus valores ni comportamiento. Se validó a 390 x 844.
 
 Próximo paso: la unidad cierra aquí.

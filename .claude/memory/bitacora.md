@@ -80,3 +80,4 @@ metadata:
 - 2026-08-08-22-33-10-23: v5.59 separa la finalización del partido del último turno de saque.
 - 2026-08-08-22-38-58-24: v5.60 simplifica el card de saque terminado.
 - 2026-08-08-22-49-57-25: v5.61 compacta Registro y Golpes en dos menús desplegables.
+- 2026-08-08-23-01-38-26: v5.62 muestra Golpes antes de Registro en la configuración de retas.

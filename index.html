@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <!-- Sube en cada publicacion: la app la compara contra la red para saber si esta al dia -->
-    <meta name="app-version" content="5.61">
+    <meta name="app-version" content="5.62">
     <title>Padel Scoreboard</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -2522,17 +2522,17 @@
                             <div class="reta-section reta-compact-section" id="outcome-detail-config" role="region" aria-label="Registro y detalle de golpes">
                                 <div class="reta-inline-preferences">
                                     <label class="reta-preference-field">
-                                        <span class="reta-preference-label">Registro</span>
-                                        <select class="reta-preference-select" id="reta-outcome-select" onchange="setTrackOutcomes(this.value === 'outcomes')" aria-label="Configurar registro de puntos">
-                                            <option value="outcomes">Errores/Aciertos</option>
-                                            <option value="points">Sólo sumar puntos</option>
-                                        </select>
-                                    </label>
-                                    <label class="reta-preference-field">
                                         <span class="reta-preference-label">Golpes</span>
                                         <select class="reta-preference-select" id="reta-shots-select" onchange="setTrackShots(this.value === 'detail')" aria-label="Configurar detalle de golpes">
                                             <option value="detail">Con detalle</option>
                                             <option value="simple">Sin detalle</option>
+                                        </select>
+                                    </label>
+                                    <label class="reta-preference-field">
+                                        <span class="reta-preference-label">Registro</span>
+                                        <select class="reta-preference-select" id="reta-outcome-select" onchange="setTrackOutcomes(this.value === 'outcomes')" aria-label="Configurar registro de puntos">
+                                            <option value="outcomes">Errores/Aciertos</option>
+                                            <option value="points">Sólo sumar puntos</option>
                                         </select>
                                     </label>
                                 </div>
@@ -3006,7 +3006,7 @@
             </a>
             <a href="https://github.com/prime-leads-app/padel-score-board" target="_blank" rel="noopener" class="card bg-dark border-secondary text-decoration-none flex-fill" style="cursor:pointer;">
                 <div class="card-body py-0 px-2 text-center">
-                    <small class="text-white">PadelApp v<span id="app-version-label">5.61</span></small>
+                    <small class="text-white">PadelApp v<span id="app-version-label">5.62</span></small>
                 </div>
             </a>
             <div class="card bg-dark border-secondary flex-fill">

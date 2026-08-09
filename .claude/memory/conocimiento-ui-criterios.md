@@ -114,3 +114,6 @@ Los turnos de saque finalizados muestran sólo el marcador de juego, jugador, et
 
 ## 2026-08-08-22-49-57-25
 La configuración de retas sustituye cuatro botones en dos filas por dos combos en una sola fila: Registro permite Errores/Aciertos o Sólo sumar puntos; Golpes permite Con detalle o Sin detalle. Ambos controles permanecen independientes, sincronizados con los perfiles y con el estado guardado.
+
+## 2026-08-08-23-01-38-26
+La fila compacta conserva los dos combos y sus funciones, pero presenta Golpes a la izquierda y Registro a la derecha.
