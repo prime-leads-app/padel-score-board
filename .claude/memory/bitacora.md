@@ -62,3 +62,4 @@ metadata:
 - 2026-08-08-17-54-14-05: v5.41 integra el editor de Retas en su pestaña y elimina el paso intermedio.
 - 2026-08-08-18-08-52-06: v5.42 reduce la altura de los cards de reglas de Retas sin recortar contenido.
 - 2026-08-08-18-23-04-07: v5.43 compacta toda la pestaña de Retas para mostrar el pie en la altura útil del teléfono.
+- 2026-08-08-18-30-47-08: v5.44 recupera altura visual en Retas y conserva el pie completo con margen corto.

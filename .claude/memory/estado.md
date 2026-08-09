@@ -10,6 +10,6 @@ metadata:
   modified: 2026-07-31T13:35:51.259Z
 ---
 
-Ahora: v5.43 compacta integralmente Configuración > Pádel retas: cards de reglas a 48 px, secciones a 8 px, parejas, selects, aviso, cambio de lado y pie con separaciones menores. Se validó a 390 x 788 que el pie queda completamente visible con 75 px libres, sin recortes ni desbordamiento horizontal; el editor abierto como modal conserva su tamaño anterior.
+Ahora: v5.44 corrige la sobrecompactación de v5.43 y deja Configuración > Pádel retas en un punto medio: cards de 52 px, secciones y parejas con separaciones moderadas y pie visible. Se validó a 390 x 788 que quedan 21 px libres, sin recortes ni desbordamiento horizontal.
 
 Próximo paso: la unidad cierra aquí.
