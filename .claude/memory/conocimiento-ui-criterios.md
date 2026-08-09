@@ -90,3 +90,6 @@ El encabezado interior de un partido terminado usa Pareja 1 (juegos) VS Pareja 2
 
 ## 2026-08-08-21-06-43-17
 El encabezado del partido en curso muestra Pareja 1 (puntos actuales) VS Pareja 2 (puntos actuales). Se eliminó la segunda línea Puntos/Juegos y el rótulo Partido actual · Más recientes primero; los encabezados de partidos terminados conservan el ajuste previo.
+
+## 2026-08-08-21-17-01-18
+Cada card de la cronología muestra una columna de marcadores: círculo JN arriba y círculo de número de evento o icono de saque/reinicio abajo. Se eliminaron las líneas independientes Juego N de puntos y saques, y el reinicio ya no repite el juego en el contenido.

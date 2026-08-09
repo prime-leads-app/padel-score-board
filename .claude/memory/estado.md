@@ -10,6 +10,6 @@ metadata:
   modified: 2026-07-31T13:35:51.259Z
 ---
 
-Ahora: v5.53 aplica el formato de marcador con paréntesis al encabezado del partido en curso y elimina el rótulo redundante solicitado. La aplicación cargó correctamente y se comprobó que el texto retirado ya no existe.
+Ahora: v5.54 identifica visualmente el juego y el evento mediante círculos apilados y elimina las líneas Juego N redundantes. Se validó a 390 x 844 con puntos, cierre de juego y saque.
 
 Próximo paso: la unidad cierra aquí.

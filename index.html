@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <!-- Sube en cada publicacion: la app la compara contra la red para saber si esta al dia -->
-    <meta name="app-version" content="5.53">
+    <meta name="app-version" content="5.54">
     <title>Padel Scoreboard</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1762,6 +1762,28 @@
 
         .live-history-item:last-child { border-bottom: 0; }
 
+        .live-history-markers {
+            display: grid;
+            justify-items: center;
+            align-content: start;
+            gap: 5px;
+        }
+
+        .live-history-game-marker {
+            width: 22px;
+            height: 22px;
+            display: grid;
+            place-items: center;
+            border: 1px solid rgba(126, 200, 227, 0.72);
+            border-radius: 50%;
+            background: #243447;
+            color: #bfe8f6;
+            font-size: 0.57rem;
+            font-weight: 850;
+            line-height: 1;
+            box-shadow: 0 0 0 2px rgba(126, 200, 227, 0.08);
+        }
+
         .live-history-sequence {
             width: 28px;
             height: 28px;
@@ -2087,6 +2109,7 @@
         }
 
         .light-theme .live-history-item { border-color: #dce3e8; }
+        .light-theme .live-history-game-marker { background: #eaf4f8; color: #245b70; border-color: #6ca9bf; }
         .light-theme .live-history-award { color: #34495e; }
         .light-theme .live-history-shot { color: #455a64; border-color: #b8c6cf; background: #edf2f5; }
         .light-theme .live-history-point-details { color: #607d8b; }
@@ -2913,7 +2936,7 @@
             </a>
             <a href="https://github.com/prime-leads-app/padel-score-board" target="_blank" rel="noopener" class="card bg-dark border-secondary text-decoration-none flex-fill" style="cursor:pointer;">
                 <div class="card-body py-0 px-2 text-center">
-                    <small class="text-white">PadelApp v<span id="app-version-label">5.53</span></small>
+                    <small class="text-white">PadelApp v<span id="app-version-label">5.54</span></small>
                 </div>
             </a>
             <div class="card bg-dark border-secondary flex-fill">
@@ -5468,14 +5491,17 @@
             const gameClosed = timelinePointClosedGame(entry, previousEntry);
             const matchClosed = !!entry.closesMatch;
             const pointScore = timelineTeamScoreHTML(entry, entry.score && entry.score.points);
-            let pointDetail = `<div class="live-history-point-details"><span>Juego ${esc(entry.game || 1)}</span>${pointScore || '<strong>Marcador anterior no disponible</strong>'}</div>`;
+            let pointDetail = `<div class="live-history-point-details">${pointScore || '<strong>Marcador anterior no disponible</strong>'}</div>`;
             if (gameClosed) {
                 pointDetail = matchClosed
                     ? '<div class="live-history-point-details result match-result"><span>Punto final del partido</span></div>'
-                    : `<div class="live-history-point-details result"><span>Punto que cerró el Juego ${esc(entry.game || 1)}</span></div>`;
+                    : '<div class="live-history-point-details result"><span>Punto que cerró el juego</span></div>';
             }
             return `<article class="live-history-item point-event ${outcomeClass} team-${scoringTeam}">
-                <div class="live-history-sequence">${sequence}</div>
+                <div class="live-history-markers" aria-label="Juego ${esc(entry.game || 1)}, evento ${sequence}">
+                    <div class="live-history-game-marker">J${esc(entry.game || 1)}</div>
+                    <div class="live-history-sequence">${sequence}</div>
+                </div>
                 <div>
                     <div class="live-history-event-head"><div class="live-history-title-group"><strong>${action}</strong>${outcome}${shot}</div><time>${esc(entry.time || '')}</time></div>
                     <div class="live-history-award">Punto para <strong>${esc(beneficiary)}</strong></div>
@@ -5495,11 +5521,13 @@
             const status = inProgress ? 'En curso' : (matchFinished ? 'Partido finalizado' : 'Turno finalizado');
             const manualChange = /cambio manual/i.test(reason) || /cambio manual/i.test(entry.endReason || '');
             return `<article class="live-history-item serve-event team-${servingTeam}">
-                <div class="live-history-sequence"><i class="bi bi-person-badge" aria-hidden="true"></i></div>
+                <div class="live-history-markers" aria-label="Juego ${esc(entry.game || 1)}, evento de saque">
+                    <div class="live-history-game-marker">J${esc(entry.game || 1)}</div>
+                    <div class="live-history-sequence"><i class="bi bi-person-badge" aria-hidden="true"></i></div>
+                </div>
                 <div>
                     <div class="live-history-event-head"><strong>${esc(entry.player || 'Jugador')} <span class="live-history-outcome serve">Al saque</span></strong><time>${esc(period)}</time></div>
                     <div class="serve-event-summary">
-                        <strong>Juego ${esc(entry.game || 1)}</strong>
                         <span class="serve-event-status">${esc(status)}</span>
                         ${manualChange ? '<span class="serve-event-note">Cambio manual</span>' : ''}
                     </div>
@@ -5510,11 +5538,14 @@
         function renderResetTimelineEntry(entry, sequence) {
             const score = timelineScoreLabel(entry.score);
             return `<article class="live-history-item reset-event">
-                <div class="live-history-sequence"><i class="bi bi-arrow-counterclockwise" aria-hidden="true"></i></div>
+                <div class="live-history-markers" aria-label="Juego ${esc(entry.game || 1)}, reinicio del marcador">
+                    <div class="live-history-game-marker">J${esc(entry.game || 1)}</div>
+                    <div class="live-history-sequence"><i class="bi bi-arrow-counterclockwise" aria-hidden="true"></i></div>
+                </div>
                 <div>
                     <div class="live-history-event-head"><strong>Marcador reiniciado</strong><time>${esc(entry.time || '')}</time></div>
                     <div class="live-history-award">${esc(entry.reason || 'Reinicio manual del partido')}</div>
-                    <div class="live-history-scoreline"><span>Después del juego ${esc(entry.game || 1)}</span>${score ? `<strong>Marcador anterior: ${esc(score)}</strong>` : ''}</div>
+                    ${score ? `<div class="live-history-scoreline"><strong>Marcador anterior: ${esc(score)}</strong></div>` : ''}
                 </div>
             </article>`;
         }
