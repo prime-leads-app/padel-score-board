@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <!-- Sube en cada publicacion: la app la compara contra la red para saber si esta al dia -->
-    <meta name="app-version" content="5.42">
+    <meta name="app-version" content="5.43">
     <title>Padel Scoreboard</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -454,8 +454,29 @@
             overflow-y: visible !important;
             margin-top: 0 !important;
         }
+        #config-retas .reta-section {
+            padding: 8px 10px !important;
+            margin-bottom: 8px;
+        }
+        #config-retas .reta-setting-shortcut {
+            min-height: 48px;
+            padding: 4px 7px;
+        }
+        #config-retas .reta-setting-shortcut-value { margin-top: 2px; }
+        #config-retas .reta-setting-shortcut-meta { margin-top: 1px; }
+        #config-retas #reta-shot-detail-config { margin-top: 5px; }
+        #config-retas .reta-team-box { padding: 8px 8px 8px 10px; }
+        #config-retas .reta-team-title { margin-bottom: 4px; }
+        #config-retas .reta-vs { margin: 3px 0; }
+        #config-retas .reta-select { padding: 7px 6px; }
+        #config-retas #reta-matchup-hint { margin-top: 6px !important; }
+        #config-retas .reta-swap-button {
+            min-height: 44px;
+            margin-top: 6px !important;
+            padding: 7px !important;
+        }
         #config-retas .reta-editor-footer {
-            padding: 12px 2px 4px;
+            padding: 6px 2px 2px;
         }
         .config-toggle-stack {
             display: grid;
@@ -2684,7 +2705,7 @@
             </a>
             <a href="https://github.com/prime-leads-app/padel-score-board" target="_blank" rel="noopener" class="card bg-dark border-secondary text-decoration-none flex-fill" style="cursor:pointer;">
                 <div class="card-body py-0 px-2 text-center">
-                    <small class="text-white">PadelApp v<span id="app-version-label">5.42</span></small>
+                    <small class="text-white">PadelApp v<span id="app-version-label">5.43</span></small>
                 </div>
             </a>
             <div class="card bg-dark border-secondary flex-fill">
@@ -6429,7 +6450,7 @@
 
         // Cambio de lado: ocupa todo el ancho, debajo de las parejas
         function swapButtonHTML() {
-            return '<button class="btn btn-outline-light w-100" style="font-weight:700; margin-top:8px; padding:10px;" onclick="swapTeams()" title="El equipo de arriba pasa abajo y viceversa"><i class="bi bi-arrow-down-up"></i> Cambiar de lado</button>';
+            return '<button class="btn btn-outline-light w-100 reta-swap-button" style="font-weight:700; margin-top:8px; padding:10px;" onclick="swapTeams()" title="El equipo de arriba pasa abajo y viceversa"><i class="bi bi-arrow-down-up"></i> Cambiar de lado</button>';
         }
 
         // Tabla ordenada: puntos, luego partidos ganados, luego menos jugados

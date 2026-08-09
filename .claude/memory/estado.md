@@ -10,6 +10,6 @@ metadata:
   modified: 2026-07-31T13:35:51.259Z
 ---
 
-Ahora: v5.42 compacta los seis cards de reglas de Retas de 64 a 56 px, y a 52 px en pantallas de hasta 350 px, reduciendo también padding y separaciones internas. Se validó a 390 x 844 que Fecha, Tiempo, Máx. pts, Juegos, Fin y Empate 40-40 permanecen completos, sin recortes ni desbordamiento horizontal.
+Ahora: v5.43 compacta integralmente Configuración > Pádel retas: cards de reglas a 48 px, secciones a 8 px, parejas, selects, aviso, cambio de lado y pie con separaciones menores. Se validó a 390 x 788 que el pie queda completamente visible con 75 px libres, sin recortes ni desbordamiento horizontal; el editor abierto como modal conserva su tamaño anterior.
 
 Próximo paso: la unidad cierra aquí.
