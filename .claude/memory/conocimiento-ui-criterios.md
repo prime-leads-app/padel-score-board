@@ -111,3 +111,6 @@ La cronología registra y muestra Partido finalizado como evento independiente c
 
 ## 2026-08-08-22-38-58-24
 Los turnos de saque finalizados muestran sólo el marcador de juego, jugador, etiqueta Al saque y horario. Se eliminan el icono amarillo secundario y el texto Turno finalizado; un saque activo conserva En curso y los cambios manuales conservan su indicación.
+
+## 2026-08-08-22-49-57-25
+La configuración de retas sustituye cuatro botones en dos filas por dos combos en una sola fila: Registro permite Errores/Aciertos o Sólo sumar puntos; Golpes permite Con detalle o Sin detalle. Ambos controles permanecen independientes, sincronizados con los perfiles y con el estado guardado.

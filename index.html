@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <!-- Sube en cada publicacion: la app la compara contra la red para saber si esta al dia -->
-    <meta name="app-version" content="5.60">
+    <meta name="app-version" content="5.61">
     <title>Padel Scoreboard</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -467,7 +467,6 @@
         }
         #config-retas .reta-setting-shortcut-value { margin-top: 3px; }
         #config-retas .reta-setting-shortcut-meta { margin-top: 2px; }
-        #config-retas #reta-shot-detail-config { margin-top: 6px; }
         #config-retas .reta-team-box { padding: 9px 9px 9px 11px; }
         #config-retas .reta-team-title { margin-bottom: 5px; }
         #config-retas .reta-vs { margin: 4px 0; }
@@ -682,14 +681,12 @@
         .reta-compact-section .reta-section-title {
             margin-bottom: 7px;
         }
-        .reta-compact-toggle,
         .reta-participant-actions {
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
             gap: 7px;
             width: 100%;
         }
-        .reta-compact-toggle .btn,
         .reta-participant-action {
             min-height: 38px;
             padding: 5px 8px !important;
@@ -698,24 +695,50 @@
             font-weight: 700;
             border-radius: 7px !important;
         }
-        .reta-compact-toggle .btn {
-            width: 100%;
+        .reta-inline-preferences {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 7px;
         }
-        #outcome-detail-config .reta-compact-toggle {
-            grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.95fr);
+        .reta-preference-field {
+            display: block;
             min-width: 0;
+            padding: 6px 7px;
+            border: 1px solid rgba(126,200,227,0.42);
+            border-radius: 9px;
+            background: rgba(14,30,53,0.42);
         }
-        #reta-shot-detail-config {
-            margin-top: 7px;
-        }
-        #outcome-detail-config .mode-btn {
-            min-width: 0;
+        .reta-preference-label {
+            display: block;
             overflow: hidden;
-            padding-left: 3px !important;
-            padding-right: 3px !important;
-            font-size: clamp(0.66rem, 3.1vw, 0.76rem) !important;
-            letter-spacing: -0.02em;
+            color: #7ec8e3;
+            font-size: 0.58rem;
+            font-weight: 800;
+            line-height: 1.1;
+            letter-spacing: 0.07em;
+            text-overflow: ellipsis;
+            text-transform: uppercase;
             white-space: nowrap;
+        }
+        .reta-preference-select {
+            width: 100%;
+            min-width: 0;
+            min-height: 30px;
+            margin-top: 4px;
+            padding: 4px 5px;
+            color: #FFD54F;
+            border: 1px solid rgba(255,255,255,0.28);
+            border-radius: 6px;
+            background: #252744;
+            font-size: clamp(0.66rem, 2.8vw, 0.76rem);
+            font-weight: 700;
+            line-height: 1.15;
+            color-scheme: dark;
+        }
+        .reta-preference-select:focus {
+            border-color: #ffc107;
+            outline: 2px solid rgba(255,193,7,0.2);
+            outline-offset: 1px;
         }
         #reta-modal-scroll {
             overflow-x: hidden !important;
@@ -1020,6 +1043,14 @@
         .light-theme .reta-setting-shortcut-label { color: #0d47a1; }
         .light-theme .reta-setting-shortcut-value { color: #8a6200; }
         .light-theme .reta-setting-shortcut-meta { color: #607d8b; }
+        .light-theme .reta-preference-field { border-color: #b9d7e4; background: #f4f8fa; }
+        .light-theme .reta-preference-label { color: #0d47a1; }
+        .light-theme .reta-preference-select {
+            color: #6f5000;
+            border-color: #b7c7cf;
+            background: #fff;
+            color-scheme: light;
+        }
         .light-theme .lineup-reta-overview {
             border-color: #b9d7e4;
             background: #f4f8fa;
@@ -1059,11 +1090,9 @@
                 padding-left: 5px;
                 padding-right: 5px;
             }
-            #outcome-detail-config .reta-compact-toggle { gap: 4px; }
-            #outcome-detail-config .mode-btn {
-                font-size: 0.58rem !important;
-                letter-spacing: -0.035em;
-            }
+            .reta-inline-preferences { gap: 5px; }
+            .reta-preference-field { padding: 5px; }
+            .reta-preference-select { font-size: 0.64rem; }
             .reta-participant-action {
                 gap: 4px;
                 padding: 4px !important;
@@ -2489,15 +2518,23 @@
                                 </div>
                             </div>
 
-                            <!-- 2. Modo de registro de Error/Acierto -->
-                            <div class="reta-section reta-compact-section" id="outcome-detail-config" role="region" aria-label="Error/Acierto">
-                                <div class="reta-compact-toggle" role="group" aria-label="Modo de puntuación">
-                                    <button class="btn btn-outline-light mode-btn active" onclick="setTrackOutcomes(true)" id="btn-outcomes-on">Registrar Errores/Aciertos</button>
-                                    <button class="btn btn-outline-light mode-btn" onclick="setTrackOutcomes(false)" id="btn-outcomes-off">Sólo sumar puntos</button>
-                                </div>
-                                <div class="reta-compact-toggle" id="reta-shot-detail-config" role="group" aria-label="Detalle de golpes">
-                                    <button class="btn btn-outline-light mode-btn active" onclick="setTrackShots(true)" id="btn-reta-shots-on">Con detalle de golpes</button>
-                                    <button class="btn btn-outline-light mode-btn" onclick="setTrackShots(false)" id="btn-reta-shots-off">Sin detalle de golpes</button>
+                            <!-- 2. Registro y detalle de golpes -->
+                            <div class="reta-section reta-compact-section" id="outcome-detail-config" role="region" aria-label="Registro y detalle de golpes">
+                                <div class="reta-inline-preferences">
+                                    <label class="reta-preference-field">
+                                        <span class="reta-preference-label">Registro</span>
+                                        <select class="reta-preference-select" id="reta-outcome-select" onchange="setTrackOutcomes(this.value === 'outcomes')" aria-label="Configurar registro de puntos">
+                                            <option value="outcomes">Errores/Aciertos</option>
+                                            <option value="points">Sólo sumar puntos</option>
+                                        </select>
+                                    </label>
+                                    <label class="reta-preference-field">
+                                        <span class="reta-preference-label">Golpes</span>
+                                        <select class="reta-preference-select" id="reta-shots-select" onchange="setTrackShots(this.value === 'detail')" aria-label="Configurar detalle de golpes">
+                                            <option value="detail">Con detalle</option>
+                                            <option value="simple">Sin detalle</option>
+                                        </select>
+                                    </label>
                                 </div>
                             </div>
 
@@ -2969,7 +3006,7 @@
             </a>
             <a href="https://github.com/prime-leads-app/padel-score-board" target="_blank" rel="noopener" class="card bg-dark border-secondary text-decoration-none flex-fill" style="cursor:pointer;">
                 <div class="card-body py-0 px-2 text-center">
-                    <small class="text-white">PadelApp v<span id="app-version-label">5.60</span></small>
+                    <small class="text-white">PadelApp v<span id="app-version-label">5.61</span></small>
                 </div>
             </a>
             <div class="card bg-dark border-secondary flex-fill">
@@ -4074,22 +4111,22 @@
         }
 
         function updateTrackShotControls() {
-            ['btn-shots-on', 'btn-reta-shots-on'].forEach(id => {
+            ['btn-shots-on'].forEach(id => {
                 const button = document.getElementById(id);
                 if (button) button.classList.toggle('active', trackShots);
             });
-            ['btn-shots-off', 'btn-reta-shots-off'].forEach(id => {
+            ['btn-shots-off'].forEach(id => {
                 const button = document.getElementById(id);
                 if (button) button.classList.toggle('active', !trackShots);
             });
+            const retaSelect = document.getElementById('reta-shots-select');
+            if (retaSelect) retaSelect.value = trackShots ? 'detail' : 'simple';
             updateRetaSettingSummaries();
         }
 
         function updateOutcomeSettingControls() {
-            const enabledButton = document.getElementById('btn-outcomes-on');
-            const disabledButton = document.getElementById('btn-outcomes-off');
-            if (enabledButton) enabledButton.classList.toggle('active', trackOutcomes);
-            if (disabledButton) disabledButton.classList.toggle('active', !trackOutcomes);
+            const retaSelect = document.getElementById('reta-outcome-select');
+            if (retaSelect) retaSelect.value = trackOutcomes ? 'outcomes' : 'points';
             updateRetaSettingSummaries();
         }
 

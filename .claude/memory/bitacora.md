@@ -79,3 +79,4 @@ metadata:
 - 2026-08-08-22-09-19-22: v5.58 mantiene los marcadores de la cronología en una sola línea.
 - 2026-08-08-22-33-10-23: v5.59 separa la finalización del partido del último turno de saque.
 - 2026-08-08-22-38-58-24: v5.60 simplifica el card de saque terminado.
+- 2026-08-08-22-49-57-25: v5.61 compacta Registro y Golpes en dos menús desplegables.

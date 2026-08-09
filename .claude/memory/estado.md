@@ -10,6 +10,6 @@ metadata:
   modified: 2026-07-31T13:35:51.259Z
 ---
 
-Ahora: v5.60 elimina del saque terminado el icono amarillo y el texto Turno finalizado, reduciendo el card a una fila. Se validó visual y semánticamente a 390 x 844.
+Ahora: v5.61 reduce la sección de registro a una fila con dos combos accesibles y conserva toda su funcionalidad. Se validaron visualmente a 390 x 844 y se probaron ambas opciones de cada combo, restaurando después la configuración inicial.
 
 Próximo paso: la unidad cierra aquí.
