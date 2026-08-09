@@ -73,3 +73,4 @@ metadata:
 - 2026-08-08-20-59-02-16: v5.52 integra el resultado de cada partido en los nombres de las parejas.
 - 2026-08-08-21-06-43-17: v5.53 aplica el marcador con paréntesis al encabezado del partido actual.
 - 2026-08-08-21-17-01-18: v5.54 identifica juego y evento con dos marcadores circulares.
+- 2026-08-08-21-30-12-19: v5.55 muestra juegos acumulados en la cronología y amplía el cartel ganador.

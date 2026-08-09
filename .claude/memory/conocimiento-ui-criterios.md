@@ -93,3 +93,6 @@ El encabezado del partido en curso muestra Pareja 1 (puntos actuales) VS Pareja 
 
 ## 2026-08-08-21-17-01-18
 Cada card de la cronología muestra una columna de marcadores: círculo JN arriba y círculo de número de evento o icono de saque/reinicio abajo. Se eliminaron las líneas independientes Juego N de puntos y saques, y el reinicio ya no repite el juego en el contenido.
+
+## 2026-08-08-21-30-12-19
+En retas, el encabezado del partido actual usa los juegos acumulados entre paréntesis y no los puntos del juego recién iniciado. El cartel ganador dejó de estar duplicado dentro de cada equipo: ahora es una sola capa sobre el scoreboard completo y cubre ambos paneles, conservando las acciones según el modo.

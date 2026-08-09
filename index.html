@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <!-- Sube en cada publicacion: la app la compara contra la red para saber si esta al dia -->
-    <meta name="app-version" content="5.54">
+    <meta name="app-version" content="5.55">
     <title>Padel Scoreboard</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -80,6 +80,7 @@
             gap: 8px;
             flex: 1;
             min-height: 0;
+            position: relative;
         }
 
         /* ── Score Card ── */
@@ -102,6 +103,8 @@
             position: absolute;
             inset: 0;
             border-radius: 14px;
+            border: 3px solid #ffc107;
+            box-sizing: border-box;
             background: linear-gradient(135deg, #FFD700, #e94560);
             display: none;
             flex-direction: column;
@@ -2825,20 +2828,21 @@
 
         <!-- Scoreboard -->
         <div class="scoreboard">
+            <div class="winner-badge" id="winner-badge">
+                <div style="font-size:4rem; line-height:1;">&#127942;</div>
+                <h3 style="margin:8px 0; font-weight:900; text-shadow:2px 2px 4px rgba(0,0,0,0.3);" id="winner-text"></h3>
+                <p style="font-size:1rem; opacity:0.9; margin-bottom:10px;" id="winner-score"></p>
+                <div style="display:flex; gap:8px; justify-content:center; flex-wrap:wrap;">
+                    <button class="btn btn-warning btn-sm d-none" id="winner-next" onclick="event.stopPropagation(); nextRetaMatch();" style="font-weight:700;">Siguiente</button>
+                    <button class="btn btn-light btn-sm" id="winner-new" onclick="event.stopPropagation(); confirmReset();" style="font-weight:700;">Nuevo Partido</button>
+                    <button class="btn btn-outline-light btn-sm" onclick="event.stopPropagation(); shareResult();" style="font-weight:700;">Compartir</button>
+                    <button class="btn btn-outline-light btn-sm" id="winner-stats" onclick="event.stopPropagation(); showCurrentMatchStats();" style="font-weight:700;">📊 Estadísticas</button>
+                    <button class="btn btn-outline-light btn-sm d-none" id="winner-standings" onclick="event.stopPropagation(); showRetaStandings();" style="font-weight:700;">Clasificación</button>
+                </div>
+            </div>
+
             <!-- Team 1 -->
             <div class="score-card team1" id="card-p1" onclick="cardTap(event, 1)">
-                <div class="winner-badge" id="winner-badge-p1">
-                    <div style="font-size:4rem; line-height:1;">&#127942;</div>
-                    <h3 style="margin:8px 0; font-weight:900; text-shadow:2px 2px 4px rgba(0,0,0,0.3);" id="winner-text-p1"></h3>
-                    <p style="font-size:1rem; opacity:0.9; margin-bottom:10px;" id="winner-score-p1"></p>
-                    <div style="display:flex; gap:8px; justify-content:center; flex-wrap:wrap;">
-                        <button class="btn btn-warning btn-sm d-none" id="winner-next-p1" onclick="event.stopPropagation(); nextRetaMatch();" style="font-weight:700;">Siguiente</button>
-                        <button class="btn btn-light btn-sm" id="winner-new-p1" onclick="event.stopPropagation(); confirmReset();" style="font-weight:700;">Nuevo Partido</button>
-                        <button class="btn btn-outline-light btn-sm" onclick="event.stopPropagation(); shareResult();" style="font-weight:700;">Compartir</button>
-                        <button class="btn btn-outline-light btn-sm" id="winner-stats-p1" onclick="event.stopPropagation(); showCurrentMatchStats();" style="font-weight:700;">📊 Estadísticas</button>
-                        <button class="btn btn-outline-light btn-sm d-none" id="winner-standings-p1" onclick="event.stopPropagation(); showRetaStandings();" style="font-weight:700;">Clasificación</button>
-                    </div>
-                </div>
                 <div class="card-header-row" id="players-row-p1" style="gap:4px;">
                     <div class="player-control" data-player="p1a">
                         <button type="button" class="player-outcome-btn error" onclick="scorePlayerOutcome(event, 'p1a', 'error')">Error</button>
@@ -2864,18 +2868,6 @@
 
             <!-- Team 2 -->
             <div class="score-card team2" id="card-p2" onclick="cardTap(event, 2)">
-                <div class="winner-badge" id="winner-badge-p2">
-                    <div style="font-size:4rem; line-height:1;">&#127942;</div>
-                    <h3 style="margin:8px 0; font-weight:900; text-shadow:2px 2px 4px rgba(0,0,0,0.3);" id="winner-text-p2"></h3>
-                    <p style="font-size:1rem; opacity:0.9; margin-bottom:10px;" id="winner-score-p2"></p>
-                    <div style="display:flex; gap:8px; justify-content:center; flex-wrap:wrap;">
-                        <button class="btn btn-warning btn-sm d-none" id="winner-next-p2" onclick="event.stopPropagation(); nextRetaMatch();" style="font-weight:700;">Siguiente</button>
-                        <button class="btn btn-light btn-sm" id="winner-new-p2" onclick="event.stopPropagation(); confirmReset();" style="font-weight:700;">Nuevo Partido</button>
-                        <button class="btn btn-outline-light btn-sm" onclick="event.stopPropagation(); shareResult();" style="font-weight:700;">Compartir</button>
-                        <button class="btn btn-outline-light btn-sm" id="winner-stats-p2" onclick="event.stopPropagation(); showCurrentMatchStats();" style="font-weight:700;">📊 Estadísticas</button>
-                        <button class="btn btn-outline-light btn-sm d-none" id="winner-standings-p2" onclick="event.stopPropagation(); showRetaStandings();" style="font-weight:700;">Clasificación</button>
-                    </div>
-                </div>
                 <div class="card-header-row" id="players-row-p2" style="gap:4px;">
                     <div class="player-control" data-player="p2a">
                         <button type="button" class="player-outcome-btn error" onclick="scorePlayerOutcome(event, 'p2a', 'error')">Error</button>
@@ -2936,7 +2928,7 @@
             </a>
             <a href="https://github.com/prime-leads-app/padel-score-board" target="_blank" rel="noopener" class="card bg-dark border-secondary text-decoration-none flex-fill" style="cursor:pointer;">
                 <div class="card-body py-0 px-2 text-center">
-                    <small class="text-white">PadelApp v<span id="app-version-label">5.54</span></small>
+                    <small class="text-white">PadelApp v<span id="app-version-label">5.55</span></small>
                 </div>
             </a>
             <div class="card bg-dark border-secondary flex-fill">
@@ -4913,8 +4905,7 @@
         }
 
         function hideWinnerCard() {
-            document.getElementById('winner-badge-p1').classList.remove('show');
-            document.getElementById('winner-badge-p2').classList.remove('show');
+            document.getElementById('winner-badge').classList.remove('show');
         }
 
         function normalizeServePlayers(value) {
@@ -5589,11 +5580,13 @@
         function liveMatchHistoryContent() {
             const events = pointTimeline.length ? pointTimeline : legacyLiveHistoryEntries();
             const score = currentTimelineScore();
-            const currentPoints = Array.isArray(score.points) ? score.points : ['-', '-'];
+            const currentResult = mode === 'padel' && padelFormat === 'retas' && Array.isArray(score.games)
+                ? score.games
+                : (Array.isArray(score.points) ? score.points : ['-', '-']);
             return {
-                matchup: `<div class="live-history-team team-1">${esc(getName(1))} <strong class="live-history-team-result">(${esc(currentPoints[0])})</strong></div>
+                matchup: `<div class="live-history-team team-1">${esc(getName(1))} <strong class="live-history-team-result">(${esc(currentResult[0])})</strong></div>
                     <div class="live-history-vs">VS</div>
-                    <div class="live-history-team team-2">${esc(getName(2))} <strong class="live-history-team-result">(${esc(currentPoints[1])})</strong></div>`,
+                    <div class="live-history-team team-2">${esc(getName(2))} <strong class="live-history-team-result">(${esc(currentResult[1])})</strong></div>`,
                 entries: timelineEntriesHTML(events)
             };
         }
@@ -5879,17 +5872,15 @@
             }
             // Al cerrar el partido el reloj muestra lo que se jugó, no el restante
             setTimerLook(timerText, false);
-            document.getElementById('winner-text-p' + p).textContent = `${getName(p)} gana!`;
-            document.getElementById('winner-score-p' + p).textContent = scoreText;
-            document.getElementById('winner-badge-p' + p).classList.add('show');
+            document.getElementById('winner-text').textContent = `${getName(p)} gana!`;
+            document.getElementById('winner-score').textContent = scoreText;
+            document.getElementById('winner-badge').classList.add('show');
             // En reta, el botón principal lleva al siguiente partido y se ve la clasificación
             const enReta = retaActive && padelFormat === 'retas' && mode === 'padel';
-            [1, 2].forEach(i => {
-                document.getElementById('winner-next-p' + i).classList.toggle('d-none', !enReta);
-                document.getElementById('winner-new-p' + i).classList.toggle('d-none', enReta);
-                document.getElementById('winner-standings-p' + i).classList.toggle('d-none', !enReta);
-                document.getElementById('winner-stats-p' + i).classList.toggle('d-none', enReta);
-            });
+            document.getElementById('winner-next').classList.toggle('d-none', !enReta);
+            document.getElementById('winner-new').classList.toggle('d-none', enReta);
+            document.getElementById('winner-standings').classList.toggle('d-none', !enReta);
+            document.getElementById('winner-stats').classList.toggle('d-none', enReta);
             // Un partido se guarda una sola vez, aunque showWinner se llame de nuevo
             if (!_matchSaved) {
                 _matchSaved = true;

@@ -10,6 +10,6 @@ metadata:
   modified: 2026-07-31T13:35:51.259Z
 ---
 
-Ahora: v5.54 identifica visualmente el juego y el evento mediante círculos apilados y elimina las líneas Juego N redundantes. Se validó a 390 x 844 con puntos, cierre de juego y saque.
+Ahora: v5.55 conserva el marcador global de juegos en la cabecera de la cronología y el cartel ganador cubre ambos equipos. Se validó el cartel a 390 x 844 completando un partido de prueba y comprobando sus acciones.
 
 Próximo paso: la unidad cierra aquí.
