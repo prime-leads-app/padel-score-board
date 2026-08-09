@@ -10,6 +10,6 @@ metadata:
   modified: 2026-07-31T13:35:51.259Z
 ---
 
-Ahora: v5.41 integra directamente el editor completo de Retas en Configuración > Pádel retas y elimina el botón intermedio. El mismo bloque DOM se mueve a la pantalla Reta o a Jugadores del partido cuando se accede desde el marcador; se validaron los seis selectores, participantes, parejas, persistencia y composición móvil a 390 x 844.
+Ahora: v5.42 compacta los seis cards de reglas de Retas de 64 a 56 px, y a 52 px en pantallas de hasta 350 px, reduciendo también padding y separaciones internas. Se validó a 390 x 844 que Fecha, Tiempo, Máx. pts, Juegos, Fin y Empate 40-40 permanecen completos, sin recortes ni desbordamiento horizontal.
 
 Próximo paso: la unidad cierra aquí.

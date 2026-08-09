@@ -60,3 +60,4 @@ metadata:
 - 2026-08-08-16-17-09-03: v5.39 reorganiza Configuración en tres perfiles independientes sin mover la gestión operativa de Reta.
 - 2026-08-08-17-36-36-04: v5.40 centraliza la configuración editable de Retas y elimina controles duplicados.
 - 2026-08-08-17-54-14-05: v5.41 integra el editor de Retas en su pestaña y elimina el paso intermedio.
+- 2026-08-08-18-08-52-06: v5.42 reduce la altura de los cards de reglas de Retas sin recortar contenido.
