@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <!-- Sube en cada publicacion: la app la compara contra la red para saber si esta al dia -->
-    <meta name="app-version" content="5.45">
+    <meta name="app-version" content="5.46">
     <title>Padel Scoreboard</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1783,6 +1783,38 @@
         .live-history-item.team-1 .live-history-sequence { background: #c6283c; }
         .live-history-item.team-2 .live-history-sequence { background: #1565c0; }
 
+        .live-history-item.point-event {
+            margin: 4px 0;
+            padding: 9px 8px;
+            border: 1px solid rgba(112, 136, 160, 0.24);
+            border-radius: 10px;
+            background: rgba(112, 136, 160, 0.06);
+        }
+
+        .live-history-item.point-event.outcome-error {
+            border-color: rgba(233, 69, 96, 0.34);
+            background: rgba(233, 69, 96, 0.10);
+        }
+
+        .live-history-item.point-event.outcome-error .live-history-sequence {
+            background: #c6283c;
+            box-shadow: 0 0 0 3px rgba(233, 69, 96, 0.14);
+        }
+
+        .live-history-item.point-event.outcome-acierto {
+            border-color: rgba(46, 174, 101, 0.34);
+            background: rgba(46, 174, 101, 0.10);
+        }
+
+        .live-history-item.point-event.outcome-acierto .live-history-sequence {
+            background: #198754;
+            box-shadow: 0 0 0 3px rgba(46, 174, 101, 0.14);
+        }
+
+        .live-history-item.point-event.outcome-neutral .live-history-sequence {
+            background: #596f82;
+        }
+
         .live-history-item.serve-event {
             margin: 4px 0;
             padding: 9px 8px;
@@ -1931,6 +1963,9 @@
 
         .light-theme .live-history-item { border-color: #dce3e8; }
         .light-theme .live-history-award { color: #34495e; }
+        .light-theme .live-history-item.point-event { background: #f3f7fa; border-color: #c8d6df; }
+        .light-theme .live-history-item.point-event.outcome-error { background: #fff1f3; border-color: #e4a4ad; }
+        .light-theme .live-history-item.point-event.outcome-acierto { background: #eefaf2; border-color: #9fcfb0; }
         .light-theme .live-history-item.serve-event { background: #fff9e6; border-color: #e6bd3f; }
         .light-theme .serve-event .live-history-event-head time,
         .light-theme .serve-event-detail .serve-event-live,
@@ -2741,7 +2776,7 @@
             </a>
             <a href="https://github.com/prime-leads-app/padel-score-board" target="_blank" rel="noopener" class="card bg-dark border-secondary text-decoration-none flex-fill" style="cursor:pointer;">
                 <div class="card-body py-0 px-2 text-center">
-                    <small class="text-white">PadelApp v<span id="app-version-label">5.45</span></small>
+                    <small class="text-white">PadelApp v<span id="app-version-label">5.46</span></small>
                 </div>
             </a>
             <div class="card bg-dark border-secondary flex-fill">
@@ -5246,6 +5281,11 @@
         function renderLiveHistoryEntry(entry, sequence) {
             const scoringTeam = entry.scoringTeam === 2 ? 2 : 1;
             const beneficiary = timelineTeamLabel(entry, scoringTeam);
+            const outcomeClass = entry.outcome === 'error'
+                ? 'outcome-error'
+                : entry.outcome === 'acierto'
+                    ? 'outcome-acierto'
+                    : 'outcome-neutral';
             let action = 'Punto registrado desde la tarjeta del equipo';
             let outcome = '';
             if (entry.player) {
@@ -5260,7 +5300,7 @@
                 ? ` · ${entry.outcome === 'error' ? 'Error en' : 'Golpe'}: ${esc(shotLabel(entry.shot, entry.outcome))}`
                 : '';
             const score = timelineScoreLabel(entry.score);
-            return `<article class="live-history-item team-${scoringTeam}">
+            return `<article class="live-history-item point-event ${outcomeClass} team-${scoringTeam}">
                 <div class="live-history-sequence">${sequence}</div>
                 <div>
                     <div class="live-history-event-head"><strong>${action}${outcome}</strong><time>${esc(entry.time || '')}</time></div>

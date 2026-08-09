@@ -10,6 +10,6 @@ metadata:
   modified: 2026-07-31T13:35:51.259Z
 ---
 
-Ahora: v5.45 reorganiza los eventos de saque de la cronología en lectura vertical: jugador y hora de inicio, Fin, Contexto, Cierre opcional y Marcador. Se validó con una reta real a 390 x 844 que el card conserva todos los datos, no se recorta y elimina el salto entre columnas.
+Ahora: v5.46 diferencia los eventos de la cronología por su causa con fondos y círculos semánticos, manteniendo el equipo beneficiado como texto. Se validó en una reta real a 390 x 844 con un Error, un Acierto y un Saque visibles sin recortes.
 
 Próximo paso: la unidad cierra aquí.

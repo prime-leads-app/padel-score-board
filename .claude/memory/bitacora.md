@@ -64,3 +64,4 @@ metadata:
 - 2026-08-08-18-23-04-07: v5.43 compacta toda la pestaña de Retas para mostrar el pie en la altura útil del teléfono.
 - 2026-08-08-18-30-47-08: v5.44 recupera altura visual en Retas y conserva el pie completo con margen corto.
 - 2026-08-08-18-45-26-09: v5.45 ordena secuencialmente los datos de los eventos de saque en la cronología.
+- 2026-08-08-19-08-44-10: v5.46 diferencia visualmente Error, Acierto y Saque en la cronología de la reta.
