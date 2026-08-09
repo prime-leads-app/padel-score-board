@@ -69,3 +69,4 @@ metadata:
 - 2026-08-08-19-35-18-12: v5.48 separa visualmente los juegos dentro de la cronología.
 - 2026-08-08-20-02-48-13: v5.49 muestra el resultado correcto en el punto que cierra un juego o partido.
 - 2026-08-08-20-15-26-14: v5.50 identifica cada marcador de la cronología con los nombres de ambas parejas.
+- 2026-08-08-20-46-18-15: v5.51 separa el resultado del juego y el turno de saque en la cronología.

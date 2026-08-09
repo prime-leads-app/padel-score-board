@@ -81,3 +81,6 @@ Un punto normal muestra el marcador de puntos. Si el punto cierra un juego, el c
 
 ## 2026-08-08-20-15-26-14
 Los cards de punto y los resultados de juego o partido usan formato de marcador deportivo: Pareja 1 (valor) - Pareja 2 (valor). Los nombres provienen de la composición guardada en cada evento, los valores son puntos o juegos según el contexto y el diseño admite nombres largos sin ocultar el número.
+
+## 2026-08-08-20-46-18-15
+Cada elemento de la cronología tiene una sola responsabilidad: el separador Juego N finalizado muestra el marcador de juegos con ambas parejas; el punto decisivo sólo indica que cerró el juego o partido; el card amarillo muestra únicamente jugador al saque, intervalo, juego y estado. Los motivos de juegos anteriores permanecen almacenados pero no se mezclan visualmente; los cambios manuales sí se distinguen.

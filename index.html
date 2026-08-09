@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <!-- Sube en cada publicacion: la app la compara contra la red para saber si esta al dia -->
-    <meta name="app-version" content="5.50">
+    <meta name="app-version" content="5.51">
     <title>Padel Scoreboard</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1831,34 +1831,29 @@
 
         .serve-event .live-history-event-head { align-items: center; }
         .serve-event .live-history-event-head time { color: #ffe082; }
-        .serve-event-details {
-            display: grid;
-            gap: 4px;
-            margin-top: 7px;
-        }
-        .serve-event-detail {
-            display: grid;
-            grid-template-columns: 54px minmax(0, 1fr);
-            align-items: baseline;
-            gap: 7px;
+        .serve-event-summary {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 5px 8px;
+            margin-top: 6px;
             color: #dce6ef;
             font-size: 0.69rem;
             line-height: 1.3;
         }
-        .serve-event-detail-label {
-            color: #9fb3c8;
-            font-size: 0.59rem;
-            font-weight: 800;
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
+
+        .serve-event-summary strong { color: #ffe082; }
+
+        .serve-event-status { color: #b8c7d4; }
+
+        .serve-event-note {
+            padding: 1px 6px;
+            border: 1px solid rgba(255, 224, 130, 0.38);
+            border-radius: 999px;
+            color: #ffe082;
+            font-size: 0.6rem;
+            font-weight: 750;
         }
-        .serve-event-detail strong {
-            min-width: 0;
-            font-weight: 650;
-            text-align: left;
-        }
-        .serve-event-detail .serve-event-live { color: #ffe082; }
-        .serve-event-detail.score strong { color: #ffc107; }
 
         .live-history-item.reset-event {
             margin: 4px 0;
@@ -2067,6 +2062,13 @@
             line-height: 1.2;
         }
 
+        .live-history-game-divider .live-history-team-score {
+            width: min(100%, 300px);
+            margin: 3px auto 0;
+            letter-spacing: 0;
+            text-transform: none;
+        }
+
         .live-history-empty {
             display: grid;
             place-items: center;
@@ -2106,10 +2108,11 @@
         .light-theme .live-history-item.point-event.outcome-acierto { background: #eefaf2; border-color: #9fcfb0; }
         .light-theme .live-history-item.serve-event { background: #fff9e6; border-color: #e6bd3f; }
         .light-theme .serve-event .live-history-event-head time,
-        .light-theme .serve-event-detail .serve-event-live,
-        .light-theme .serve-event-detail.score strong { color: #8a6200; }
-        .light-theme .serve-event-detail { color: #34495e; }
-        .light-theme .serve-event-detail-label { color: #607d8b; }
+        .light-theme .serve-event-summary strong,
+        .light-theme .serve-event-note { color: #8a6200; }
+        .light-theme .serve-event-summary { color: #34495e; }
+        .light-theme .serve-event-status { color: #607d8b; }
+        .light-theme .serve-event-note { border-color: rgba(138, 98, 0, 0.35); }
         .light-theme .live-history-item.reset-event { background: #fff3e6; border-color: #e9a45d; }
 
         /* ── Winner ── */
@@ -2914,7 +2917,7 @@
             </a>
             <a href="https://github.com/prime-leads-app/padel-score-board" target="_blank" rel="noopener" class="card bg-dark border-secondary text-decoration-none flex-fill" style="cursor:pointer;">
                 <div class="card-body py-0 px-2 text-center">
-                    <small class="text-white">PadelApp v<span id="app-version-label">5.50</span></small>
+                    <small class="text-white">PadelApp v<span id="app-version-label">5.51</span></small>
                 </div>
             </a>
             <div class="card bg-dark border-secondary flex-fill">
@@ -5471,10 +5474,9 @@
             const pointScore = timelineTeamScoreHTML(entry, entry.score && entry.score.points);
             let pointDetail = `<div class="live-history-point-details"><span>Juego ${esc(entry.game || 1)}</span>${pointScore || '<strong>Marcador anterior no disponible</strong>'}</div>`;
             if (gameClosed) {
-                const gamesScore = timelineTeamScoreHTML(entry, entry.score && entry.score.games);
                 pointDetail = matchClosed
-                    ? `<div class="live-history-point-details result match-result"><span>${esc(beneficiary)} gana el partido</span>${gamesScore}</div>`
-                    : `<div class="live-history-point-details result"><span>Con este punto gana el Juego ${esc(entry.game || 1)}</span>${gamesScore}</div>`;
+                    ? '<div class="live-history-point-details result match-result"><span>Punto final del partido</span></div>'
+                    : `<div class="live-history-point-details result"><span>Punto que cerró el Juego ${esc(entry.game || 1)}</span></div>`;
             }
             return `<article class="live-history-item point-event ${outcomeClass} team-${scoringTeam}">
                 <div class="live-history-sequence">${sequence}</div>
@@ -5490,22 +5492,20 @@
             const servingTeam = entry.servingTeam === 2 ? 2 : 1;
             const start = entry.time || (entry.timestamp ? auditTime(entry.timestamp) : 'Hora no disponible');
             const end = entry.endedAt || (entry.endedTimestamp ? auditTime(entry.endedTimestamp) : 'En curso');
-            const score = timelineScoreLabel(entry.score);
-            const endScore = timelineScoreLabel(entry.endScore);
-            const displayedScore = endScore || score;
-            const scorePrefix = endScore ? 'Final: ' : 'Inicial: ';
             const reason = entry.reason || 'Turno de saque';
-            const endReason = entry.endReason && entry.endReason !== reason ? entry.endReason : '';
             const inProgress = !entry.endedAt && !entry.endedTimestamp;
+            const period = inProgress ? `Inicio ${start}` : `${start} a ${end}`;
+            const matchFinished = entry.endReason === 'Fin del partido';
+            const status = inProgress ? 'En curso' : (matchFinished ? 'Partido finalizado' : 'Turno finalizado');
+            const manualChange = /cambio manual/i.test(reason) || /cambio manual/i.test(entry.endReason || '');
             return `<article class="live-history-item serve-event team-${servingTeam}">
                 <div class="live-history-sequence"><i class="bi bi-person-badge" aria-hidden="true"></i></div>
                 <div>
-                    <div class="live-history-event-head"><strong>${esc(entry.player || 'Jugador')} <span class="live-history-outcome serve">Al saque</span></strong><time>Inicio ${esc(start)}</time></div>
-                    <div class="serve-event-details">
-                        <div class="serve-event-detail"><span class="serve-event-detail-label">Fin</span><strong class="${inProgress ? 'serve-event-live' : ''}">${esc(end)}</strong></div>
-                        <div class="serve-event-detail"><span class="serve-event-detail-label">Contexto</span><strong>Juego ${esc(entry.game || 1)} · ${esc(reason)}</strong></div>
-                        ${endReason ? `<div class="serve-event-detail"><span class="serve-event-detail-label">Cierre</span><strong>${esc(endReason)}</strong></div>` : ''}
-                        ${displayedScore ? `<div class="serve-event-detail score"><span class="serve-event-detail-label">Marcador</span><strong>${scorePrefix}${esc(displayedScore)}</strong></div>` : ''}
+                    <div class="live-history-event-head"><strong>${esc(entry.player || 'Jugador')} <span class="live-history-outcome serve">Al saque</span></strong><time>${esc(period)}</time></div>
+                    <div class="serve-event-summary">
+                        <strong>Juego ${esc(entry.game || 1)}</strong>
+                        <span class="serve-event-status">${esc(status)}</span>
+                        ${manualChange ? '<span class="serve-event-note">Cambio manual</span>' : ''}
                     </div>
                 </div>
             </article>`;
@@ -5534,14 +5534,14 @@
             return Number.isFinite(game) && game > 0 ? game : 1;
         }
 
-        function renderTimelineGameDivider(finishedGame, score) {
-            const gamesScore = score && Array.isArray(score.games)
-                ? `Juegos ${score.games[0]} - ${score.games[1]}`
-                : '';
+        function renderTimelineGameDivider(entry) {
+            const finishedGame = timelineGameNumber(entry);
+            const gamesScore = timelineTeamScoreHTML(entry, entry.score && entry.score.games);
             return `<div class="live-history-game-divider" role="separator" aria-label="Juego ${finishedGame} finalizado">
                 <span class="live-history-game-divider-label">
                     <strong>Juego ${esc(finishedGame)} finalizado</strong>
-                    ${gamesScore ? `<small>${esc(gamesScore)}</small>` : ''}
+                    ${gamesScore}
+                    ${entry.closesMatch ? '<small>Partido finalizado</small>' : ''}
                 </span>
             </div>`;
         }
@@ -5553,12 +5553,9 @@
             return newestFirst.map((entry, index) => {
                 const olderEntry = newestFirst[index + 1];
                 const renderedEntry = renderTimelineEntry(entry, list.length - index, olderEntry);
-                if (!olderEntry) return renderedEntry;
-                const currentGame = timelineGameNumber(entry);
-                const olderGame = timelineGameNumber(olderEntry);
-                return currentGame > olderGame
-                    ? renderedEntry + renderTimelineGameDivider(olderGame, entry.score)
-                    : renderedEntry;
+                const gameClosed = entry && entry.eventType !== 'serve' && entry.eventType !== 'reset'
+                    && timelinePointClosedGame(entry, olderEntry);
+                return gameClosed ? renderTimelineGameDivider(entry) + renderedEntry : renderedEntry;
             }).join('');
         }
 
