@@ -72,3 +72,6 @@ La cronología codifica el tipo de evento con fondo y círculo semánticos: rojo
 
 ## 2026-08-08-19-24-14-11
 Reiniciar descarta marcador, cronología, saques, golpes y estadísticas del partido actual; ya no conserva eventos naranjas de reinicio. En los eventos de punto, el golpe se muestra junto a Error/Acierto, Punto para queda solo, Juego ocupa su propia línea y el marcador muestra únicamente Puntos, sin repetir Juegos.
+
+## 2026-08-08-19-35-18-12
+La cronología detecta el cambio de número de juego y coloca entre ambos grupos un separador ligero con Juego N finalizado y el marcador acumulado de juegos. El separador no cuenta como evento ni altera la numeración, y funciona tanto en el partido actual como en partidos guardados.

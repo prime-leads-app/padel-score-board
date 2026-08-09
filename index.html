@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <!-- Sube en cada publicacion: la app la compara contra la red para saber si esta al dia -->
-    <meta name="app-version" content="5.47">
+    <meta name="app-version" content="5.48">
     <title>Padel Scoreboard</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1975,6 +1975,45 @@
             font-weight: 750;
         }
 
+        .live-history-game-divider {
+            display: grid;
+            grid-template-columns: minmax(18px, 1fr) auto minmax(18px, 1fr);
+            align-items: center;
+            gap: 8px;
+            margin: 9px 3px;
+            color: #ffe082;
+            text-align: center;
+        }
+
+        .live-history-game-divider::before,
+        .live-history-game-divider::after {
+            content: '';
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 193, 7, 0.62));
+        }
+
+        .live-history-game-divider::after {
+            background: linear-gradient(90deg, rgba(255, 193, 7, 0.62), transparent);
+        }
+
+        .live-history-game-divider-label {
+            display: grid;
+            gap: 1px;
+        }
+
+        .live-history-game-divider-label strong {
+            font-size: 0.67rem;
+            line-height: 1.2;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .live-history-game-divider-label small {
+            color: #9fb3c8;
+            font-size: 0.61rem;
+            line-height: 1.2;
+        }
+
         .live-history-empty {
             display: grid;
             place-items: center;
@@ -2002,6 +2041,8 @@
         .light-theme .live-history-shot { color: #455a64; border-color: #b8c6cf; background: #edf2f5; }
         .light-theme .live-history-point-details { color: #607d8b; }
         .light-theme .live-history-point-details strong { color: #8a6200; }
+        .light-theme .live-history-game-divider { color: #8a6200; }
+        .light-theme .live-history-game-divider-label small { color: #607d8b; }
         .light-theme .live-history-item.point-event { background: #f3f7fa; border-color: #c8d6df; }
         .light-theme .live-history-item.point-event.outcome-error { background: #fff1f3; border-color: #e4a4ad; }
         .light-theme .live-history-item.point-event.outcome-acierto { background: #eefaf2; border-color: #9fcfb0; }
@@ -2815,7 +2856,7 @@
             </a>
             <a href="https://github.com/prime-leads-app/padel-score-board" target="_blank" rel="noopener" class="card bg-dark border-secondary text-decoration-none flex-fill" style="cursor:pointer;">
                 <div class="card-body py-0 px-2 text-center">
-                    <small class="text-white">PadelApp v<span id="app-version-label">5.47</span></small>
+                    <small class="text-white">PadelApp v<span id="app-version-label">5.48</span></small>
                 </div>
             </a>
             <div class="card bg-dark border-secondary flex-fill">
@@ -5397,11 +5438,37 @@
             return renderLiveHistoryEntry(entry, sequence);
         }
 
+        function timelineGameNumber(entry) {
+            const game = Number(entry && entry.game);
+            return Number.isFinite(game) && game > 0 ? game : 1;
+        }
+
+        function renderTimelineGameDivider(finishedGame, score) {
+            const gamesScore = score && Array.isArray(score.games)
+                ? `Juegos ${score.games[0]} - ${score.games[1]}`
+                : '';
+            return `<div class="live-history-game-divider" role="separator" aria-label="Juego ${finishedGame} finalizado">
+                <span class="live-history-game-divider-label">
+                    <strong>Juego ${esc(finishedGame)} finalizado</strong>
+                    ${gamesScore ? `<small>${esc(gamesScore)}</small>` : ''}
+                </span>
+            </div>`;
+        }
+
         function timelineEntriesHTML(events) {
             const list = Array.isArray(events) ? events : [];
-            return list.length
-                ? list.slice().reverse().map((entry, index) => renderTimelineEntry(entry, list.length - index)).join('')
-                : '<div class="live-history-empty">Aún no hay eventos registrados en este partido.</div>';
+            if (!list.length) return '<div class="live-history-empty">Aún no hay eventos registrados en este partido.</div>';
+            const newestFirst = list.slice().reverse();
+            return newestFirst.map((entry, index) => {
+                const renderedEntry = renderTimelineEntry(entry, list.length - index);
+                const olderEntry = newestFirst[index + 1];
+                if (!olderEntry) return renderedEntry;
+                const currentGame = timelineGameNumber(entry);
+                const olderGame = timelineGameNumber(olderEntry);
+                return currentGame > olderGame
+                    ? renderedEntry + renderTimelineGameDivider(olderGame, entry.score)
+                    : renderedEntry;
+            }).join('');
         }
 
         function liveMatchHistoryContent() {

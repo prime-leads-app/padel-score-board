@@ -10,6 +10,6 @@ metadata:
   modified: 2026-07-31T13:35:51.259Z
 ---
 
-Ahora: v5.47 hace que Reiniciar elimine toda la actividad y estadísticas del partido actual. Los cards de Error/Acierto muestran el golpe en el encabezado y separan Punto para, Juego y Marcador de puntos en lectura vertical; se validó a 390 x 844.
+Ahora: v5.48 agrega separadores automáticos entre juegos dentro de la cronología, con el juego finalizado y el marcador acumulado. Se validó a 390 x 844 completando el Juego 1 e iniciando el Juego 2; el separador no modifica la secuencia de eventos.
 
 Próximo paso: la unidad cierra aquí.
