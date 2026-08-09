@@ -10,6 +10,6 @@ metadata:
   modified: 2026-07-31T13:35:51.259Z
 ---
 
-Ahora: v5.57 muestra el borde superior completo en partidos expandidos y elimina el rótulo Partidos terminados. Se validaron visualmente los estados expandido y colapsado a 390 x 844.
+Ahora: v5.58 evita que los marcadores de eventos y encabezados de partidos salten a una segunda línea. Se validó visualmente el historial a 390 x 844.
 
 Próximo paso: la unidad cierra aquí.

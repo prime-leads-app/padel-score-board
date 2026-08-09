@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <!-- Sube en cada publicacion: la app la compara contra la red para saber si esta al dia -->
-    <meta name="app-version" content="5.57">
+    <meta name="app-version" content="5.58">
     <title>Padel Scoreboard</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1733,17 +1733,28 @@
         }
 
         .live-history-team {
+            display: flex;
+            align-items: baseline;
+            gap: 3px;
             min-width: 0;
+            overflow: hidden;
             font-size: 0.78rem;
             font-weight: 750;
             line-height: 1.2;
-            overflow-wrap: anywhere;
         }
 
         .live-history-team.team-1 { color: #ff9eaa; }
-        .live-history-team.team-2 { color: #90caf9; text-align: right; }
+        .live-history-team.team-2 { justify-content: flex-end; color: #90caf9; text-align: right; }
+
+        .live-history-team-name {
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
 
         .live-history-team-result {
+            flex: 0 0 auto;
             color: #ffc107;
             white-space: nowrap;
         }
@@ -2019,7 +2030,7 @@
         .live-history-team-score-side {
             display: flex;
             align-items: baseline;
-            flex-wrap: wrap;
+            flex-wrap: nowrap;
             gap: 3px;
             min-width: 0;
         }
@@ -2030,8 +2041,11 @@
         }
 
         .live-history-team-score-name {
+            flex: 1 1 auto;
             min-width: 0;
-            overflow-wrap: anywhere;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
             font-weight: 700;
         }
 
@@ -2039,6 +2053,7 @@
         .live-history-team-score-side.team-2 .live-history-team-score-name { color: #a9d5ff; }
 
         .live-history-team-score strong {
+            flex: 0 0 auto;
             color: #ffc107;
             font-size: 0.7rem;
             white-space: nowrap;
@@ -2934,7 +2949,7 @@
             </a>
             <a href="https://github.com/prime-leads-app/padel-score-board" target="_blank" rel="noopener" class="card bg-dark border-secondary text-decoration-none flex-fill" style="cursor:pointer;">
                 <div class="card-body py-0 px-2 text-center">
-                    <small class="text-white">PadelApp v<span id="app-version-label">5.57</span></small>
+                    <small class="text-white">PadelApp v<span id="app-version-label">5.58</span></small>
                 </div>
             </a>
             <div class="card bg-dark border-secondary flex-fill">
@@ -5421,7 +5436,7 @@
 
         function timelineTeamLabel(entry, team) {
             const savedTeam = entry && Array.isArray(entry.teams) ? entry.teams[team - 1] : null;
-            if (Array.isArray(savedTeam) && savedTeam.length) return savedTeam.join(' / ');
+            if (Array.isArray(savedTeam) && savedTeam.length) return savedTeam.join('/');
             return getName(team);
         }
 
@@ -5590,24 +5605,24 @@
                 ? score.games
                 : (Array.isArray(score.points) ? score.points : ['-', '-']);
             return {
-                matchup: `<div class="live-history-team team-1">${esc(getName(1))} <strong class="live-history-team-result">(${esc(currentResult[0])})</strong></div>
+                matchup: `<div class="live-history-team team-1"><span class="live-history-team-name">${esc(getName(1))}</span><strong class="live-history-team-result">(${esc(currentResult[0])})</strong></div>
                     <div class="live-history-vs">VS</div>
-                    <div class="live-history-team team-2">${esc(getName(2))} <strong class="live-history-team-result">(${esc(currentResult[1])})</strong></div>`,
+                    <div class="live-history-team team-2"><span class="live-history-team-name">${esc(getName(2))}</span><strong class="live-history-team-result">(${esc(currentResult[1])})</strong></div>`,
                 entries: timelineEntriesHTML(events)
             };
         }
 
         function savedMatchHistoryHTML(match, open) {
-            const team1 = Array.isArray(match.team1) ? match.team1.join(' / ') : (match.team1 || 'Equipo 1');
-            const team2 = Array.isArray(match.team2) ? match.team2.join(' / ') : (match.team2 || 'Equipo 2');
+            const team1 = Array.isArray(match.team1) ? match.team1.join('/') : (match.team1 || 'Equipo 1');
+            const team2 = Array.isArray(match.team2) ? match.team2.join('/') : (match.team2 || 'Equipo 2');
             const events = Array.isArray(match.timeline) ? match.timeline : [];
             const legacyGames = typeof match.score === 'string' ? match.score.match(/(\d+)\s*-\s*(\d+)/) : null;
             const games = Array.isArray(match.games)
                 ? match.games
                 : (legacyGames ? [legacyGames[1], legacyGames[2]] : ['-', '-']);
-            const matchup = `<span class="live-history-team team-1">${esc(team1)} <strong class="live-history-team-result">(${esc(games[0])})</strong></span>
+            const matchup = `<span class="live-history-team team-1"><span class="live-history-team-name">${esc(team1)}</span><strong class="live-history-team-result">(${esc(games[0])})</strong></span>
                 <span class="live-history-vs">VS</span>
-                <span class="live-history-team team-2">${esc(team2)} <strong class="live-history-team-result">(${esc(games[1])})</strong></span>`;
+                <span class="live-history-team team-2"><span class="live-history-team-name">${esc(team2)}</span><strong class="live-history-team-result">(${esc(games[1])})</strong></span>`;
             return `<details class="reta-history-match"${open ? ' open' : ''}>
                 <summary aria-label="Abrir partido ${esc(match.n || '')}"><span class="reta-history-summary-score">${matchup}</span></summary>
                 <div class="reta-history-match-body">

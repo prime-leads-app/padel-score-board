@@ -102,3 +102,6 @@ Un partido terminado colapsado muestra directamente Pareja 1 (juegos) VS Pareja 
 
 ## 2026-08-08-21-58-36-21
 El cuerpo de un partido expandido tiene separación superior equivalente a los laterales, dejando visible el borde completo del marcador interior. Se eliminó el rótulo Partidos terminados; si conviven un partido actual y partidos previos sólo se conserva una separación visual sin texto.
+
+## 2026-08-08-22-09-19-22
+Los nombres de ambas parejas usan espacio flexible sin envolver y las puntuaciones permanecen siempre visibles junto al nombre. El separador central queda fijo; en anchos extremos el nombre usa elipsis antes de permitir un salto de línea. La nomenclatura del historial usa diagonal sin espacios para aprovechar el ancho móvil.
