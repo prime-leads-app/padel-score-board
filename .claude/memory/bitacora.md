@@ -78,3 +78,4 @@ metadata:
 - 2026-08-08-21-58-36-21: v5.57 recupera el borde superior y elimina el rótulo de partidos terminados.
 - 2026-08-08-22-09-19-22: v5.58 mantiene los marcadores de la cronología en una sola línea.
 - 2026-08-08-22-33-10-23: v5.59 separa la finalización del partido del último turno de saque.
+- 2026-08-08-22-38-58-24: v5.60 simplifica el card de saque terminado.

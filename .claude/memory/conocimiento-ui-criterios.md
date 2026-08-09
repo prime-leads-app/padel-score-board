@@ -108,3 +108,6 @@ Los nombres de ambas parejas usan espacio flexible sin envolver y las puntuacion
 
 ## 2026-08-08-22-33-10-23
 La cronología registra y muestra Partido finalizado como evento independiente con copa, hora y resultado, antes del último turno de saque por el orden de más recientes primero. El card de saque conserva sólo Turno finalizado y el punto final indica que cerró el juego. Los historiales anteriores generan el evento de cierre al renderizarse cuando detectan un saque terminado por fin del partido.
+
+## 2026-08-08-22-38-58-24
+Los turnos de saque finalizados muestran sólo el marcador de juego, jugador, etiqueta Al saque y horario. Se eliminan el icono amarillo secundario y el texto Turno finalizado; un saque activo conserva En curso y los cambios manuales conservan su indicación.

@@ -10,6 +10,6 @@ metadata:
   modified: 2026-07-31T13:35:51.259Z
 ---
 
-Ahora: v5.59 separa claramente el cierre del partido, el último saque, el cierre del juego y el punto final. Se validó visual y semánticamente la secuencia completa a 390 x 844, incluyendo compatibilidad con historiales existentes.
+Ahora: v5.60 elimina del saque terminado el icono amarillo y el texto Turno finalizado, reduciendo el card a una fila. Se validó visual y semánticamente a 390 x 844.
 
 Próximo paso: la unidad cierra aquí.

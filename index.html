@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <!-- Sube en cada publicacion: la app la compara contra la red para saber si esta al dia -->
-    <meta name="app-version" content="5.59">
+    <meta name="app-version" content="5.60">
     <title>Padel Scoreboard</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1860,12 +1860,6 @@
             background: rgba(255, 193, 7, 0.07);
         }
 
-        .live-history-item.serve-event .live-history-sequence {
-            background: #ffc107;
-            color: #1a1a2e;
-            box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.12);
-        }
-
         .serve-event .live-history-event-head { align-items: center; }
         .serve-event .live-history-event-head time { color: #ffe082; }
         .serve-event-summary {
@@ -2975,7 +2969,7 @@
             </a>
             <a href="https://github.com/prime-leads-app/padel-score-board" target="_blank" rel="noopener" class="card bg-dark border-secondary text-decoration-none flex-fill" style="cursor:pointer;">
                 <div class="card-body py-0 px-2 text-center">
-                    <small class="text-white">PadelApp v<span id="app-version-label">5.59</span></small>
+                    <small class="text-white">PadelApp v<span id="app-version-label">5.60</span></small>
                 </div>
             </a>
             <div class="card bg-dark border-secondary flex-fill">
@@ -5584,19 +5578,18 @@
             const reason = entry.reason || 'Turno de saque';
             const inProgress = !entry.endedAt && !entry.endedTimestamp;
             const period = inProgress ? `Inicio ${start}` : `${start} a ${end}`;
-            const status = inProgress ? 'En curso' : 'Turno finalizado';
             const manualChange = /cambio manual/i.test(reason) || /cambio manual/i.test(entry.endReason || '');
+            const status = inProgress ? '<span class="serve-event-status">En curso</span>' : '';
+            const summary = status || manualChange
+                ? `<div class="serve-event-summary">${status}${manualChange ? '<span class="serve-event-note">Cambio manual</span>' : ''}</div>`
+                : '';
             return `<article class="live-history-item serve-event team-${servingTeam}">
                 <div class="live-history-markers" aria-label="Juego ${esc(entry.game || 1)}, evento de saque">
                     <div class="live-history-game-marker">J${esc(entry.game || 1)}</div>
-                    <div class="live-history-sequence"><i class="bi bi-person-badge" aria-hidden="true"></i></div>
                 </div>
                 <div>
                     <div class="live-history-event-head"><strong>${esc(entry.player || 'Jugador')} <span class="live-history-outcome serve">Al saque</span></strong><time>${esc(period)}</time></div>
-                    <div class="serve-event-summary">
-                        <span class="serve-event-status">${esc(status)}</span>
-                        ${manualChange ? '<span class="serve-event-note">Cambio manual</span>' : ''}
-                    </div>
+                    ${summary}
                 </div>
             </article>`;
         }
