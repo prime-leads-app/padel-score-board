@@ -82,3 +82,4 @@ metadata:
 - 2026-08-08-22-49-57-25: v5.61 compacta Registro y Golpes en dos menús desplegables.
 - 2026-08-08-23-01-38-26: v5.62 muestra Golpes antes de Registro en la configuración de retas.
 - 2026-08-08-23-25-23-27: v5.63 corrige el bloqueo y el reloj al pasar al siguiente partido de una reta.
+- 2026-08-08-23-38-08-28: v5.64 distingue Acierto, Error y Punto en el selector de golpes.

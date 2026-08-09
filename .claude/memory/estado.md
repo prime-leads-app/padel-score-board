@@ -10,4 +10,4 @@ metadata:
   modified: 2026-07-31T13:35:51.259Z
 ---
 
-Ahora: v5.63 deja listo el segundo partido al abrir alineacion o configuracion despues de un encuentro terminado. El reloj recupera el limite configurado, resuelve al vencer por juegos o puntos y solo extiende un punto ante empate absoluto. Proximo paso: verificar el flujo con datos reales de una reta de 13 minutos.
+Ahora: v5.64 hace explicito si el selector registra Acierto, Error o Punto y separa ese estado del tipo de golpe o error. Se verificaron visualmente los casos Error y Acierto a 390 x 844. Proximo paso: la unidad cierra aqui.

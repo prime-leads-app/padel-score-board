@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <!-- Sube en cada publicacion: la app la compara contra la red para saber si esta al dia -->
-    <meta name="app-version" content="5.63">
+    <meta name="app-version" content="5.64">
     <title>Padel Scoreboard</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -332,11 +332,46 @@
         .shot-type-card.error-mode {
             background: linear-gradient(135deg, #8b1e2d, #2c3e50);
         }
+        .shot-type-heading {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 7px;
+            min-width: 0;
+        }
+        .shot-type-heading h5 {
+            margin: 0;
+            font-weight: 700;
+        }
+        .shot-type-outcome {
+            display: inline-flex;
+            align-items: center;
+            min-height: 24px;
+            padding: 2px 9px;
+            border: 1px solid rgba(255,255,255,0.35);
+            border-radius: 999px;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 800;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+        .shot-type-outcome.acierto { background: #198754; }
+        .shot-type-outcome.error { background: #dc3545; }
+        .shot-type-outcome.point { background: #455a64; }
         .shot-type-context {
-            margin: 2px 0 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+            margin: 7px 0 10px;
             color: rgba(255,255,255,0.72);
             font-size: 0.78rem;
             text-align: left;
+        }
+        .shot-type-context strong {
+            color: #fff;
+            font-size: 0.88rem;
         }
         .shot-type-options {
             display: flex;
@@ -3006,7 +3041,7 @@
             </a>
             <a href="https://github.com/prime-leads-app/padel-score-board" target="_blank" rel="noopener" class="card bg-dark border-secondary text-decoration-none flex-fill" style="cursor:pointer;">
                 <div class="card-body py-0 px-2 text-center">
-                    <small class="text-white">PadelApp v<span id="app-version-label">5.63</span></small>
+                    <small class="text-white">PadelApp v<span id="app-version-label">5.64</span></small>
                 </div>
             </a>
             <div class="card bg-dark border-secondary flex-fill">
@@ -3478,15 +3513,21 @@
 
     <!-- Shot Type Modal -->
     <div class="winner-overlay d-none" id="shot-type-overlay" onclick="closeShotTypeModal()">
-        <div class="winner-card shot-type-card" id="shot-type-card" onclick="event.stopPropagation()">
+        <div class="winner-card shot-type-card" id="shot-type-card" role="dialog" aria-modal="true" aria-labelledby="shot-type-title" aria-describedby="shot-type-context" onclick="event.stopPropagation()">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                <h5 style="margin:0; font-weight:700;" id="shot-type-title">Tipo de golpe</h5>
+                <div class="shot-type-heading">
+                    <h5 id="shot-type-title">Jugador</h5>
+                    <span class="shot-type-outcome point" id="shot-type-outcome">Punto</span>
+                </div>
                 <div style="display:flex; align-items:center; gap:8px;">
                     <span style="opacity:0.6; font-size:0.8rem;" id="shot-type-timer">5s</span>
                     <button onclick="closeShotTypeModal()" style="padding:2px 8px; background:#e94560; color:#fff; font-weight:700; border:none; border-radius:4px; font-size:0.9rem; cursor:pointer;">✕</button>
                 </div>
             </div>
-            <div class="shot-type-context" id="shot-type-context">Selecciona el golpe con el que terminó el punto.</div>
+            <div class="shot-type-context">
+                <strong id="shot-type-kind">Tipo de golpe</strong>
+                <span id="shot-type-context">Selecciona el golpe con el que terminó el punto.</span>
+            </div>
             <div class="shot-type-options" id="shot-type-options"></div>
         </div>
     </div>
@@ -4626,11 +4667,20 @@
             const nameEl = document.getElementById('name-' + playerId);
             const playerName = nameEl ? nameEl.textContent : playerId;
             const isError = outcome === 'error';
+            const isAcierto = outcome === 'acierto';
             const options = isError ? ERROR_SHOT_OPTIONS : SHOT_OPTIONS;
-            document.getElementById('shot-type-title').textContent = playerName + (isError ? ' - Tipo de error' : ' - Tipo de golpe');
+            const outcomeLabel = isError ? 'Error' : isAcierto ? 'Acierto' : 'Punto';
+            const outcomeClass = isError ? 'error' : isAcierto ? 'acierto' : 'point';
+            const outcomeBadge = document.getElementById('shot-type-outcome');
+            document.getElementById('shot-type-title').textContent = playerName;
+            document.getElementById('shot-type-kind').textContent = isError ? 'Tipo de error' : 'Tipo de golpe';
             document.getElementById('shot-type-context').textContent = isError
                 ? 'Selecciona el golpe en el que se cometió el error.'
-                : 'Selecciona el golpe con el que terminó el punto.';
+                : isAcierto
+                    ? 'Selecciona el golpe con el que se consiguió el punto.'
+                    : 'Selecciona el golpe con el que terminó el punto.';
+            outcomeBadge.textContent = outcomeLabel;
+            outcomeBadge.className = 'shot-type-outcome ' + outcomeClass;
             document.getElementById('shot-type-card').classList.toggle('error-mode', isError);
             document.getElementById('shot-type-options').innerHTML = options.map(option =>
                 `<button class="shot-type-option" onclick="registerShot('${option.type}')" style="--shot-color:${option.color}"><i class="bi ${option.icon}" aria-hidden="true"></i>${option.label}</button>`

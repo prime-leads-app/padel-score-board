@@ -120,3 +120,6 @@ La fila compacta conserva los dos combos y sus funciones, pero presenta Golpes a
 
 ## 2026-08-08-23-25-23-27
 Un partido terminado se reinicia al abrir la alineacion o la configuracion, Iniciar reaparece tras Listo y el reloj usa el limite del nuevo partido. El vencimiento define por juegos o puntos, usa un punto decisivo solo en empate absoluto, registra la duracion oficial configurada y se evalua al volver del segundo plano.
+
+## 2026-08-08-23-38-08-28
+El modal muestra el nombre del participante junto a una etiqueta semantica verde, roja o gris. Debajo indica Tipo de golpe o Tipo de error y usa una instruccion especifica sin cambiar el espacio de las opciones.
