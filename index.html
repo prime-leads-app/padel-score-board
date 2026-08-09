@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <!-- Sube en cada publicacion: la app la compara contra la red para saber si esta al dia -->
-    <meta name="app-version" content="5.55">
+    <meta name="app-version" content="5.56">
     <title>Padel Scoreboard</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1253,8 +1253,22 @@
             transform: rotate(0deg);
             transition: transform 0.18s ease;
         }
-        .reta-history-match[open] > summary::before { transform: rotate(90deg); }
+        .reta-history-match[open] > summary { display: none; }
+        .reta-history-summary-score {
+            display: inline-grid;
+            grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+            align-items: center;
+            gap: 8px;
+            width: calc(100% - 24px);
+            vertical-align: middle;
+        }
         .reta-history-match-body { padding: 0 10px 8px; }
+        .reta-history-match-toggle {
+            width: 100%;
+            color: inherit;
+            font: inherit;
+            cursor: pointer;
+        }
         .light-theme .reta-history-match { background: #f4f7fa; border-color: #c9dbe5; }
         .light-theme .reta-history-match > summary { color: #263746; }
         .reta-stats-live {
@@ -2928,7 +2942,7 @@
             </a>
             <a href="https://github.com/prime-leads-app/padel-score-board" target="_blank" rel="noopener" class="card bg-dark border-secondary text-decoration-none flex-fill" style="cursor:pointer;">
                 <div class="card-body py-0 px-2 text-center">
-                    <small class="text-white">PadelApp v<span id="app-version-label">5.55</span></small>
+                    <small class="text-white">PadelApp v<span id="app-version-label">5.56</span></small>
                 </div>
             </a>
             <div class="card bg-dark border-secondary flex-fill">
@@ -5595,15 +5609,17 @@
             const team1 = Array.isArray(match.team1) ? match.team1.join(' / ') : (match.team1 || 'Equipo 1');
             const team2 = Array.isArray(match.team2) ? match.team2.join(' / ') : (match.team2 || 'Equipo 2');
             const events = Array.isArray(match.timeline) ? match.timeline : [];
-            const games = Array.isArray(match.games) ? `${match.games[0]} - ${match.games[1]}` : (match.score || 'Marcador no disponible');
+            const legacyGames = typeof match.score === 'string' ? match.score.match(/(\d+)\s*-\s*(\d+)/) : null;
+            const games = Array.isArray(match.games)
+                ? match.games
+                : (legacyGames ? [legacyGames[1], legacyGames[2]] : ['-', '-']);
+            const matchup = `<span class="live-history-team team-1">${esc(team1)} <strong class="live-history-team-result">(${esc(games[0])})</strong></span>
+                <span class="live-history-vs">VS</span>
+                <span class="live-history-team team-2">${esc(team2)} <strong class="live-history-team-result">(${esc(games[1])})</strong></span>`;
             return `<details class="reta-history-match"${open ? ' open' : ''}>
-                <summary>Partido ${esc(match.n || '')}: ${esc(team1)} vs ${esc(team2)} · ${esc(games)}</summary>
+                <summary aria-label="Abrir partido ${esc(match.n || '')}"><span class="reta-history-summary-score">${matchup}</span></summary>
                 <div class="reta-history-match-body">
-                    <div class="live-history-matchup">
-                        <div class="live-history-team team-1">${esc(team1)} <strong class="live-history-team-result">(${esc(match.games[0])})</strong></div>
-                        <div class="live-history-vs">VS</div>
-                        <div class="live-history-team team-2">${esc(team2)} <strong class="live-history-team-result">(${esc(match.games[1])})</strong></div>
-                    </div>
+                    <button type="button" class="live-history-matchup reta-history-match-toggle" onclick="this.closest('details').open=false" aria-label="Colapsar partido ${esc(match.n || '')}">${matchup}</button>
                     <div class="live-history-list">${timelineEntriesHTML(events)}</div>
                 </div>
             </details>`;

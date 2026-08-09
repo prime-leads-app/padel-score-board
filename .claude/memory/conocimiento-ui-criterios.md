@@ -96,3 +96,6 @@ Cada card de la cronología muestra una columna de marcadores: círculo JN arrib
 
 ## 2026-08-08-21-30-12-19
 En retas, el encabezado del partido actual usa los juegos acumulados entre paréntesis y no los puntos del juego recién iniciado. El cartel ganador dejó de estar duplicado dentro de cada equipo: ahora es una sola capa sobre el scoreboard completo y cubre ambos paneles, conservando las acciones según el modo.
+
+## 2026-08-08-21-53-39-20
+Un partido terminado colapsado muestra directamente Pareja 1 (juegos) VS Pareja 2 (juegos). Al expandirlo se oculta ese summary exterior y el marcador interior actúa como botón para volver a colapsar, eliminando la duplicación sin perder el control.
