@@ -75,3 +75,6 @@ Reiniciar descarta marcador, cronología, saques, golpes y estadísticas del par
 
 ## 2026-08-08-19-35-18-12
 La cronología detecta el cambio de número de juego y coloca entre ambos grupos un separador ligero con Juego N finalizado y el marcador acumulado de juegos. El separador no cuenta como evento ni altera la numeración, y funciona tanto en el partido actual como en partidos guardados.
+
+## 2026-08-08-20-02-48-13
+Un punto normal muestra el marcador de puntos. Si el punto cierra un juego, el card indica Con este punto gana el Juego N y Marcador de juegos. Si además cierra el partido, muestra la pareja ganadora y el resultado final. Los eventos antiguos se reconocen comparando el marcador de juegos con el evento anterior, evitando mostrar el 0-0 inicial del siguiente juego como resultado.

@@ -10,6 +10,6 @@ metadata:
   modified: 2026-07-31T13:35:51.259Z
 ---
 
-Ahora: v5.48 agrega separadores automáticos entre juegos dentro de la cronología, con el juego finalizado y el marcador acumulado. Se validó a 390 x 844 completando el Juego 1 e iniciando el Juego 2; el separador no modifica la secuencia de eventos.
+Ahora: v5.49 distingue puntos normales, puntos que cierran un juego y puntos que cierran el partido. El evento decisivo ya no muestra el 0-0 del siguiente juego; se validó a 390 x 844 con datos nuevos y eventos previamente guardados.
 
 Próximo paso: la unidad cierra aquí.

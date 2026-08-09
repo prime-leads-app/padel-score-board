@@ -67,3 +67,4 @@ metadata:
 - 2026-08-08-19-08-44-10: v5.46 diferencia visualmente Error, Acierto y Saque en la cronología de la reta.
 - 2026-08-08-19-24-14-11: v5.47 limpia el partido al reiniciar y simplifica los eventos de punto.
 - 2026-08-08-19-35-18-12: v5.48 separa visualmente los juegos dentro de la cronología.
+- 2026-08-08-20-02-48-13: v5.49 muestra el resultado correcto en el punto que cierra un juego o partido.

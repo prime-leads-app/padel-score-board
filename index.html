@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <!-- Sube en cada publicacion: la app la compara contra la red para saber si esta al dia -->
-    <meta name="app-version" content="5.48">
+    <meta name="app-version" content="5.49">
     <title>Padel Scoreboard</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1975,6 +1975,16 @@
             font-weight: 750;
         }
 
+        .live-history-point-details.result span {
+            color: #dce6ef;
+            font-weight: 650;
+        }
+
+        .live-history-point-details.match-result span {
+            color: #ffe082;
+            font-weight: 750;
+        }
+
         .live-history-game-divider {
             display: grid;
             grid-template-columns: minmax(18px, 1fr) auto minmax(18px, 1fr);
@@ -2041,6 +2051,8 @@
         .light-theme .live-history-shot { color: #455a64; border-color: #b8c6cf; background: #edf2f5; }
         .light-theme .live-history-point-details { color: #607d8b; }
         .light-theme .live-history-point-details strong { color: #8a6200; }
+        .light-theme .live-history-point-details.result span { color: #34495e; }
+        .light-theme .live-history-point-details.match-result span { color: #8a6200; }
         .light-theme .live-history-game-divider { color: #8a6200; }
         .light-theme .live-history-game-divider-label small { color: #607d8b; }
         .light-theme .live-history-item.point-event { background: #f3f7fa; border-color: #c8d6df; }
@@ -2856,7 +2868,7 @@
             </a>
             <a href="https://github.com/prime-leads-app/padel-score-board" target="_blank" rel="noopener" class="card bg-dark border-secondary text-decoration-none flex-fill" style="cursor:pointer;">
                 <div class="card-body py-0 px-2 text-center">
-                    <small class="text-white">PadelApp v<span id="app-version-label">5.48</span></small>
+                    <small class="text-white">PadelApp v<span id="app-version-label">5.49</span></small>
                 </div>
             </a>
             <div class="card bg-dark border-secondary flex-fill">
@@ -4601,7 +4613,14 @@
                     playSound('point', player);
                 }
             }
-            recordPointTimeline(player, attribution, timelineGame);
+            const closesGame = mode === 'padel' && (
+                games[0] + games[1] !== prevGames ||
+                setsWon[0] + setsWon[1] > prevSets
+            );
+            recordPointTimeline(player, attribution, timelineGame, {
+                closesGame,
+                closesMatch: mode === 'padel' && matchOver
+            });
             flushPendingServeTransition();
             render();
             return true;
@@ -5314,7 +5333,7 @@
             }
         }
 
-        function recordPointTimeline(scoringTeam, attribution, game) {
+        function recordPointTimeline(scoringTeam, attribution, game, result = {}) {
             const playerId = attribution && RETA_SLOTS.includes(attribution.playerId) ? attribution.playerId : null;
             const playerEl = playerId ? document.getElementById('name-' + playerId) : null;
             pointTimeline.push({
@@ -5326,6 +5345,8 @@
                 player: playerEl ? playerEl.textContent : null,
                 outcome: attribution && (attribution.outcome === 'error' || attribution.outcome === 'acierto') ? attribution.outcome : null,
                 game,
+                closesGame: !!result.closesGame,
+                closesMatch: !!result.closesMatch,
                 shot: null,
                 teams: [timelineTeamPlayers(1), timelineTeamPlayers(2)],
                 score: currentTimelineScore()
@@ -5355,6 +5376,19 @@
             return `Puntos ${score.points[0]} - ${score.points[1]}`;
         }
 
+        function timelineGamesScoreLabel(score, prefix) {
+            if (!score || !Array.isArray(score.games)) return '';
+            return `${prefix}: ${score.games[0]} - ${score.games[1]}`;
+        }
+
+        function timelinePointClosedGame(entry, previousEntry) {
+            if (entry && entry.closesGame) return true;
+            const currentGames = entry && entry.score && entry.score.games;
+            const previousGames = previousEntry && previousEntry.score && previousEntry.score.games;
+            if (!Array.isArray(currentGames) || !Array.isArray(previousGames)) return false;
+            return currentGames[0] !== previousGames[0] || currentGames[1] !== previousGames[1];
+        }
+
         function legacyLiveHistoryEntries() {
             return matchLog.filter(entry => entry && typeof entry === 'object' && entry.player).map(entry => {
                 const actorTeam = entry.playerId && entry.playerId.startsWith('p2') ? 2 : 1;
@@ -5363,7 +5397,7 @@
             });
         }
 
-        function renderLiveHistoryEntry(entry, sequence) {
+        function renderLiveHistoryEntry(entry, sequence, previousEntry) {
             const scoringTeam = entry.scoringTeam === 2 ? 2 : 1;
             const beneficiary = timelineTeamLabel(entry, scoringTeam);
             const outcomeClass = entry.outcome === 'error'
@@ -5385,12 +5419,21 @@
                 ? `<span class="live-history-shot">${esc(shotLabel(entry.shot, entry.outcome))}</span>`
                 : '';
             const score = timelinePointScoreLabel(entry.score);
+            const gameClosed = timelinePointClosedGame(entry, previousEntry);
+            const matchClosed = !!entry.closesMatch;
+            let pointDetail = `<div class="live-history-point-details"><span>Juego ${esc(entry.game || 1)}</span>${score ? `<strong>Marcador: ${esc(score)}</strong>` : '<strong>Marcador anterior no disponible</strong>'}</div>`;
+            if (gameClosed) {
+                const gamesScore = timelineGamesScoreLabel(entry.score, matchClosed ? 'Resultado final: Juegos' : 'Marcador de juegos');
+                pointDetail = matchClosed
+                    ? `<div class="live-history-point-details result match-result"><span>${esc(beneficiary)} gana el partido</span>${gamesScore ? `<strong>${esc(gamesScore)}</strong>` : ''}</div>`
+                    : `<div class="live-history-point-details result"><span>Con este punto gana el Juego ${esc(entry.game || 1)}</span>${gamesScore ? `<strong>${esc(gamesScore)}</strong>` : ''}</div>`;
+            }
             return `<article class="live-history-item point-event ${outcomeClass} team-${scoringTeam}">
                 <div class="live-history-sequence">${sequence}</div>
                 <div>
                     <div class="live-history-event-head"><div class="live-history-title-group"><strong>${action}</strong>${outcome}${shot}</div><time>${esc(entry.time || '')}</time></div>
                     <div class="live-history-award">Punto para <strong>${esc(beneficiary)}</strong></div>
-                    <div class="live-history-point-details"><span>Juego ${esc(entry.game || 1)}</span>${score ? `<strong>Marcador: ${esc(score)}</strong>` : '<strong>Marcador anterior no disponible</strong>'}</div>
+                    ${pointDetail}
                 </div>
             </article>`;
         }
@@ -5432,10 +5475,10 @@
             </article>`;
         }
 
-        function renderTimelineEntry(entry, sequence) {
+        function renderTimelineEntry(entry, sequence, previousEntry) {
             if (entry && entry.eventType === 'serve') return renderServeTimelineEntry(entry, sequence);
             if (entry && entry.eventType === 'reset') return renderResetTimelineEntry(entry, sequence);
-            return renderLiveHistoryEntry(entry, sequence);
+            return renderLiveHistoryEntry(entry, sequence, previousEntry);
         }
 
         function timelineGameNumber(entry) {
@@ -5460,8 +5503,8 @@
             if (!list.length) return '<div class="live-history-empty">Aún no hay eventos registrados en este partido.</div>';
             const newestFirst = list.slice().reverse();
             return newestFirst.map((entry, index) => {
-                const renderedEntry = renderTimelineEntry(entry, list.length - index);
                 const olderEntry = newestFirst[index + 1];
+                const renderedEntry = renderTimelineEntry(entry, list.length - index, olderEntry);
                 if (!olderEntry) return renderedEntry;
                 const currentGame = timelineGameNumber(entry);
                 const olderGame = timelineGameNumber(olderEntry);
