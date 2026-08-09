@@ -99,3 +99,6 @@ En retas, el encabezado del partido actual usa los juegos acumulados entre paré
 
 ## 2026-08-08-21-53-39-20
 Un partido terminado colapsado muestra directamente Pareja 1 (juegos) VS Pareja 2 (juegos). Al expandirlo se oculta ese summary exterior y el marcador interior actúa como botón para volver a colapsar, eliminando la duplicación sin perder el control.
+
+## 2026-08-08-21-58-36-21
+El cuerpo de un partido expandido tiene separación superior equivalente a los laterales, dejando visible el borde completo del marcador interior. Se eliminó el rótulo Partidos terminados; si conviven un partido actual y partidos previos sólo se conserva una separación visual sin texto.

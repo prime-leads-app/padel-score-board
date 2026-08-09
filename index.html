@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <!-- Sube en cada publicacion: la app la compara contra la red para saber si esta al dia -->
-    <meta name="app-version" content="5.56">
+    <meta name="app-version" content="5.57">
     <title>Padel Scoreboard</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1220,15 +1220,6 @@
             overflow: visible;
             padding-right: 0;
         }
-        .reta-history-context {
-            margin-bottom: 7px;
-            color: #7ec8e3;
-            font-size: 0.66rem;
-            font-weight: 800;
-            letter-spacing: 0.09em;
-            text-align: center;
-            text-transform: uppercase;
-        }
         .reta-history-match {
             margin-bottom: 10px;
             border: 1px solid rgba(126, 200, 227, 0.2);
@@ -1262,7 +1253,8 @@
             width: calc(100% - 24px);
             vertical-align: middle;
         }
-        .reta-history-match-body { padding: 0 10px 8px; }
+        .reta-history-match-body { padding: 10px 10px 8px; }
+        .reta-history-completed.has-current { margin-top: 14px; }
         .reta-history-match-toggle {
             width: 100%;
             color: inherit;
@@ -2942,7 +2934,7 @@
             </a>
             <a href="https://github.com/prime-leads-app/padel-score-board" target="_blank" rel="noopener" class="card bg-dark border-secondary text-decoration-none flex-fill" style="cursor:pointer;">
                 <div class="card-body py-0 px-2 text-center">
-                    <small class="text-white">PadelApp v<span id="app-version-label">5.56</span></small>
+                    <small class="text-white">PadelApp v<span id="app-version-label">5.57</span></small>
                 </div>
             </a>
             <div class="card bg-dark border-secondary flex-fill">
@@ -5637,8 +5629,9 @@
                 ? retaSession.matches.slice().reverse().filter(match => Array.isArray(match.timeline))
                 : [];
             if (completed.length) {
-                sections.push(`<div class="reta-history-context" style="margin-top:${hasCurrent ? '14px' : '0'};">Partidos terminados</div>` +
-                    completed.map((match, index) => savedMatchHistoryHTML(match, !hasCurrent && index === 0)).join(''));
+                sections.push(`<div class="reta-history-completed${hasCurrent ? ' has-current' : ''}">` +
+                    completed.map((match, index) => savedMatchHistoryHTML(match, !hasCurrent && index === 0)).join('') +
+                    '</div>');
             }
             if (!sections.length) sections.push('<div class="live-history-empty">La cronología aparecerá al iniciar el primer partido.</div>');
             return `<section class="reta-history-pane">${sections.join('')}</section>`;
