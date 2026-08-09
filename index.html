@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <!-- Sube en cada publicacion: la app la compara contra la red para saber si esta al dia -->
-    <meta name="app-version" content="5.62">
+    <meta name="app-version" content="5.63">
     <title>Padel Scoreboard</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -2654,7 +2654,7 @@
                 <b style="color:#FFD54F;">Tiempo por partido</b> (solo en Retas)<br>
                 Minutos que dura cada partido: 15, 20, 30, el valor que escribas, o ∞ para jugar sin reloj.<br>
                 El cronometro va en cuenta regresiva y suena una alarma al llegar a cero.<br>
-                <span style="opacity:0.7;">Al acabarse el tiempo: si un equipo va arriba en juegos, gana ahi mismo. Si van empatados, el juego en curso se sigue jugando y quien lo gane, gana el partido.</span>
+                <span style="opacity:0.7;">Al acabarse el tiempo: gana quien vaya arriba en juegos o, si están empatados, en el marcador del juego en curso. Sólo un empate absoluto requiere un punto decisivo.</span>
             </div>
 
             <div style="margin:8px 0;">
@@ -2831,11 +2831,11 @@
 
             <div style="margin:8px 0;">
                 <b style="color:#FFD54F;">5. Cuando se acaba el tiempo</b><br>
-                Suena la alarma y el cronometro sigue en <b>+</b>.<br>
+                Suena la alarma y el partido se resuelve con el marcador de ese momento.<br>
                 <b>Si un equipo va arriba en juegos</b>, gana ahi mismo.<br>
                 <span style="opacity:0.7;">Ej: van 4-3 y suena el tiempo → gana 4-3, aunque el juego en curso quede a medias.</span><br>
-                <b>Si van empatados en juegos</b>, el juego en curso se sigue jugando y quien lo gane, gana el partido.<br>
-                <span style="opacity:0.7;">Ej: van 3-3 y suena el tiempo → terminan ese juego y queda 4-3.</span>
+                <b>Si van empatados en juegos</b>, gana quien vaya arriba en los puntos del juego en curso.<br>
+                <span style="opacity:0.7;">Si también empatan en puntos, el siguiente punto es decisivo y termina el partido.</span>
             </div>
 
             <div style="margin:8px 0;">
@@ -3006,7 +3006,7 @@
             </a>
             <a href="https://github.com/prime-leads-app/padel-score-board" target="_blank" rel="noopener" class="card bg-dark border-secondary text-decoration-none flex-fill" style="cursor:pointer;">
                 <div class="card-body py-0 px-2 text-center">
-                    <small class="text-white">PadelApp v<span id="app-version-label">5.62</span></small>
+                    <small class="text-white">PadelApp v<span id="app-version-label">5.63</span></small>
                 </div>
             </a>
             <div class="card bg-dark border-secondary flex-fill">
@@ -3104,7 +3104,7 @@
                 <h5 id="reta-time-settings-title">Tiempo del partido</h5>
                 <button type="button" class="btn btn-sm reta-modal-close" onclick="closeRetaTimeSettingsModal()" aria-label="Cerrar">✕</button>
             </div>
-            <p class="reta-setting-modal-copy">Al llegar a cero, el partido termina automáticamente si hay ventaja en juegos. Si están empatados, se concluye el juego en curso.</p>
+            <p class="reta-setting-modal-copy">Al llegar a cero, el partido se define por juegos o por el marcador en curso. Sólo un empate absoluto requiere el siguiente punto.</p>
             <div class="reta-setting-options" role="group" aria-label="Tiempo del partido">
                 <button type="button" class="btn btn-outline-light cfg-sq-btn" onclick="setRetaTime(15)" id="rt-15">15</button>
                 <button type="button" class="btn btn-outline-light cfg-sq-btn active" onclick="setRetaTime(20)" id="rt-20">20</button>
@@ -4251,7 +4251,7 @@
         }
 
         function updateIdleTimerDisplay() {
-            if (matchOver) { setTimerLook(elapsedText(), false); return; }
+            if (matchOver) { setTimerLook(matchDurationText(), false); return; }
             if (timerElapsed > 0) {
                 // Partido a medias con el reloj detenido
                 setTimerLook(isRetaTimed()
@@ -4286,6 +4286,14 @@
 
         function elapsedText() {
             return fmtClock(getElapsedSeconds());
+        }
+
+        // El límite de una reta es su duración oficial. Si el navegador móvil
+        // despierta tarde, no convierte ese retraso técnico en tiempo jugado.
+        function matchDurationText() {
+            const timedRetaFinished = mode === 'padel' && padelFormat === 'retas'
+                && _retaFinishReason === 'tiempo' && retaTimeLimit > 0;
+            return timedRetaFinished ? fmtClock(retaTimeLimit * 60) : elapsedText();
         }
 
         // Arranca el partido sin esperar al primer punto: el reloj empieza a correr ya
@@ -4420,16 +4428,17 @@
             setTimerLook(fmtClock(elapsed), false);
         }
 
-        // Se agotó el tiempo: si hay ventaja en juegos cierra ya; si van
-        // empatados el juego en curso continúa hasta que alguien lo gane.
+        // Se agotó el tiempo: define por juegos y, si están empatados,
+        // por el marcador del juego en curso. Sólo un empate absoluto
+        // requiere un punto decisivo adicional.
         function onRetaTimeUp() {
             retaTimeUp = true;
             playAlarm();
-            const w = retaResolveWinner(false);
+            const w = retaResolveWinner(true);
             if (w) {
                 finishRetaMatch(w, 'tiempo');
             } else {
-                addHistory('SE ACABÓ EL TIEMPO - empate en juegos, el juego en curso define');
+                addHistory('SE ACABÓ EL TIEMPO - empate absoluto, el siguiente punto define');
                 render();
             }
         }
@@ -4742,6 +4751,12 @@
                 }
             } else {
                 scorePadelPoint(player);
+                // Si el tiempo venció con empate absoluto, el primer punto
+                // posterior define el partido sin obligar a terminar el juego.
+                if (!matchOver && retaTimeUp && padelFormat === 'retas') {
+                    const deadlineWinner = retaResolveWinner(true);
+                    if (deadlineWinner) finishRetaMatch(deadlineWinner, 'tiempo', true);
+                }
                 // Sonido segun lo que paso
                 if (matchOver || setsWon[0] + setsWon[1] > prevSets) {
                     playSound('set', player);
@@ -5901,7 +5916,7 @@
 
         function showCurrentMatchStats() {
             const container = document.getElementById('current-stats-content');
-            const timerText = elapsedText();
+            const timerText = matchDurationText();
             const winner = setsWon[0] > setsWon[1] || games[0] > games[1] || freePoints[0] > freePoints[1] ? 1 : 2;
             const modeLabel = padelFormat === 'retas' ? 'Retas' : mode === 'libre' ? 'Libre' : 'Normal';
             let scoreLine = '';
@@ -6004,7 +6019,7 @@
             stopTimer();
             finalizeServeAudit('Fin del partido');
             recordMatchEndTimeline(p);
-            const timerText = elapsedText();
+            const timerText = matchDurationText();
             let scoreText = '';
             if (mode === 'padel' && padelFormat === 'retas') {
                 scoreText = `Juegos: ${games[0]} - ${games[1]} · ${timerText}`;
@@ -6079,7 +6094,7 @@
 
         function shareResult() {
             const winner = setsWon[0] > setsWon[1] || games[0] > games[1] || freePoints[0] > freePoints[1] ? 1 : 2;
-            const timerText = elapsedText();
+            const timerText = matchDurationText();
             let text = `${getName(winner)} gana!\n`;
             if (mode === 'padel' && padelFormat === 'retas') {
                 text += `Juegos: ${games[0]} - ${games[1]}`;
@@ -6484,6 +6499,7 @@
 
         function showLineupModal() {
             if (mode !== 'padel' || padelFormat !== 'retas') return;
+            prepareNextRetaMatchIfCompleted();
             moveRetaPairs('lineup-host');
             renderRoster();
             renderMatchupHint();
@@ -6507,6 +6523,7 @@
                 if (!document.getElementById('confirm-config-overlay').classList.contains('d-none')) return;
                 if (mode !== 'padel' || padelFormat !== 'retas') return;
             }
+            prepareNextRetaMatchIfCompleted();
             prepareRetaEditor('reta-modal-editor-home');
             const retaModal = document.getElementById('reta-modal');
             retaModal.classList.remove('d-none');
@@ -6942,7 +6959,7 @@
             if (matchOver) return;
             matchOver = true;
             const tied = games[0] === games[1];
-            _retaFinishReason = tied ? 'puntos' : reason;
+            _retaFinishReason = reason === 'tiempo' ? 'tiempo' : (tied ? 'puntos' : reason);
             const label = reason === 'tiempo' ? 'TIEMPO' : reason === 'manual' ? 'FIN DE PARTIDO' : '';
             const detail = tied ? ` (definido por puntos ${getPointDisplay(0)}-${getPointDisplay(1)})` : '';
             addHistory(`${label ? label + ' - ' : ''}${getName(winner)} GANA ${games[0]}-${games[1]}${detail}`);
@@ -6994,7 +7011,6 @@
                 duration,
                 time: nowHM()
             });
-            _retaFinishReason = null;
             saveRetaState();
             updateRetaStatus();
         }
@@ -7117,11 +7133,24 @@
                 });
         }
 
+        // Prepara una sola vez el siguiente partido cuando el anterior ya terminó.
+        // También recupera el flujo si la app se recargó con matchOver persistido.
+        function prepareNextRetaMatchIfCompleted() {
+            const completedRetaMatch = mode === 'padel' && padelFormat === 'retas'
+                && retaActive && retaSession && matchOver;
+            if (!completedRetaMatch) return false;
+            resetMatch({ newMatch: true });
+            prepareNextLineup();
+            return true;
+        }
+
         // Siguiente partido de la reta: limpia el marcador, coloca a los ganadores
         // separados y deja libres los dos lugares que hay que elegir.
         function nextRetaMatch() {
-            resetMatch({ newMatch: true });
-            prepareNextLineup();
+            if (!prepareNextRetaMatchIfCompleted()) {
+                resetMatch({ newMatch: true });
+                prepareNextLineup();
+            }
             showRetaModal();
         }
 
@@ -7774,6 +7803,7 @@
             captureActiveConfigProfile();
             const data = {
                 mode, nameMode, padelFormat, setsToWin, gamesPerSet, retasGames, retasEarlyWin, retaTimeLimit, retaPointsCap, freeMaxPoints, deuceMode, trackShots, trackOutcomes, serve, servePlayers, expectedServePlayerName, matchOver,
+                retaFinishReason: _retaFinishReason,
                 configProfiles,
                 // Marca absoluta de arranque: al recargar, el reloj sigue donde iba
                 timerStart, timerElapsed, timerRunning: !!timerInterval, retaTimeUp,
@@ -7819,6 +7849,7 @@
                 servePlayers = normalizeServePlayers(d.servePlayers);
                 expectedServePlayerName = typeof d.expectedServePlayerName === 'string' ? d.expectedServePlayerName : null;
                 matchOver = d.matchOver || false;
+                _retaFinishReason = ['tiempo', 'puntos', 'manual'].includes(d.retaFinishReason) ? d.retaFinishReason : null;
                 points = d.points || [0, 0];
                 games = d.games || [0, 0];
                 sets = d.sets || [[], []];
@@ -8072,7 +8103,12 @@
         // Se compara la version al abrir y cada vez que la app vuelve al primer plano
         checkForUpdate(false);
         document.addEventListener('visibilitychange', () => {
-            if (!document.hidden) checkForUpdate(false);
+            if (!document.hidden) {
+                // Los navegadores móviles pueden pausar intervalos en segundo plano.
+                // Al volver, se evalúa de inmediato el límite real del partido.
+                if (timerInterval && !matchOver) updateTimerDisplay();
+                checkForUpdate(false);
+            }
         });
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

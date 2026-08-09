@@ -33,7 +33,8 @@ Formato informal popular en México. Una reta es una **jornada con varios partid
 **Cuando se acaba el tiempo:**
 
 - Si un equipo va arriba en juegos, gana ahí mismo aunque el juego en curso quede a medias
-- Si van empatados en juegos, el juego en curso se sigue jugando y quien lo gane, gana el partido
+- Si van empatados en juegos, gana quien vaya arriba en los puntos del juego en curso
+- Si también empatan en puntos, el siguiente punto es decisivo y termina el partido
 
 **Botón Fin partido:** corta el partido en cualquier momento. Gana quien vaya arriba en juegos; si van iguales, gana quien lleve más puntos en el juego en disputa. Si van iguales en juegos y en puntos, la app avisa y no cierra.
 

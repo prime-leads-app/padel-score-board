@@ -117,3 +117,6 @@ La configuración de retas sustituye cuatro botones en dos filas por dos combos 
 
 ## 2026-08-08-23-01-38-26
 La fila compacta conserva los dos combos y sus funciones, pero presenta Golpes a la izquierda y Registro a la derecha.
+
+## 2026-08-08-23-25-23-27
+Un partido terminado se reinicia al abrir la alineacion o la configuracion, Iniciar reaparece tras Listo y el reloj usa el limite del nuevo partido. El vencimiento define por juegos o puntos, usa un punto decisivo solo en empate absoluto, registra la duracion oficial configurada y se evalua al volver del segundo plano.
