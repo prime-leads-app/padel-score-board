@@ -123,3 +123,6 @@ Un partido terminado se reinicia al abrir la alineacion o la configuracion, Inic
 
 ## 2026-08-08-23-38-08-28
 El modal muestra el nombre del participante junto a una etiqueta semantica verde, roja o gris. Debajo indica Tipo de golpe o Tipo de error y usa una instruccion especifica sin cambiar el espacio de las opciones.
+
+## 2026-08-08-23-42-03-29
+El modal conserva solo el nombre, la etiqueta Acierto, Error o Punto y las opciones. Se eliminaron Tipo de golpe, Tipo de error y las instrucciones, incluido el espacio que ocupaban.

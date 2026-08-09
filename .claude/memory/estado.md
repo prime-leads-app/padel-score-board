@@ -10,4 +10,4 @@ metadata:
   modified: 2026-07-31T13:35:51.259Z
 ---
 
-Ahora: v5.64 hace explicito si el selector registra Acierto, Error o Punto y separa ese estado del tipo de golpe o error. Se verificaron visualmente los casos Error y Acierto a 390 x 844. Proximo paso: la unidad cierra aqui.
+Ahora: v5.65 simplifica el selector de golpes y errores dejando solo el nombre, el estado semantico y las opciones. Se verifico a 390 x 844. Proximo paso: la unidad cierra aqui.
