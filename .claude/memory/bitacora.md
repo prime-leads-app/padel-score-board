@@ -77,3 +77,4 @@ metadata:
 - 2026-08-08-21-53-39-20: v5.56 alterna el encabezado del partido según esté expandido o colapsado.
 - 2026-08-08-21-58-36-21: v5.57 recupera el borde superior y elimina el rótulo de partidos terminados.
 - 2026-08-08-22-09-19-22: v5.58 mantiene los marcadores de la cronología en una sola línea.
+- 2026-08-08-22-33-10-23: v5.59 separa la finalización del partido del último turno de saque.

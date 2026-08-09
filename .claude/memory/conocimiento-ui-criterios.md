@@ -105,3 +105,6 @@ El cuerpo de un partido expandido tiene separación superior equivalente a los l
 
 ## 2026-08-08-22-09-19-22
 Los nombres de ambas parejas usan espacio flexible sin envolver y las puntuaciones permanecen siempre visibles junto al nombre. El separador central queda fijo; en anchos extremos el nombre usa elipsis antes de permitir un salto de línea. La nomenclatura del historial usa diagonal sin espacios para aprovechar el ancho móvil.
+
+## 2026-08-08-22-33-10-23
+La cronología registra y muestra Partido finalizado como evento independiente con copa, hora y resultado, antes del último turno de saque por el orden de más recientes primero. El card de saque conserva sólo Turno finalizado y el punto final indica que cerró el juego. Los historiales anteriores generan el evento de cierre al renderizarse cuando detectan un saque terminado por fin del partido.

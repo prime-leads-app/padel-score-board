@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <!-- Sube en cada publicacion: la app la compara contra la red para saber si esta al dia -->
-    <meta name="app-version" content="5.58">
+    <meta name="app-version" content="5.59">
     <title>Padel Scoreboard</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1902,6 +1902,35 @@
 
         .live-history-item.reset-event .live-history-sequence { background: #e67e22; }
 
+        .live-history-item.match-end-event {
+            grid-template-columns: 34px minmax(0, 1fr);
+            margin: 4px 0 8px;
+            padding: 10px;
+            border: 1px solid rgba(255, 193, 7, 0.48);
+            border-radius: 10px;
+            background: linear-gradient(135deg, rgba(255, 193, 7, 0.16), rgba(255, 152, 0, 0.08));
+        }
+
+        .live-history-match-end-icon {
+            width: 32px;
+            height: 32px;
+            display: grid;
+            place-items: center;
+            border-radius: 50%;
+            background: #ffc107;
+            color: #2c2300;
+            font-size: 0.9rem;
+            box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.14);
+        }
+
+        .match-end-event .live-history-markers { align-content: center; }
+        .match-end-event .live-history-event-head strong { color: #ffe082; }
+        .match-end-event .live-history-event-head time { color: #ffe082; }
+        .live-history-match-end-result .live-history-team-score {
+            margin-top: 6px;
+            font-size: 0.7rem;
+        }
+
         .live-history-event-head {
             display: flex;
             align-items: baseline;
@@ -2010,11 +2039,6 @@
         .live-history-point-details.result > span {
             color: #dce6ef;
             font-weight: 650;
-        }
-
-        .live-history-point-details.match-result > span {
-            color: #ffe082;
-            font-weight: 750;
         }
 
         .live-history-team-score {
@@ -2139,7 +2163,6 @@
         .light-theme .live-history-point-details { color: #607d8b; }
         .light-theme .live-history-point-details strong { color: #8a6200; }
         .light-theme .live-history-point-details.result > span { color: #34495e; }
-        .light-theme .live-history-point-details.match-result > span { color: #8a6200; }
         .light-theme .live-history-team-score-side.team-1 .live-history-team-score-name { color: #a0182f; }
         .light-theme .live-history-team-score-side.team-2 .live-history-team-score-name { color: #0d5a9c; }
         .light-theme .live-history-team-score-separator { color: #607d8b; }
@@ -2157,6 +2180,9 @@
         .light-theme .serve-event-status { color: #607d8b; }
         .light-theme .serve-event-note { border-color: rgba(138, 98, 0, 0.35); }
         .light-theme .live-history-item.reset-event { background: #fff3e6; border-color: #e9a45d; }
+        .light-theme .live-history-item.match-end-event { background: #fff8dd; border-color: #d6a617; }
+        .light-theme .match-end-event .live-history-event-head strong,
+        .light-theme .match-end-event .live-history-event-head time { color: #7a5700; }
 
         /* ── Winner ── */
         .winner-overlay {
@@ -2949,7 +2975,7 @@
             </a>
             <a href="https://github.com/prime-leads-app/padel-score-board" target="_blank" rel="noopener" class="card bg-dark border-secondary text-decoration-none flex-fill" style="cursor:pointer;">
                 <div class="card-body py-0 px-2 text-center">
-                    <small class="text-white">PadelApp v<span id="app-version-label">5.58</span></small>
+                    <small class="text-white">PadelApp v<span id="app-version-label">5.59</span></small>
                 </div>
             </a>
             <div class="card bg-dark border-secondary flex-fill">
@@ -5013,6 +5039,32 @@
             syncSavedPointTimeline();
         }
 
+        function recordMatchEndTimeline(winnerTeam, timestamp = Date.now()) {
+            if (!serveAuditEnabled()) return;
+            if (pointTimeline.some(entry => entry && entry.eventType === 'match_end')) return;
+            pointTimeline.push({
+                eventType: 'match_end',
+                time: auditTime(timestamp),
+                timestamp,
+                winnerTeam: winnerTeam === 2 ? 2 : 1,
+                teams: [timelineTeamPlayers(1), timelineTeamPlayers(2)],
+                score: currentTimelineScore()
+            });
+            syncSavedPointTimeline();
+        }
+
+        function moveMatchEndTimelineToLatest(timestamp = Date.now()) {
+            for (let i = pointTimeline.length - 1; i >= 0; i--) {
+                if (!pointTimeline[i] || pointTimeline[i].eventType !== 'match_end') continue;
+                const matchEnd = pointTimeline.splice(i, 1)[0];
+                matchEnd.time = auditTime(timestamp);
+                matchEnd.timestamp = timestamp;
+                matchEnd.score = currentTimelineScore();
+                pointTimeline.push(matchEnd);
+                return;
+            }
+        }
+
         function flushPendingServeTransition() {
             const transition = _pendingServeTransition;
             _pendingServeTransition = null;
@@ -5431,6 +5483,12 @@
                 teams: [timelineTeamPlayers(1), timelineTeamPlayers(2)],
                 score: currentTimelineScore()
             });
+            if (result.closesMatch) {
+                if (!pointTimeline.some(entry => entry && entry.eventType === 'match_end')) {
+                    recordMatchEndTimeline(scoringTeam);
+                }
+                moveMatchEndTimelineToLatest();
+            }
             syncSavedPointTimeline();
         }
 
@@ -5501,13 +5559,10 @@
                 ? `<span class="live-history-shot">${esc(shotLabel(entry.shot, entry.outcome))}</span>`
                 : '';
             const gameClosed = timelinePointClosedGame(entry, previousEntry);
-            const matchClosed = !!entry.closesMatch;
             const pointScore = timelineTeamScoreHTML(entry, entry.score && entry.score.points);
             let pointDetail = `<div class="live-history-point-details">${pointScore || '<strong>Marcador anterior no disponible</strong>'}</div>`;
             if (gameClosed) {
-                pointDetail = matchClosed
-                    ? '<div class="live-history-point-details result match-result"><span>Punto final del partido</span></div>'
-                    : '<div class="live-history-point-details result"><span>Punto que cerró el juego</span></div>';
+                pointDetail = '<div class="live-history-point-details result"><span>Punto que cerró el juego</span></div>';
             }
             return `<article class="live-history-item point-event ${outcomeClass} team-${scoringTeam}">
                 <div class="live-history-markers" aria-label="Juego ${esc(entry.game || 1)}, evento ${sequence}">
@@ -5529,8 +5584,7 @@
             const reason = entry.reason || 'Turno de saque';
             const inProgress = !entry.endedAt && !entry.endedTimestamp;
             const period = inProgress ? `Inicio ${start}` : `${start} a ${end}`;
-            const matchFinished = entry.endReason === 'Fin del partido';
-            const status = inProgress ? 'En curso' : (matchFinished ? 'Partido finalizado' : 'Turno finalizado');
+            const status = inProgress ? 'En curso' : 'Turno finalizado';
             const manualChange = /cambio manual/i.test(reason) || /cambio manual/i.test(entry.endReason || '');
             return `<article class="live-history-item serve-event team-${servingTeam}">
                 <div class="live-history-markers" aria-label="Juego ${esc(entry.game || 1)}, evento de saque">
@@ -5543,6 +5597,19 @@
                         <span class="serve-event-status">${esc(status)}</span>
                         ${manualChange ? '<span class="serve-event-note">Cambio manual</span>' : ''}
                     </div>
+                </div>
+            </article>`;
+        }
+
+        function renderMatchEndTimelineEntry(entry) {
+            const gamesScore = timelineTeamScoreHTML(entry, entry.score && entry.score.games);
+            return `<article class="live-history-item match-end-event">
+                <div class="live-history-markers" aria-label="Partido finalizado">
+                    <div class="live-history-match-end-icon"><i class="bi bi-trophy" aria-hidden="true"></i></div>
+                </div>
+                <div>
+                    <div class="live-history-event-head"><strong>Partido finalizado</strong><time>${esc(entry.time || '')}</time></div>
+                    <div class="live-history-match-end-result">${gamesScore}</div>
                 </div>
             </article>`;
         }
@@ -5563,6 +5630,7 @@
         }
 
         function renderTimelineEntry(entry, sequence, previousEntry) {
+            if (entry && entry.eventType === 'match_end') return renderMatchEndTimelineEntry(entry);
             if (entry && entry.eventType === 'serve') return renderServeTimelineEntry(entry, sequence);
             if (entry && entry.eventType === 'reset') return renderResetTimelineEntry(entry, sequence);
             return renderLiveHistoryEntry(entry, sequence, previousEntry);
@@ -5580,19 +5648,39 @@
                 <span class="live-history-game-divider-label">
                     <strong>Juego ${esc(finishedGame)} finalizado</strong>
                     ${gamesScore}
-                    ${entry.closesMatch ? '<small>Partido finalizado</small>' : ''}
                 </span>
             </div>`;
         }
 
+        function timelineEventsWithMatchEnd(events) {
+            const list = Array.isArray(events) ? events.slice() : [];
+            if (list.some(entry => entry && entry.eventType === 'match_end')) return list;
+            const finishedServe = list.slice().reverse().find(entry =>
+                entry && entry.eventType === 'serve' && entry.endReason === 'Fin del partido'
+            );
+            if (!finishedServe) return list;
+            const finalPoint = list.slice().reverse().find(entry =>
+                entry && (!entry.eventType || entry.eventType === 'point') && entry.closesMatch
+            );
+            list.push({
+                eventType: 'match_end',
+                time: finishedServe.endedAt || (finalPoint && finalPoint.time) || '',
+                timestamp: finishedServe.endedTimestamp || (finalPoint && finalPoint.timestamp) || null,
+                winnerTeam: finalPoint && finalPoint.scoringTeam ? finalPoint.scoringTeam : null,
+                teams: (finalPoint && finalPoint.teams) || finishedServe.teams,
+                score: (finalPoint && finalPoint.score) || finishedServe.endScore || finishedServe.score
+            });
+            return list;
+        }
+
         function timelineEntriesHTML(events) {
-            const list = Array.isArray(events) ? events : [];
+            const list = timelineEventsWithMatchEnd(events);
             if (!list.length) return '<div class="live-history-empty">Aún no hay eventos registrados en este partido.</div>';
             const newestFirst = list.slice().reverse();
             return newestFirst.map((entry, index) => {
                 const olderEntry = newestFirst[index + 1];
                 const renderedEntry = renderTimelineEntry(entry, list.length - index, olderEntry);
-                const gameClosed = entry && entry.eventType !== 'serve' && entry.eventType !== 'reset'
+                const gameClosed = entry && entry.eventType !== 'serve' && entry.eventType !== 'reset' && entry.eventType !== 'match_end'
                     && timelinePointClosedGame(entry, olderEntry);
                 return gameClosed ? renderTimelineGameDivider(entry) + renderedEntry : renderedEntry;
             }).join('');
@@ -5885,6 +5973,7 @@
         function showWinner(p) {
             stopTimer();
             finalizeServeAudit('Fin del partido');
+            recordMatchEndTimeline(p);
             const timerText = elapsedText();
             let scoreText = '';
             if (mode === 'padel' && padelFormat === 'retas') {
