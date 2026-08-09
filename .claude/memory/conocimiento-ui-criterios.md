@@ -78,3 +78,6 @@ La cronología detecta el cambio de número de juego y coloca entre ambos grupos
 
 ## 2026-08-08-20-02-48-13
 Un punto normal muestra el marcador de puntos. Si el punto cierra un juego, el card indica Con este punto gana el Juego N y Marcador de juegos. Si además cierra el partido, muestra la pareja ganadora y el resultado final. Los eventos antiguos se reconocen comparando el marcador de juegos con el evento anterior, evitando mostrar el 0-0 inicial del siguiente juego como resultado.
+
+## 2026-08-08-20-15-26-14
+Los cards de punto y los resultados de juego o partido usan formato de marcador deportivo: Pareja 1 (valor) - Pareja 2 (valor). Los nombres provienen de la composición guardada en cada evento, los valores son puntos o juegos según el contexto y el diseño admite nombres largos sin ocultar el número.

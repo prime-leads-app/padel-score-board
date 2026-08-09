@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <!-- Sube en cada publicacion: la app la compara contra la red para saber si esta al dia -->
-    <meta name="app-version" content="5.49">
+    <meta name="app-version" content="5.50">
     <title>Padel Scoreboard</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1975,14 +1975,57 @@
             font-weight: 750;
         }
 
-        .live-history-point-details.result span {
+        .live-history-point-details.result > span {
             color: #dce6ef;
             font-weight: 650;
         }
 
-        .live-history-point-details.match-result span {
+        .live-history-point-details.match-result > span {
             color: #ffe082;
             font-weight: 750;
+        }
+
+        .live-history-team-score {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+            align-items: center;
+            gap: 5px;
+            margin-top: 2px;
+            font-size: 0.67rem;
+            line-height: 1.25;
+        }
+
+        .live-history-team-score-side {
+            display: flex;
+            align-items: baseline;
+            flex-wrap: wrap;
+            gap: 3px;
+            min-width: 0;
+        }
+
+        .live-history-team-score-side.team-2 {
+            justify-content: flex-end;
+            text-align: right;
+        }
+
+        .live-history-team-score-name {
+            min-width: 0;
+            overflow-wrap: anywhere;
+            font-weight: 700;
+        }
+
+        .live-history-team-score-side.team-1 .live-history-team-score-name { color: #ffb0ba; }
+        .live-history-team-score-side.team-2 .live-history-team-score-name { color: #a9d5ff; }
+
+        .live-history-team-score strong {
+            color: #ffc107;
+            font-size: 0.7rem;
+            white-space: nowrap;
+        }
+
+        .live-history-team-score-separator {
+            color: #9fb3c8;
+            font-weight: 800;
         }
 
         .live-history-game-divider {
@@ -2051,8 +2094,11 @@
         .light-theme .live-history-shot { color: #455a64; border-color: #b8c6cf; background: #edf2f5; }
         .light-theme .live-history-point-details { color: #607d8b; }
         .light-theme .live-history-point-details strong { color: #8a6200; }
-        .light-theme .live-history-point-details.result span { color: #34495e; }
-        .light-theme .live-history-point-details.match-result span { color: #8a6200; }
+        .light-theme .live-history-point-details.result > span { color: #34495e; }
+        .light-theme .live-history-point-details.match-result > span { color: #8a6200; }
+        .light-theme .live-history-team-score-side.team-1 .live-history-team-score-name { color: #a0182f; }
+        .light-theme .live-history-team-score-side.team-2 .live-history-team-score-name { color: #0d5a9c; }
+        .light-theme .live-history-team-score-separator { color: #607d8b; }
         .light-theme .live-history-game-divider { color: #8a6200; }
         .light-theme .live-history-game-divider-label small { color: #607d8b; }
         .light-theme .live-history-item.point-event { background: #f3f7fa; border-color: #c8d6df; }
@@ -2868,7 +2914,7 @@
             </a>
             <a href="https://github.com/prime-leads-app/padel-score-board" target="_blank" rel="noopener" class="card bg-dark border-secondary text-decoration-none flex-fill" style="cursor:pointer;">
                 <div class="card-body py-0 px-2 text-center">
-                    <small class="text-white">PadelApp v<span id="app-version-label">5.49</span></small>
+                    <small class="text-white">PadelApp v<span id="app-version-label">5.50</span></small>
                 </div>
             </a>
             <div class="card bg-dark border-secondary flex-fill">
@@ -5371,14 +5417,16 @@
             return parts.join(' · ');
         }
 
-        function timelinePointScoreLabel(score) {
-            if (!score || !Array.isArray(score.points)) return '';
-            return `Puntos ${score.points[0]} - ${score.points[1]}`;
-        }
-
-        function timelineGamesScoreLabel(score, prefix) {
-            if (!score || !Array.isArray(score.games)) return '';
-            return `${prefix}: ${score.games[0]} - ${score.games[1]}`;
+        function timelineTeamScoreHTML(entry, values) {
+            if (!Array.isArray(values)) return '';
+            const team1 = timelineTeamLabel(entry, 1);
+            const team2 = timelineTeamLabel(entry, 2);
+            const aria = `${team1} ${values[0]} a ${team2} ${values[1]}`;
+            return `<div class="live-history-team-score" aria-label="${esc(aria)}">
+                <span class="live-history-team-score-side team-1"><span class="live-history-team-score-name">${esc(team1)}</span><strong>(${esc(values[0])})</strong></span>
+                <span class="live-history-team-score-separator">-</span>
+                <span class="live-history-team-score-side team-2"><span class="live-history-team-score-name">${esc(team2)}</span><strong>(${esc(values[1])})</strong></span>
+            </div>`;
         }
 
         function timelinePointClosedGame(entry, previousEntry) {
@@ -5418,15 +5466,15 @@
             const shot = entry.shot
                 ? `<span class="live-history-shot">${esc(shotLabel(entry.shot, entry.outcome))}</span>`
                 : '';
-            const score = timelinePointScoreLabel(entry.score);
             const gameClosed = timelinePointClosedGame(entry, previousEntry);
             const matchClosed = !!entry.closesMatch;
-            let pointDetail = `<div class="live-history-point-details"><span>Juego ${esc(entry.game || 1)}</span>${score ? `<strong>Marcador: ${esc(score)}</strong>` : '<strong>Marcador anterior no disponible</strong>'}</div>`;
+            const pointScore = timelineTeamScoreHTML(entry, entry.score && entry.score.points);
+            let pointDetail = `<div class="live-history-point-details"><span>Juego ${esc(entry.game || 1)}</span>${pointScore || '<strong>Marcador anterior no disponible</strong>'}</div>`;
             if (gameClosed) {
-                const gamesScore = timelineGamesScoreLabel(entry.score, matchClosed ? 'Resultado final: Juegos' : 'Marcador de juegos');
+                const gamesScore = timelineTeamScoreHTML(entry, entry.score && entry.score.games);
                 pointDetail = matchClosed
-                    ? `<div class="live-history-point-details result match-result"><span>${esc(beneficiary)} gana el partido</span>${gamesScore ? `<strong>${esc(gamesScore)}</strong>` : ''}</div>`
-                    : `<div class="live-history-point-details result"><span>Con este punto gana el Juego ${esc(entry.game || 1)}</span>${gamesScore ? `<strong>${esc(gamesScore)}</strong>` : ''}</div>`;
+                    ? `<div class="live-history-point-details result match-result"><span>${esc(beneficiary)} gana el partido</span>${gamesScore}</div>`
+                    : `<div class="live-history-point-details result"><span>Con este punto gana el Juego ${esc(entry.game || 1)}</span>${gamesScore}</div>`;
             }
             return `<article class="live-history-item point-event ${outcomeClass} team-${scoringTeam}">
                 <div class="live-history-sequence">${sequence}</div>

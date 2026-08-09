@@ -10,6 +10,6 @@ metadata:
   modified: 2026-07-31T13:35:51.259Z
 ---
 
-Ahora: v5.49 distingue puntos normales, puntos que cierran un juego y puntos que cierran el partido. El evento decisivo ya no muestra el 0-0 del siguiente juego; se validó a 390 x 844 con datos nuevos y eventos previamente guardados.
+Ahora: v5.50 muestra cada marcador de la cronología con las dos parejas y sus valores entre paréntesis. Se validó a 390 x 844 en puntos normales y en el punto que cerró el juego.
 
 Próximo paso: la unidad cierra aquí.
