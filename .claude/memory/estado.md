@@ -10,6 +10,6 @@ metadata:
   modified: 2026-07-31T13:35:51.259Z
 ---
 
-Ahora: v5.52 muestra el resultado del partido directamente después del nombre de cada pareja y elimina la segunda línea redundante. Se validó a 390 x 844 sin pérdida de nombres ni puntuaciones.
+Ahora: v5.53 aplica el formato de marcador con paréntesis al encabezado del partido en curso y elimina el rótulo redundante solicitado. La aplicación cargó correctamente y se comprobó que el texto retirado ya no existe.
 
 Próximo paso: la unidad cierra aquí.

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <!-- Sube en cada publicacion: la app la compara contra la red para saber si esta al dia -->
-    <meta name="app-version" content="5.52">
+    <meta name="app-version" content="5.53">
     <title>Padel Scoreboard</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -1745,16 +1745,6 @@
             font-weight: 800;
         }
 
-        .live-history-current-score {
-            grid-column: 1 / -1;
-            color: #ffc107;
-            font-size: 0.72rem;
-            font-weight: 800;
-            text-align: center;
-            border-top: 1px solid rgba(255, 255, 255, 0.08);
-            padding-top: 6px;
-        }
-
         .live-history-list {
             min-height: 120px;
             overflow-y: auto;
@@ -2923,7 +2913,7 @@
             </a>
             <a href="https://github.com/prime-leads-app/padel-score-board" target="_blank" rel="noopener" class="card bg-dark border-secondary text-decoration-none flex-fill" style="cursor:pointer;">
                 <div class="card-body py-0 px-2 text-center">
-                    <small class="text-white">PadelApp v<span id="app-version-label">5.52</span></small>
+                    <small class="text-white">PadelApp v<span id="app-version-label">5.53</span></small>
                 </div>
             </a>
             <div class="card bg-dark border-secondary flex-fill">
@@ -5567,11 +5557,12 @@
 
         function liveMatchHistoryContent() {
             const events = pointTimeline.length ? pointTimeline : legacyLiveHistoryEntries();
+            const score = currentTimelineScore();
+            const currentPoints = Array.isArray(score.points) ? score.points : ['-', '-'];
             return {
-                matchup: `<div class="live-history-team team-1">${esc(getName(1))}</div>
+                matchup: `<div class="live-history-team team-1">${esc(getName(1))} <strong class="live-history-team-result">(${esc(currentPoints[0])})</strong></div>
                     <div class="live-history-vs">VS</div>
-                    <div class="live-history-team team-2">${esc(getName(2))}</div>
-                    <div class="live-history-current-score">${esc(timelineScoreLabel(currentTimelineScore()))}</div>`,
+                    <div class="live-history-team team-2">${esc(getName(2))} <strong class="live-history-team-result">(${esc(currentPoints[1])})</strong></div>`,
                 entries: timelineEntriesHTML(events)
             };
         }
@@ -5599,8 +5590,7 @@
             const hasCurrent = !matchOver && !_matchSaved && (matchStarted() || pointTimeline.length > 0);
             if (hasCurrent) {
                 const content = liveMatchHistoryContent();
-                sections.push(`<div class="reta-history-context">Partido actual · Más recientes primero</div>
-                    <div class="live-history-matchup">${content.matchup}</div>
+                sections.push(`<div class="live-history-matchup">${content.matchup}</div>
                     <div class="live-history-list">${content.entries}</div>`);
             }
             const completed = retaSession && Array.isArray(retaSession.matches)
