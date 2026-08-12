@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <!-- Sube en cada publicacion: la app la compara contra la red para saber si esta al dia -->
-    <meta name="app-version" content="5.66">
+    <meta name="app-version" content="5.67">
     <title>Padel Scoreboard</title>
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -312,11 +312,13 @@
             background: rgba(255,255,255,0.3);
         }
 
-        #shot-type-overlay {
+        #shot-type-overlay,
+        #error-destination-overlay {
             align-items: flex-start;
             padding: 0;
         }
-        #shot-type-overlay > .winner-card {
+        #shot-type-overlay > .winner-card,
+        #error-destination-overlay > .winner-card {
             max-width: 100% !important;
             width: 100%;
             min-height: 100dvh;
@@ -360,6 +362,19 @@
         .shot-type-outcome.acierto { background: #198754; }
         .shot-type-outcome.error { background: #dc3545; }
         .shot-type-outcome.point { background: #455a64; }
+        .error-destination-shot {
+            display: inline-flex;
+            align-items: center;
+            min-height: 24px;
+            padding: 2px 9px;
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 999px;
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 750;
+            white-space: nowrap;
+        }
         .shot-type-options {
             display: flex;
             flex-direction: column;
@@ -1521,11 +1536,13 @@
         }
 
         @media (min-width: 768px) {
-            #shot-type-overlay {
+            #shot-type-overlay,
+            #error-destination-overlay {
                 align-items: center;
                 padding: 20px;
             }
-            #shot-type-overlay > .winner-card {
+            #shot-type-overlay > .winner-card,
+            #error-destination-overlay > .winner-card {
                 max-width: 400px !important;
                 min-height: 80vh;
                 border-radius: 24px !important;
@@ -2081,6 +2098,12 @@
             font-weight: 750;
         }
 
+        .live-history-shot.error-destination {
+            color: #ffd7cf;
+            border-color: rgba(255, 143, 122, 0.5);
+            background: rgba(183, 28, 28, 0.2);
+        }
+
         .live-history-point-details.result > span {
             color: #dce6ef;
             font-weight: 650;
@@ -2205,6 +2228,7 @@
         .light-theme .live-history-game-marker { background: #eaf4f8; color: #245b70; border-color: #6ca9bf; }
         .light-theme .live-history-award { color: #34495e; }
         .light-theme .live-history-shot { color: #455a64; border-color: #b8c6cf; background: #edf2f5; }
+        .light-theme .live-history-shot.error-destination { color: #8b1e2d; border-color: #dc9a8f; background: #fff0ed; }
         .light-theme .live-history-point-details { color: #607d8b; }
         .light-theme .live-history-point-details strong { color: #8a6200; }
         .light-theme .live-history-point-details.result > span { color: #34495e; }
@@ -3028,7 +3052,7 @@
             </a>
             <a href="https://github.com/prime-leads-app/padel-score-board" target="_blank" rel="noopener" class="card bg-dark border-secondary text-decoration-none flex-fill" style="cursor:pointer;">
                 <div class="card-body py-0 px-2 text-center">
-                    <small class="text-white">PadelApp v<span id="app-version-label">5.66</span></small>
+                    <small class="text-white">PadelApp v<span id="app-version-label">5.67</span></small>
                 </div>
             </a>
             <div class="card bg-dark border-secondary flex-fill">
@@ -3515,6 +3539,24 @@
         </div>
     </div>
 
+    <!-- Error Destination Modal -->
+    <div class="winner-overlay d-none" id="error-destination-overlay" onclick="closeErrorDestinationModal()">
+        <div class="winner-card shot-type-card error-mode" role="dialog" aria-modal="true" aria-labelledby="error-destination-title error-destination-outcome error-destination-shot" onclick="event.stopPropagation()">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                <div class="shot-type-heading">
+                    <h5 id="error-destination-title">Jugador</h5>
+                    <span class="shot-type-outcome error" id="error-destination-outcome">Error</span>
+                    <span class="error-destination-shot" id="error-destination-shot">Golpe</span>
+                </div>
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <span style="opacity:0.6; font-size:0.8rem;" id="error-destination-timer">10s</span>
+                    <button onclick="closeErrorDestinationModal()" style="padding:2px 8px; background:#e94560; color:#fff; font-weight:700; border:none; border-radius:4px; font-size:0.9rem; cursor:pointer;">✕</button>
+                </div>
+            </div>
+            <div class="shot-type-options" id="error-destination-options"></div>
+        </div>
+    </div>
+
     <script>
         const PADEL_POINTS = ['0', '15', '30', '40'];
         let mode = 'padel';
@@ -3577,6 +3619,22 @@
             { type: 'saque_resto', label: 'Saque/Resto', icon: 'bi-record-circle', color: '#a44200' },
             { type: 'otro', label: 'Otro', icon: 'bi-three-dots', color: '#455a64' }
         ];
+        const ERROR_DESTINATION_TYPES = ['red', 'reja', 'vidrio', 'fuera', 'otro', 'sin_especificar'];
+        const ERROR_DESTINATION_LABELS = {
+            red: 'Red',
+            reja: 'Reja',
+            vidrio: 'Vidrio',
+            fuera: 'Fuera de la cancha',
+            otro: 'Otro',
+            sin_especificar: 'Sin especificar'
+        };
+        const ERROR_DESTINATION_OPTIONS = [
+            { type: 'red', label: 'Red', icon: 'bi-grid-3x3-gap', color: '#a71919' },
+            { type: 'reja', label: 'Reja', icon: 'bi-grid', color: '#8d2f23' },
+            { type: 'vidrio', label: 'Vidrio', icon: 'bi-square', color: '#b54737' },
+            { type: 'fuera', label: 'Fuera de la cancha', icon: 'bi-box-arrow-up-right', color: '#c45a2b' },
+            { type: 'otro', label: 'Otro', icon: 'bi-three-dots', color: '#455a64' }
+        ];
 
         function shotLabel(type, outcome) {
             if (outcome === 'error') return ERROR_SHOT_LABELS[type] || SHOT_LABELS[type] || type;
@@ -3586,9 +3644,16 @@
         function emptyPlayerStat() {
             const shots = {};
             const errorShots = {};
+            const errorDestinations = {};
+            const errorDestinationsByShot = {};
             SHOT_TYPES.forEach(t => shots[t] = 0);
             ERROR_SHOT_TYPES.forEach(t => errorShots[t] = 0);
-            return { points: 0, aciertos: 0, errors: 0, games: {}, shots, errorShots };
+            ERROR_DESTINATION_TYPES.forEach(t => errorDestinations[t] = 0);
+            ERROR_SHOT_TYPES.forEach(shot => {
+                errorDestinationsByShot[shot] = {};
+                ERROR_DESTINATION_TYPES.forEach(destination => errorDestinationsByShot[shot][destination] = 0);
+            });
+            return { points: 0, aciertos: 0, errors: 0, games: {}, shots, errorShots, errorDestinations, errorDestinationsByShot };
         }
 
         function emptyPlayerStats() {
@@ -3605,6 +3670,16 @@
             normalized.errors = Number(stat.errors) || 0;
             SHOT_TYPES.forEach(t => normalized.shots[t] = Number(stat.shots && stat.shots[t]) || 0);
             ERROR_SHOT_TYPES.forEach(t => normalized.errorShots[t] = Number(stat.errorShots && stat.errorShots[t]) || 0);
+            ERROR_DESTINATION_TYPES.forEach(t => normalized.errorDestinations[t] = Number(stat.errorDestinations && stat.errorDestinations[t]) || 0);
+            ERROR_SHOT_TYPES.forEach(shot => {
+                ERROR_DESTINATION_TYPES.forEach(destination => {
+                    normalized.errorDestinationsByShot[shot][destination] = Number(
+                        stat.errorDestinationsByShot
+                        && stat.errorDestinationsByShot[shot]
+                        && stat.errorDestinationsByShot[shot][destination]
+                    ) || 0;
+                });
+            });
             if (stat.games && typeof stat.games === 'object') {
                 Object.entries(stat.games).forEach(([game, values]) => {
                     normalized.games[game] = {
@@ -3630,7 +3705,8 @@
             const s = normalizePlayerStat(stat);
             return s.points > 0 || s.aciertos > 0 || s.errors > 0
                 || SHOT_TYPES.some(t => s.shots[t] > 0)
-                || ERROR_SHOT_TYPES.some(t => s.errorShots[t] > 0);
+                || ERROR_SHOT_TYPES.some(t => s.errorShots[t] > 0)
+                || ERROR_DESTINATION_TYPES.some(t => s.errorDestinations[t] > 0);
         }
 
         function performancePercent(stat) {
@@ -3658,7 +3734,12 @@
             const s = normalizePlayerStat(stat);
             const success = SHOT_TYPES.filter(t => s.shots[t] > 0).map(t => `${s.shots[t]} ${SHOT_LABELS[t]}`).join(', ');
             const errors = ERROR_SHOT_TYPES.filter(t => s.errorShots[t] > 0).map(t => `${s.errorShots[t]} ${ERROR_SHOT_LABELS[t]}`).join(', ');
-            return [success ? `Golpes a favor: ${success}` : '', errors ? `Errores por golpe: ${errors}` : ''].filter(Boolean).join(' · ');
+            const destinations = ERROR_DESTINATION_TYPES.filter(t => s.errorDestinations[t] > 0).map(t => `${s.errorDestinations[t]} ${ERROR_DESTINATION_LABELS[t]}`).join(', ');
+            return [
+                success ? `Golpes a favor: ${success}` : '',
+                errors ? `Errores por golpe: ${errors}` : '',
+                destinations ? `Destino de errores: ${destinations}` : ''
+            ].filter(Boolean).join(' · ');
         }
 
         function performanceByGameHTML(stat) {
@@ -4744,6 +4825,9 @@
                 }
                 syncSavedPointTimeline();
             }
+            if (selectedOutcome === 'error' && selectedPlayer) {
+                showErrorDestinationModal(selectedPlayer, selectedType);
+            }
         }
 
         function closeShotTypeModal() {
@@ -4751,6 +4835,108 @@
             pendingShotPlayer = null;
             pendingShotOutcome = null;
             document.getElementById('shot-type-overlay').classList.add('d-none');
+        }
+
+        let pendingErrorDestinationPlayer = null;
+        let pendingErrorDestinationShot = null;
+        let errorDestinationTimer = null;
+        let errorDestinationCountdown = 10;
+
+        function showErrorDestinationModal(playerId, shotType) {
+            pendingErrorDestinationPlayer = playerId;
+            pendingErrorDestinationShot = ERROR_SHOT_TYPES.includes(shotType) ? shotType : 'otro';
+            errorDestinationCountdown = 10;
+            const nameEl = document.getElementById('name-' + playerId);
+            document.getElementById('error-destination-title').textContent = nameEl ? nameEl.textContent : playerId;
+            document.getElementById('error-destination-shot').textContent = shotLabel(pendingErrorDestinationShot, 'error');
+            document.getElementById('error-destination-options').innerHTML = ERROR_DESTINATION_OPTIONS.map(option =>
+                `<button class="shot-type-option" onclick="registerErrorDestination('${option.type}')" style="--shot-color:${option.color}"><i class="bi ${option.icon}" aria-hidden="true"></i>${option.label}</button>`
+            ).join('');
+            document.getElementById('error-destination-timer').textContent = '10s';
+            document.getElementById('error-destination-overlay').classList.remove('d-none');
+            if (errorDestinationTimer) clearInterval(errorDestinationTimer);
+            errorDestinationTimer = setInterval(() => {
+                errorDestinationCountdown--;
+                document.getElementById('error-destination-timer').textContent = errorDestinationCountdown + 's';
+                if (errorDestinationCountdown <= 0) registerErrorDestination('otro');
+            }, 1000);
+        }
+
+        function registerErrorDestination(type) {
+            const selectedPlayer = pendingErrorDestinationPlayer;
+            const selectedShot = pendingErrorDestinationShot;
+            const selectedDestination = ERROR_DESTINATION_TYPES.includes(type) ? type : 'otro';
+            if (selectedPlayer && selectedShot) {
+                const stat = playerStats[selectedPlayer] = normalizePlayerStat(playerStats[selectedPlayer]);
+                stat.errorDestinations[selectedDestination]++;
+                stat.errorDestinationsByShot[selectedShot][selectedDestination]++;
+                for (let i = matchLog.length - 1; i >= 0; i--) {
+                    const entry = matchLog[i];
+                    if (entry.playerId === selectedPlayer && entry.outcome === 'error' && entry.shot === selectedShot && entry.errorDestination == null) {
+                        entry.errorDestination = selectedDestination;
+                        break;
+                    }
+                }
+                for (let i = pointTimeline.length - 1; i >= 0; i--) {
+                    const entry = pointTimeline[i];
+                    const isPoint = !entry.eventType || entry.eventType === 'point';
+                    if (isPoint && entry.playerId === selectedPlayer && entry.outcome === 'error' && entry.shot === selectedShot && entry.errorDestination == null) {
+                        entry.errorDestination = selectedDestination;
+                        break;
+                    }
+                }
+            }
+            hideErrorDestinationModal();
+            saveToStorage();
+            if (matchOver) {
+                const matches = JSON.parse(localStorage.getItem('padel-matches') || '[]');
+                if (matches.length > 0) {
+                    matches[0].history = matchLog.slice();
+                    matches[0].timeline = pointTimeline.slice();
+                    const pNames = {
+                        p1a: document.getElementById('cfg-name-p1a').value || 'Jugador 1',
+                        p1b: document.getElementById('cfg-name-p1b').value || 'Jugador 2',
+                        p2a: document.getElementById('cfg-name-p2a').value || 'Jugador 3',
+                        p2b: document.getElementById('cfg-name-p2b').value || 'Jugador 4'
+                    };
+                    matches[0].playerStats = {};
+                    RETA_SLOTS.forEach(k => {
+                        if (playerHasStats(playerStats[k])) matches[0].playerStats[pNames[k]] = playerStatForStorage(playerStats[k]);
+                    });
+                    localStorage.setItem('padel-matches', JSON.stringify(matches));
+                }
+                if (retaActive && retaSession && selectedPlayer && selectedShot) {
+                    const pName = currentSlotNames()[selectedPlayer];
+                    if (pName && retaSession.stats[pName]) {
+                        const retaStat = retaSession.stats[pName] = normalizePlayerStat(retaSession.stats[pName]);
+                        retaStat.errorDestinations[selectedDestination]++;
+                        retaStat.errorDestinationsByShot[selectedShot][selectedDestination]++;
+                        const retaMatch = retaSession.matches.find(m => m.matchId === _lastSavedMatchId);
+                        if (retaMatch && retaMatch.stats && retaMatch.stats[pName]) {
+                            const matchStat = retaMatch.stats[pName] = normalizePlayerStat(retaMatch.stats[pName]);
+                            matchStat.errorDestinations[selectedDestination]++;
+                            matchStat.errorDestinationsByShot[selectedShot][selectedDestination]++;
+                        }
+                        saveRetaState();
+                    }
+                }
+                syncSavedPointTimeline();
+            }
+        }
+
+        function hideErrorDestinationModal() {
+            if (errorDestinationTimer) { clearInterval(errorDestinationTimer); errorDestinationTimer = null; }
+            pendingErrorDestinationPlayer = null;
+            pendingErrorDestinationShot = null;
+            document.getElementById('error-destination-overlay').classList.add('d-none');
+        }
+
+        function closeErrorDestinationModal() {
+            if (pendingErrorDestinationPlayer && pendingErrorDestinationShot) {
+                registerErrorDestination('sin_especificar');
+                return;
+            }
+            hideErrorDestinationModal();
         }
 
         function addPoint(player, attribution = null) {
@@ -5493,7 +5679,7 @@
                 playerName = el ? el.textContent : playerId;
                 _pendingPointAttribution = null; // solo el registro generado por este punto
             }
-            matchLog.push({ time: t, text, player: playerName, playerId, outcome, game, shot: null });
+            matchLog.push({ time: t, text, player: playerName, playerId, outcome, game, shot: null, errorDestination: null });
         }
 
         function timelineTeamPlayers(team) {
@@ -5554,6 +5740,7 @@
                 closesGame: !!result.closesGame,
                 closesMatch: !!result.closesMatch,
                 shot: null,
+                errorDestination: null,
                 teams: [timelineTeamPlayers(1), timelineTeamPlayers(2)],
                 score: currentTimelineScore()
             });
@@ -5632,6 +5819,9 @@
             const shot = entry.shot
                 ? `<span class="live-history-shot">${esc(shotLabel(entry.shot, entry.outcome))}</span>`
                 : '';
+            const errorDestination = entry.outcome === 'error' && entry.errorDestination
+                ? `<span class="live-history-shot error-destination">${esc(ERROR_DESTINATION_LABELS[entry.errorDestination] || entry.errorDestination)}</span>`
+                : '';
             const gameClosed = timelinePointClosedGame(entry, previousEntry);
             const pointScore = timelineTeamScoreHTML(entry, entry.score && entry.score.points);
             let pointDetail = `<div class="live-history-point-details">${pointScore || '<strong>Marcador anterior no disponible</strong>'}</div>`;
@@ -5644,7 +5834,7 @@
                     <div class="live-history-sequence">${sequence}</div>
                 </div>
                 <div>
-                    <div class="live-history-event-head"><div class="live-history-title-group"><strong>${action}</strong>${outcome}${shot}</div><time>${esc(entry.time || '')}</time></div>
+                    <div class="live-history-event-head"><div class="live-history-title-group"><strong>${action}</strong>${outcome}${shot}${errorDestination}</div><time>${esc(entry.time || '')}</time></div>
                     <div class="live-history-award">Punto para <strong>${esc(beneficiary)}</strong></div>
                     ${pointDetail}
                 </div>
@@ -5898,6 +6088,7 @@
                                 if (h.outcome === 'error') line += ' <span style="color:#ff9eaa;">[Error]</span>';
                                 if (h.outcome === 'acierto') line += ' <span style="color:#9be7a5;">[Acierto]</span>';
                                 if (h.shot) line += ` <span style="color:#ffc107;">[${h.outcome === 'error' ? 'Error en: ' : ''}${esc(shotLabel(h.shot, h.outcome))}]</span>`;
+                                if (h.outcome === 'error' && h.errorDestination) line += ` <span style="color:#ffb3a7;">[Destino: ${esc(ERROR_DESTINATION_LABELS[h.errorDestination] || h.errorDestination)}]</span>`;
                             }
                             return line;
                         };
@@ -6004,6 +6195,7 @@
                         if (h.outcome === 'error') line += ' <span style="color:#ff9eaa;">[Error]</span>';
                         if (h.outcome === 'acierto') line += ' <span style="color:#9be7a5;">[Acierto]</span>';
                         if (h.shot) line += ` <span style="color:#ffc107;">[${h.outcome === 'error' ? 'Error en: ' : ''}${esc(shotLabel(h.shot, h.outcome))}]</span>`;
+                        if (h.outcome === 'error' && h.errorDestination) line += ` <span style="color:#ffb3a7;">[Destino: ${esc(ERROR_DESTINATION_LABELS[h.errorDestination] || h.errorDestination)}]</span>`;
                     }
                     return line;
                 };
@@ -7019,6 +7211,12 @@
                 st.errors += contribution.errors;
                 SHOT_TYPES.forEach(t => st.shots[t] += contribution.shots[t]);
                 ERROR_SHOT_TYPES.forEach(t => st.errorShots[t] += contribution.errorShots[t]);
+                ERROR_DESTINATION_TYPES.forEach(t => st.errorDestinations[t] += contribution.errorDestinations[t]);
+                ERROR_SHOT_TYPES.forEach(shot => {
+                    ERROR_DESTINATION_TYPES.forEach(destination => {
+                        st.errorDestinationsByShot[shot][destination] += contribution.errorDestinationsByShot[shot][destination];
+                    });
+                });
             });
             winnerSlots.forEach(k => {
                 retaSession.points[names[k]] += countedPoints;
@@ -7064,6 +7262,15 @@
                     st.errors = Math.max(0, st.errors - contribution.errors);
                     SHOT_TYPES.forEach(t => st.shots[t] = Math.max(0, st.shots[t] - contribution.shots[t]));
                     ERROR_SHOT_TYPES.forEach(t => st.errorShots[t] = Math.max(0, st.errorShots[t] - contribution.errorShots[t]));
+                    ERROR_DESTINATION_TYPES.forEach(t => st.errorDestinations[t] = Math.max(0, st.errorDestinations[t] - contribution.errorDestinations[t]));
+                    ERROR_SHOT_TYPES.forEach(shot => {
+                        ERROR_DESTINATION_TYPES.forEach(destination => {
+                            st.errorDestinationsByShot[shot][destination] = Math.max(
+                                0,
+                                st.errorDestinationsByShot[shot][destination] - contribution.errorDestinationsByShot[shot][destination]
+                            );
+                        });
+                    });
                 });
             }
         }
@@ -7267,6 +7474,11 @@
                         errors: 0,
                         shots: Object.fromEntries(SHOT_TYPES.map(type => [type, 0])),
                         errorShots: Object.fromEntries(ERROR_SHOT_TYPES.map(type => [type, 0])),
+                        errorDestinations: Object.fromEntries(ERROR_DESTINATION_TYPES.map(type => [type, 0])),
+                        errorDestinationsByShot: Object.fromEntries(ERROR_SHOT_TYPES.map(shot => [
+                            shot,
+                            Object.fromEntries(ERROR_DESTINATION_TYPES.map(destination => [destination, 0]))
+                        ])),
                         gamesFor: 0,
                         gamesAgainst: 0,
                         partners: new Set(),
@@ -7284,6 +7496,12 @@
                 player.errors += stat.errors;
                 SHOT_TYPES.forEach(type => player.shots[type] += stat.shots[type]);
                 ERROR_SHOT_TYPES.forEach(type => player.errorShots[type] += stat.errorShots[type]);
+                ERROR_DESTINATION_TYPES.forEach(type => player.errorDestinations[type] += stat.errorDestinations[type]);
+                ERROR_SHOT_TYPES.forEach(shot => {
+                    ERROR_DESTINATION_TYPES.forEach(destination => {
+                        player.errorDestinationsByShot[shot][destination] += stat.errorDestinationsByShot[shot][destination];
+                    });
+                });
             };
 
             (session.roster || []).forEach(getPlayer);
@@ -7374,9 +7592,22 @@
                 : '';
             const shots = SHOT_TYPES.filter(type => player.shots[type] > 0).map(type => `${SHOT_LABELS[type]}: ${player.shots[type]}`).join(' · ');
             const errorShots = ERROR_SHOT_TYPES.filter(type => player.errorShots[type] > 0).map(type => `${ERROR_SHOT_LABELS[type]}: ${player.errorShots[type]}`).join(' · ');
+            const errorDestinations = ERROR_DESTINATION_TYPES
+                .filter(type => player.errorDestinations[type] > 0)
+                .map(type => `${ERROR_DESTINATION_LABELS[type]}: ${player.errorDestinations[type]}`)
+                .join(' · ');
+            const errorDestinationsByShot = ERROR_SHOT_TYPES.map(shot => {
+                const destinations = ERROR_DESTINATION_TYPES
+                    .filter(destination => player.errorDestinationsByShot[shot][destination] > 0)
+                    .map(destination => `${ERROR_DESTINATION_LABELS[destination]} ${player.errorDestinationsByShot[shot][destination]}`)
+                    .join(' · ');
+                return destinations ? `${ERROR_SHOT_LABELS[shot]}: ${destinations}` : '';
+            }).filter(Boolean).join(' | ');
             const detailLines = [];
             if (shots) detailLines.push(`Golpes a favor: ${shots}`);
             if (errorShots) detailLines.push(`Errores por golpe: ${errorShots}`);
+            if (errorDestinations) detailLines.push(`Destino de errores: ${errorDestinations}`);
+            if (errorDestinationsByShot) detailLines.push(`Golpe y destino: ${errorDestinationsByShot}`);
             if (player.partners.size || player.opponents.size) detailLines.push(`Parejas distintas: ${player.partners.size} · Rivales distintos: ${player.opponents.size}`);
             if (player.unclassified > 0) detailLines.push(`Puntos atribuidos sin Error/Acierto: ${player.unclassified}`);
             const details = detailLines.length

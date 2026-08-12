@@ -4,7 +4,7 @@ description: Criterios de interfaz que fijo el usuario y que ya costaron correcc
 metadata: 
   node_type: memory
   type: reference
-  updated: 2026-08-09
+  updated: 2026-08-12
   review_by: 2027-01-31
   originSessionId: 3f0c74ee-036b-4a00-a437-ba79ac59d1c9
   modified: 2026-07-31T13:35:15.106Z
@@ -129,3 +129,6 @@ El modal conserva solo el nombre, la etiqueta Acierto, Error o Punto y las opcio
 
 ## 2026-08-09-10-53-41-01
 Saque aparece antes de Otro, se registra en el historial y participa en la normalizacion, acumulacion, resta y detalle estadistico mediante SHOT_TYPES.
+
+## 2026-08-12-17-46-21-01
+El flujo de error usa dos modales consecutivos: golpe y destino. Los destinos son Red, Reja, Vidrio, Fuera de la cancha y Otro; cerrar guarda Sin especificar y el contador guarda Otro. El historial muestra ambos detalles y las estadisticas conservan totales y cruce golpe-destino; Deshacer y Reiniciar eliminan todos los datos del evento.

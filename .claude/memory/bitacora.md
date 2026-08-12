@@ -4,7 +4,7 @@ description: "Historico append-only, una linea corta por unidad de trabajo cerra
 metadata: 
   node_type: memory
   type: reference
-  updated: 2026-08-09
+  updated: 2026-08-12
   originSessionId: 3f0c74ee-036b-4a00-a437-ba79ac59d1c9
   modified: 2026-07-31T13:36:22.612Z
 ---
@@ -85,3 +85,4 @@ metadata:
 - 2026-08-08-23-38-08-28: v5.64 distingue Acierto, Error y Punto en el selector de golpes.
 - 2026-08-08-23-42-03-29: v5.65 elimina las descripciones del selector de golpes.
 - 2026-08-09-10-53-41-01: v5.66 agrega Saque a los golpes de acierto.
+- 2026-08-12-17-46-21-01: v5.67 agrega destino del error despues de seleccionar el golpe.
